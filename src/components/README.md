@@ -1,0 +1,3 @@
+- commons 共通パーツ
+- domains pages単位の中くらいのパーツ
+- pages appと連動 〇〇Page.tsx
