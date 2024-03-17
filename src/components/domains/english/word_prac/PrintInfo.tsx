@@ -14,6 +14,7 @@ export const PrintInfo: React.FC = () => {
           label="単語の個数"
           type="number"
           name="word_count"
+          isRequired
           control={form.control}
         />
         <FormCheckBox
