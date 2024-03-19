@@ -9,3 +9,12 @@ interface IEnglishWordPracWord {
   created_at: Date;
   updated_at: Date;
 }
+
+interface IEnglishWordPracSession {
+  id: number;
+  title: string;
+  row: number;
+  memo: string;
+  created_at: Date;
+  updated_at: Date;
+}

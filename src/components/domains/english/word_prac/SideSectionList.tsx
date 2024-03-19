@@ -67,7 +67,7 @@ export const SideSectionList = () => {
         <Typography variant="h6" fontWeight="bold">
           セッション
         </Typography>
-        <IconButton>
+        <IconButton href="/english/word_prac/session">
           <CreateOutlinedIcon />
         </IconButton>
       </Box>
