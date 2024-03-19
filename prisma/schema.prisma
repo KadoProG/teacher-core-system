@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model EnglishWordPracSession {
+  id            Int       @id @default(autoincrement())
+  row           Int       @unique
+  title         String    
+  memo          String    @default("")
+  created_at    DateTime  @default(now())            // 投稿日時
+  updated_at    DateTime  @updatedAt @default(now()) // 更新日時
+  words         EnglishWordPracWord[]
+}
+
+model EnglishWordPracWord {
+  id            Int       @id @default(autoincrement())
+  session_id    Int
+  session       EnglishWordPracSession @relation(fields: [session_id], references: [id])
+  row           Int
+  jp_title      String
+  en_title      String
+  study_year    String
+  memo          String @default("")
+  created_at    DateTime  @default(now())            // 投稿日時
+  updated_at    DateTime  @updatedAt @default(now()) // 更新日時  
+  @@unique([session_id, row])
+}

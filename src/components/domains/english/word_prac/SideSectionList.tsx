@@ -1,6 +1,9 @@
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import {
+  Box,
   Divider,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -55,10 +58,23 @@ export const SideSectionList = () => {
       variant="persistent"
       anchor="left"
     >
-      <Typography variant="h6" fontWeight="bold">
-        セッション
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        width="100%"
+        alignItems="center"
+      >
+        <Typography variant="h6" fontWeight="bold">
+          セッション
+        </Typography>
+        <IconButton>
+          <CreateOutlinedIcon />
+        </IconButton>
+      </Box>
       <Divider />
+      {sectionList.length === 0 && (
+        <Typography>セッションはありません。</Typography>
+      )}
       <nav aria-label="secondary mailbox folders">
         <List>
           {sectionList.map((section) => (
