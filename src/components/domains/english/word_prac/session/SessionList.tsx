@@ -1,10 +1,6 @@
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Paper,
   Table,
   TableBody,
@@ -12,12 +8,21 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { SessionListImportExcelDialog } from '@/components/domains/english/word_prac/session/SessionListImportExcelDialog';
 import {
   SessionListTableBodyRow,
   SessionListTableHeadRow,
 } from '@/components/domains/english/word_prac/session/SessionListTableRow';
 
 export const SessionList: React.FC = () => {
+  const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
+
+  const handleClose = () => {
+    setIsOpenDialog(false);
+  };
+  const handleOpen = () => {
+    setIsOpenDialog(true);
+  };
   const sessionListData: IEnglishWordPracSession[] = [
     {
       id: 1,
@@ -47,21 +52,18 @@ export const SessionList: React.FC = () => {
           <Button variant="outlined" color="inherit" size="small">
             並び替え
           </Button>
-          <Button variant="outlined" color="inherit" size="small">
+          <Button
+            variant="outlined"
+            color="inherit"
+            size="small"
+            onClick={handleOpen}
+          >
             インポートする
           </Button>
-          <Dialog open={true}>
-            <DialogTitle>
-              <Typography>何かをアップロードする</Typography>
-            </DialogTitle>
-            <DialogContent>
-              <Button variant="contained" component="label">
-                Upload File
-                <input type="file" style={{ display: 'none' }} />
-              </Button>
-            </DialogContent>
-            <DialogActions></DialogActions>
-          </Dialog>
+          <SessionListImportExcelDialog
+            isOpen={isOpenDialog}
+            onClose={handleClose}
+          />
           <Button variant="outlined" color="inherit" size="small">
             追加する
           </Button>
