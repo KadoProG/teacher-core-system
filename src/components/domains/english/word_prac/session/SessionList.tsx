@@ -13,23 +13,12 @@ import {
   SessionListTableBodyRow,
   SessionListTableHeadRow,
 } from '@/components/domains/english/word_prac/session/SessionListTableRow';
+import { useEnglishWordPracSession } from '@/components/hooks/english/useEnglishWordPracSession';
 
 export const SessionList: React.FC = () => {
+  const englishWordPracSession = useEnglishWordPracSession();
+
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
-
-  const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
-
-  const fetchSessions = async () => {
-    const response = await fetch('/api/english/word_prac/sessions', {
-      method: 'GET',
-    });
-    const { sessions } = await response.json();
-    setSessions(sessions);
-  };
-
-  React.useEffect(() => {
-    fetchSessions();
-  }, []);
 
   const handleClose = () => {
     setIsOpenDialog(false);
@@ -71,7 +60,7 @@ export const SessionList: React.FC = () => {
             <SessionListTableHeadRow />
           </TableHead>
           <TableBody>
-            {sessions.map((session) => (
+            {englishWordPracSession.sessions.map((session) => (
               <SessionListTableBodyRow key={session.id} session={session} />
             ))}
           </TableBody>
