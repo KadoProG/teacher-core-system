@@ -26,14 +26,14 @@ export const SessionListImportExcelDialog: React.FC<
       xhr.responseType = 'arraybuffer';
       xhr.open('GET', blobURL);
       xhr.send();
-      xhr.onload = async function () {
+      xhr.onload = async () => {
         const result = xhr.response; // ArrayBuffer
         const data = new Uint8Array(result);
         const workbook = new exceljs.Workbook();
         await workbook.xlsx.load(data);
         const worksheet = workbook.getWorksheet('セッションマスタ');
 
-        const sections: { id: number; title: string }[] = [];
+        const sessions: { row: number; title: string }[] = [];
 
         for (let i = 2; i < 1000; i++) {
           const row = worksheet?.getRow(i);
@@ -43,16 +43,20 @@ export const SessionListImportExcelDialog: React.FC<
           if (!!id && !!titleValue)
             if (typeof titleValue === 'string') {
               const title = titleValue;
-              sections.push({ id, title });
+              sessions.push({ row: id, title });
             } else {
               const titleValue2 =
                 titleValue as unknown as exceljs.CellRichTextValue;
               const title = titleValue2.richText.map((v) => v.text).join('');
-              sections.push({ id, title });
+              sessions.push({ row: id, title });
             }
         }
-        // TODO
-        // console.log(sections);
+        // const response =
+        await fetch('/api/english/word_prac/sessions', {
+          method: 'PUT',
+          body: JSON.stringify({ sessions }),
+        });
+        // console.log(response);
       };
     },
   });
