@@ -5,7 +5,7 @@ import React from 'react';
 import { PrintInfo } from '@/components/domains/english/word_prac/PrintInfo';
 import { SideSessionList } from '@/components/domains/english/word_prac/SideSessionList';
 import { WordList } from '@/components/domains/english/word_prac/WordList';
-import { useEnglishWordPrac } from '@/components/hooks/english/useEnglishWordPrac';
+import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
 
 export const EnglishWordPracPage: React.FC = () => {
   const englishWordPrac = useEnglishWordPrac();

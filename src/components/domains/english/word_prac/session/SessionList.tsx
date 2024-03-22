@@ -13,7 +13,7 @@ import {
   SessionListTableBodyRow,
   SessionListTableHeadRow,
 } from '@/components/domains/english/word_prac/session/SessionListTableRow';
-import { useEnglishWordPracSession } from '@/components/hooks/english/useEnglishWordPracSession';
+import { useEnglishWordPracSession } from '@/hooks/english/useEnglishWordPracSession';
 
 export const SessionList: React.FC = () => {
   const englishWordPracSession = useEnglishWordPracSession();
