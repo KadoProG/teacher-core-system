@@ -17,30 +17,26 @@ import {
 export const SessionList: React.FC = () => {
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
 
+  const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
+
+  const fetchSessions = async () => {
+    const response = await fetch('/api/english/word_prac/sessions', {
+      method: 'GET',
+    });
+    const { sessions } = await response.json();
+    setSessions(sessions);
+  };
+
+  React.useEffect(() => {
+    fetchSessions();
+  }, []);
+
   const handleClose = () => {
     setIsOpenDialog(false);
   };
   const handleOpen = () => {
     setIsOpenDialog(true);
   };
-  const sessionListData: IEnglishWordPracSession[] = [
-    {
-      id: 1,
-      row: 1,
-      title: '基本動詞①',
-      memo: '',
-      created_at: '2024-03-17T22:24:10.852Z' as unknown as Date,
-      updated_at: '2024-03-17T22:24:10.852Z' as unknown as Date,
-    },
-    {
-      id: 2,
-      row: 2,
-      title: 'スポーツ・趣味・食べ物',
-      memo: '',
-      created_at: '2024-03-17T22:24:10.852Z' as unknown as Date,
-      updated_at: '2024-03-17T22:24:10.852Z' as unknown as Date,
-    },
-  ];
 
   return (
     <>
@@ -75,7 +71,7 @@ export const SessionList: React.FC = () => {
             <SessionListTableHeadRow />
           </TableHead>
           <TableBody>
-            {sessionListData.map((session) => (
+            {sessions.map((session) => (
               <SessionListTableBodyRow key={session.id} session={session} />
             ))}
           </TableBody>
