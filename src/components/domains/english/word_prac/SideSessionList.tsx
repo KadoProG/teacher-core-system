@@ -16,6 +16,7 @@ const drawerWidth = 250;
 
 interface SideSessionListProps {
   sessions: IEnglishWordPracSession[];
+  onChangeSession: (id: number) => void;
 }
 
 export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
@@ -51,10 +52,10 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
     )}
     <nav aria-label="secondary mailbox folders">
       <List>
-        {props.sessions.map((section) => (
-          <ListItem disablePadding key={section.id}>
-            <ListItemButton>
-              <ListItemText primary={`${section.id}　${section.title}`} />
+        {props.sessions.map((session) => (
+          <ListItem disablePadding key={session.id}>
+            <ListItemButton onClick={() => props.onChangeSession(session.id)}>
+              <ListItemText primary={`${session.id}　${session.title}`} />
             </ListItemButton>
           </ListItem>
         ))}

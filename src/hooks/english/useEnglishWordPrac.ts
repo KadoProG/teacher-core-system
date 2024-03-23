@@ -7,33 +7,43 @@ export const useEnglishWordPrac = () => {
   const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
   const [words, setWords] = React.useState<IEnglishWordPracWord[]>([]);
 
-  const [selectedSession, setSelectedSession] =
-    React.useState<IEnglishWordPracSession>();
+  // 選択中のSession
+  const [selectedSessionId, setSelectedSessionId] =
+    React.useState<IEnglishWordPracSession['id']>();
 
-  const fetchSessions = async () => {
+  // Word取得の関数
+  const fetchWords = React.useCallback(async () => {
+    if (!selectedSessionId) return;
+    const response = await fetch(
+      `/api/english/word_prac/words?session_id=${selectedSessionId}`,
+      {
+        method: 'GET',
+      }
+    );
+    const { words } = await response.json();
+    setWords(words);
+  }, [selectedSessionId]);
+
+  // セッション取得の関数
+  const fetchSessions = React.useCallback(async () => {
     const response = await fetch('/api/english/word_prac/sessions', {
       method: 'GET',
     });
     const { sessions } = await response.json();
     setSessions(sessions);
-    setSelectedSession(sessions[0] ?? undefined);
-  };
+    fetchWords();
+    setSelectedSessionId(sessions[0].id ?? undefined);
+  }, [fetchWords]);
 
-  const fetchWords = async () => {
-    const response = await fetch('/api/english/word_prac/words', {
-      method: 'GET',
-    });
-    const { words } = await response.json();
-    setWords(words);
-  };
-
+  // 起動時に実行
   React.useEffect(() => {
     fetchSessions();
-  }, []);
+  }, [fetchSessions]);
 
-  React.useEffect(() => {
-    fetchWords();
-  }, [selectedSession]);
+  // セッションの切り替え
+  const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
+    setSelectedSessionId(id);
+  };
 
   const uploadWords = React.useCallback(
     async (
@@ -53,7 +63,7 @@ export const useEnglishWordPrac = () => {
         console.error('Wordデータのアップロードに失敗しました:', error);
       }
     },
-    []
+    [fetchWords]
   );
 
   // Excelファイルを処理する関数
@@ -117,5 +127,9 @@ export const useEnglishWordPrac = () => {
      * Excelデータアップロード（ワーク取得成功）時の処理
      */
     processWordExcelData,
+    /**
+     * セッションの選択
+     */
+    onSelectedSession,
   };
 };

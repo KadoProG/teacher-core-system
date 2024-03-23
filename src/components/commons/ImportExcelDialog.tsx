@@ -44,7 +44,7 @@ export const ImportExcelDialog: React.FC<ImportExcelDialogProps> = (props) => {
           <Button variant="contained" component="label">
             Upload File
           </Button>
-          <Typography>ここにドタッグアンドドロップ</Typography>
+          <Typography>ここドラッグアンドドロップ</Typography>
         </Box>
       </DialogContent>
       <DialogActions></DialogActions>

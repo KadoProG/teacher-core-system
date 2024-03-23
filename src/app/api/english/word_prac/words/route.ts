@@ -8,14 +8,27 @@ import {
 import { wordsDelete } from '@/components/domains/api/english/word_prac/words/delete';
 import { wordsOverwrite } from '@/components/domains/api/english/word_prac/words/update';
 
-const prisma = new PrismaClient();
-
 /**
  * EnglishWordデータの取得
  */
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
+  const { searchParams } = new URL(req.url);
+  const session_id = searchParams.get('session_id');
+
   try {
-    const words = await prisma.englishWordPracWord.findMany({});
+    const prisma = new PrismaClient();
+
+    let queryFilter = {};
+
+    if (session_id) {
+      queryFilter = {
+        where: {
+          session_id: Number(session_id),
+        },
+      };
+    }
+
+    const words = await prisma.englishWordPracWord.findMany(queryFilter);
     return NextResponse.json({ words });
   } catch (e) {
     return NextResponse.json({ error: e });
