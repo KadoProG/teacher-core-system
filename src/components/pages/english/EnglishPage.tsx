@@ -34,7 +34,7 @@ export const EnglishPage = () => {
           {v.title}
         </Button>
       ))}
-      <PrintLayoutPreview>{selectedPrint.component}</PrintLayoutPreview>;
+      <PrintLayoutPreview>{selectedPrint.component}</PrintLayoutPreview>
     </Box>
   );
 };
