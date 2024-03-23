@@ -1,4 +1,4 @@
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FormCheckBox } from '@/components/commons/input/FormCheckBox';
@@ -8,7 +8,14 @@ export const PrintInfo: React.FC = () => {
   const form = useForm();
   return (
     <Paper component={Box} p={2}>
-      <Typography fontWeight="bold">印刷条件</Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography fontWeight="bold" variant="h5">
+          印刷する
+        </Typography>
+        <Button variant="outlined" color="inherit">
+          印刷する
+        </Button>
+      </Box>
       <Box p={2} component={Stack} spacing={2}>
         <FormTextField
           label="単語の個数"
