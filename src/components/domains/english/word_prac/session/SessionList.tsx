@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import { SessionListImportExcelDialog } from '@/components/domains/english/word_prac/session/SessionListImportExcelDialog';
+import { ImportExcelDialog } from '@/components/commons/ImportExcelDialog';
 import {
   SessionListTableBodyRow,
   SessionListTableHeadRow,
@@ -45,9 +45,11 @@ export const SessionList: React.FC = () => {
           >
             インポートする
           </Button>
-          <SessionListImportExcelDialog
+          <ImportExcelDialog
+            worksheetName="セッションマスタ"
             isOpen={isOpenDialog}
             onClose={handleClose}
+            processExcelData={englishWordPracSession.processSessionExcelData}
           />
           <Button variant="outlined" color="inherit" size="small">
             追加する

@@ -7,18 +7,25 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
+import exceljs from 'exceljs';
 import React from 'react';
-import { useSessionExcelUpload } from '@/hooks/english/useSessionExcelUpload';
+import { useDropzone } from 'react-dropzone';
+import { dropExcelData } from '@/utils/dropExcelData';
 
-interface SessionListImportExcelDialogProps {
+interface ImportExcelDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  worksheetName: string;
+  processExcelData: (worksheet: exceljs.Worksheet) => Promise<void>;
 }
 
-export const SessionListImportExcelDialog: React.FC<
-  SessionListImportExcelDialogProps
-> = (props) => {
-  const sessionExcelUpload = useSessionExcelUpload();
+export const ImportExcelDialog: React.FC<ImportExcelDialogProps> = (props) => {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      dropExcelData(acceptedFiles, 'セッションマスタ', props.processExcelData);
+    },
+  });
+
   return (
     <Dialog open={props.isOpen} onClose={props.onClose}>
       <DialogTitle variant="h5" component="h2" fontWeight="bold">
@@ -27,13 +34,13 @@ export const SessionListImportExcelDialog: React.FC<
       <DialogContent>
         <Typography>Excelファイルをアップロードしてください。</Typography>
         <Box
-          {...sessionExcelUpload.getRootProps()}
+          {...getRootProps()}
           border={(theme) => `1px solid ${theme.palette.divider}`}
           width="100%"
           p={4}
-          bgcolor={sessionExcelUpload.isDragActive ? 'gray' : 'transparent'}
+          bgcolor={isDragActive ? 'gray' : 'transparent'}
         >
-          <input {...sessionExcelUpload.getInputProps()} />
+          <input {...getInputProps()} />
           <Button variant="contained" component="label">
             Upload File
           </Button>
