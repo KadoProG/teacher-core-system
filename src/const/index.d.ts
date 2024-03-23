@@ -1,7 +1,7 @@
 interface IEnglishWordPracWord {
-  id: string;
-  session_id: string;
-  row: string;
+  id: number;
+  session_id: number;
+  row: number;
   jp_title: string;
   en_title: string;
   study_year: string;
