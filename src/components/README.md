@@ -1,3 +1,4 @@
 - commons 共通パーツ
 - domains pages単位の中くらいのパーツ
 - pages appと連動 〇〇Page.tsx
+- prints プリントするレイアウトを記述、PrintLayoutContainerの中に入る要素

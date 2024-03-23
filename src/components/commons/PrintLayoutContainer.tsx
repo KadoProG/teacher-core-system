@@ -10,9 +10,13 @@ interface PrintLayoutProps {
  * プリントを行う際のコンテナ
  */
 export const PrintLayoutContainer: React.FC<PrintLayoutProps> = (props) => (
-  <Paper component={Box} maxWidth={758}>
-    <Box ref={props.componentRef} maxWidth={758} minHeight={1080}>
-      {props.children}
-    </Box>
+  <Paper
+    component={Box}
+    maxWidth={758}
+    minWidth={758}
+    minHeight={1080}
+    maxHeight={1080}
+  >
+    <Box ref={props.componentRef}>{props.children}</Box>
   </Paper>
 );
