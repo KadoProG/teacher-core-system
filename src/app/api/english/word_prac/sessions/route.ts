@@ -8,10 +8,9 @@ import {
 import { sessionsDelete } from '@/components/domains/api/english/word_prac/sessions/delete';
 import { sessionsOverwrite } from '@/components/domains/api/english/word_prac/sessions/update';
 
-const prisma = new PrismaClient();
-
 export const GET = async () => {
   try {
+    const prisma = new PrismaClient();
     const sessions = await prisma.englishWordPracSession.findMany();
     return NextResponse.json({ sessions });
   } catch (e) {

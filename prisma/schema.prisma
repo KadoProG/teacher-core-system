@@ -30,7 +30,7 @@ model EnglishWordPracWord {
   row           Int
   jp_title      String
   en_title      String
-  study_year    String
+  study_year    String @default("")
   memo          String @default("")
   created_at    DateTime  @default(now())            // 投稿日時
   updated_at    DateTime  @updatedAt @default(now()) // 更新日時  

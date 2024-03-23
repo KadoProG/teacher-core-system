@@ -7,7 +7,7 @@ import { validateEnglishWordPracSession } from '@/components/domains/api/english
  */
 export const sessionCreate = async (
   session: any,
-  extendedPrisma?: PrismaClient
+  prismaIncludeTransaction?: PrismaIncludeTransaction
 ) => {
   // バリデートチェック
   const validatedErrors = validateEnglishWordPracSession(session, 'create');
@@ -15,7 +15,7 @@ export const sessionCreate = async (
     return NextResponse.json({ errors: validatedErrors }, { status: 400 });
   }
 
-  const prisma = extendedPrisma ?? new PrismaClient();
+  const prisma = prismaIncludeTransaction ?? new PrismaClient();
 
   // 作成
   await prisma.englishWordPracSession.create({
