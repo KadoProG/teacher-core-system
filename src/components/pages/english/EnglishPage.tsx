@@ -6,8 +6,40 @@ import { PrintLayoutPreview } from '@/components/commons/PrintLayoutPreview';
 import { EnglishWordPracDailyReportPrint } from '@/components/prints/EnglishWordPracDailyReportPrint';
 import { EnglishWordPracPrint } from '@/components/prints/EnglishWordPracPrint';
 
+const words: { en_title: string; jp_title: string; type: 'en' | 'jp' }[] = [
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'jp' },
+  { en_title: 'variable', jp_title: '変数', type: 'en' },
+];
+
 const printList = [
-  { id: 1, title: '単語テスト', component: <EnglishWordPracPrint /> },
+  {
+    id: 1,
+    title: '単語テスト',
+    component: (
+      <EnglishWordPracPrint
+        title="アイプロ３　Level21「中２レベルの基本動詞①」"
+        words={words}
+      />
+    ),
+  },
   {
     id: 2,
     title: '単語テストの報告書',
