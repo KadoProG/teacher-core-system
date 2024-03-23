@@ -14,7 +14,7 @@ export const EnglishWordPracPage: React.FC = () => {
       <SideSessionList sessions={englishWordPrac.sessions} />
       <Box p={2} component={Stack} spacing={2}>
         <PrintInfo />
-        <WordList words={englishWordPrac.words} />
+        <WordList englishWordPrac={englishWordPrac} />
       </Box>
     </Box>
   );

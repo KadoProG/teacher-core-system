@@ -1,6 +1,7 @@
 import axios from 'axios';
 import exceljs from 'exceljs';
 import React from 'react';
+import { convertCellToString } from '@/utils/excelUtils';
 
 export const useEnglishWordPracSession = () => {
   const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
@@ -36,12 +37,7 @@ export const useEnglishWordPracSession = () => {
       const titleValue = row.getCell(2).value;
 
       if (id && titleValue) {
-        const title =
-          typeof titleValue === 'string'
-            ? titleValue
-            : (titleValue as exceljs.CellRichTextValue).richText
-                .map((v) => v.text)
-                .join('');
+        const title = convertCellToString(titleValue);
         sessions.push({ row: id, title });
       }
     }

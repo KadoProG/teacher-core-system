@@ -22,7 +22,7 @@ interface ImportExcelDialogProps {
 export const ImportExcelDialog: React.FC<ImportExcelDialogProps> = (props) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
-      dropExcelData(acceptedFiles, 'セッションマスタ', props.processExcelData);
+      dropExcelData(acceptedFiles, props.worksheetName, props.processExcelData);
     },
   });
 
