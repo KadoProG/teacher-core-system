@@ -57,16 +57,20 @@ export const SessionList: React.FC = () => {
         </Box>
       </Box>
       <Paper component={Box} p={2}>
-        <Table>
-          <TableHead>
-            <SessionListTableHeadRow />
-          </TableHead>
-          <TableBody>
-            {englishWordPracSession.sessions.map((session) => (
-              <SessionListTableBodyRow key={session.id} session={session} />
-            ))}
-          </TableBody>
-        </Table>
+        {englishWordPracSession.sessions.length === 0 ? (
+          <Typography>セッションはありません</Typography>
+        ) : (
+          <Table>
+            <TableHead>
+              <SessionListTableHeadRow />
+            </TableHead>
+            <TableBody>
+              {englishWordPracSession.sessions.map((session) => (
+                <SessionListTableBodyRow key={session.id} session={session} />
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </Paper>
     </>
   );

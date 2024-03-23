@@ -44,7 +44,7 @@ export const WordList: React.FC<WordListProps> = (props) => {
             size="small"
             onClick={handleOpen}
           >
-            単語を追加する
+            インポートする
           </Button>
           <ImportExcelDialog
             worksheetName="単語マスタ"
@@ -55,16 +55,20 @@ export const WordList: React.FC<WordListProps> = (props) => {
         </Box>
       </Box>
       <Paper component={Box} p={2}>
-        <Table>
-          <TableHead>
-            <WordListTableHeadRow />
-          </TableHead>
-          <TableBody>
-            {props.englishWordPrac.words.map((word) => (
-              <WordListTableBodyRow key={word.id} word={word} />
-            ))}
-          </TableBody>
-        </Table>
+        {props.englishWordPrac.words.length === 0 ? (
+          <Typography>単語はありません</Typography>
+        ) : (
+          <Table>
+            <TableHead>
+              <WordListTableHeadRow />
+            </TableHead>
+            <TableBody>
+              {props.englishWordPrac.words.map((word) => (
+                <WordListTableBodyRow key={word.id} word={word} />
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </Paper>
     </>
   );
