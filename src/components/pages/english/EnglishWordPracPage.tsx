@@ -11,10 +11,7 @@ export const EnglishWordPracPage: React.FC = () => {
   const englishWordPrac = useEnglishWordPrac();
   return (
     <Box display="flex">
-      <SideSessionList
-        sessions={englishWordPrac.sessions}
-        onChangeSession={englishWordPrac.onSelectedSession}
-      />
+      <SideSessionList englishWordPrac={englishWordPrac} />
       <Box p={2} component={Stack} spacing={2}>
         <PrintInfo englishWordPrac={englishWordPrac} />
         <WordList englishWordPrac={englishWordPrac} />

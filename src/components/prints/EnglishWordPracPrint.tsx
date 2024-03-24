@@ -40,7 +40,7 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
       >
         {props.title}
         <Typography variant="body2" component="span">
-          （99問）
+          （{props.words.length}問）
         </Typography>
       </Typography>
       <Box

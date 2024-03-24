@@ -5,18 +5,17 @@ import {
   Drawer,
   IconButton,
   List,
-  ListItem,
   ListItemButton,
   ListItemText,
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
 
 const drawerWidth = 250;
 
 interface SideSessionListProps {
-  sessions: IEnglishWordPracSession[];
-  onChangeSession: (id: number) => void;
+  englishWordPrac: ReturnType<typeof useEnglishWordPrac>;
 }
 
 export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
@@ -47,17 +46,26 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
       </IconButton>
     </Box>
     <Divider />
-    {props.sessions.length === 0 && (
+    {props.englishWordPrac.sessions.length === 0 && (
       <Typography>セッションはありません。</Typography>
     )}
     <nav aria-label="secondary mailbox folders">
       <List>
-        {props.sessions.map((session) => (
-          <ListItem disablePadding key={session.id}>
-            <ListItemButton onClick={() => props.onChangeSession(session.id)}>
-              <ListItemText primary={`${session.id}　${session.title}`} />
-            </ListItemButton>
-          </ListItem>
+        {props.englishWordPrac.sessions.map((session) => (
+          // <ListItem disablePadding key={session.id}>
+          <ListItemButton
+            key={session.id}
+            onClick={() => props.englishWordPrac.onSelectedSession(session.id)}
+            selected={props.englishWordPrac.selectedSessionId === session.id}
+            sx={{
+              '&.Mui-selected': {
+                bgcolor: (theme) => `${theme.palette.background.default}`,
+              },
+            }}
+          >
+            <ListItemText primary={`${session.id}　${session.title}`} />
+          </ListItemButton>
+          // </ListItem>
         ))}
       </List>
     </nav>

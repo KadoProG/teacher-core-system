@@ -32,6 +32,12 @@ export const useEnglishWordPracPrint = (
 
   const componentRef = React.useRef<HTMLDivElement>(null);
 
+  const session = englishWordPrac.sessions.find(
+    (session) => englishWordPrac.selectedSessionId === session.id
+  );
+
+  const sessionTitle = `アイプロⅢ　level${session?.id}「${session?.title}」`;
+
   const wordPracList: EnglishWordPracPrintProps['words'] = React.useMemo(
     () =>
       englishWordPrac.words.map((word) => ({
@@ -72,5 +78,9 @@ export const useEnglishWordPracPrint = (
      * 印刷レイアウト
      */
     componentRef,
+    /**
+     * セッションのタイトル
+     */
+    sessionTitle,
   };
 };

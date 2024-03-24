@@ -131,5 +131,9 @@ export const useEnglishWordPrac = () => {
      * セッションの選択
      */
     onSelectedSession,
+    /**
+     * 選択中のセッションID
+     */
+    selectedSessionId,
   };
 };

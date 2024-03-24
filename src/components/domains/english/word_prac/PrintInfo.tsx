@@ -12,8 +12,13 @@ interface PrintInfoProps {
 }
 
 export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
-  const { form, wordPracList, handlePrintButtonClick, componentRef } =
-    useEnglishWordPracPrint(props.englishWordPrac);
+  const {
+    form,
+    wordPracList,
+    handlePrintButtonClick,
+    componentRef,
+    sessionTitle,
+  } = useEnglishWordPracPrint(props.englishWordPrac);
 
   return (
     <Paper component={Box} p={2}>
@@ -31,7 +36,7 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
       </Box>
       <PrintLayoutContainer componentRef={componentRef}>
         <EnglishWordPracPrint
-          title="アイプロ３　Level21「中２レベルの基本動詞①」"
+          title={sessionTitle}
           words={wordPracList}
           isShowAnswer={true}
         />
