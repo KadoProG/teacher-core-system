@@ -16,7 +16,7 @@ export const EnglishWordPracPage: React.FC = () => {
         onChangeSession={englishWordPrac.onSelectedSession}
       />
       <Box p={2} component={Stack} spacing={2}>
-        <PrintInfo />
+        <PrintInfo englishWordPrac={englishWordPrac} />
         <WordList englishWordPrac={englishWordPrac} />
       </Box>
     </Box>

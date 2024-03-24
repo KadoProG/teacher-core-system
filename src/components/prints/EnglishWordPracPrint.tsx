@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-interface EnglishWordPracPrintProps {
+export interface EnglishWordPracPrintProps {
   title: string;
   words: { en_title: string; jp_title: string; type: 'en' | 'jp' }[];
   isShowAnswer?: boolean;
