@@ -12,6 +12,7 @@ import React from 'react';
 interface EnglishWordPracPrintProps {
   title: string;
   words: { en_title: string; jp_title: string; type: 'en' | 'jp' }[];
+  isShowAnswer?: boolean;
 }
 
 /**
@@ -42,16 +43,28 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
           （99問）
         </Typography>
       </Typography>
-      <Typography
-        variant="body2"
+      <Box
         width="32.5%"
         height={54}
         ml={0.3}
         px={0.3}
         border={(theme) => `1px solid ${theme.palette.text.primary}`}
       >
-        名前
-      </Typography>
+        <Typography variant="body2" position="absolute">
+          名前
+        </Typography>
+        {props.isShowAnswer && (
+          <Typography
+            color="red"
+            pl={4}
+            variant="h6"
+            lineHeight="54px"
+            fontWeight="bold"
+          >
+            回答例
+          </Typography>
+        )}
+      </Box>
     </Box>
     <Box
       sx={{
@@ -129,16 +142,37 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
                   position: 'relative',
                 }}
               >
-                <Box height={44} display="flex" alignItems="center">
-                  <Typography
-                    position={v.type === 'en' ? 'absolute' : 'initial'}
-                    top={2}
-                    left={2}
-                    variant={v.type === 'en' ? 'body2' : 'h6'}
-                    component="p"
-                  >
-                    {v.type === 'en' ? `(${index + 1})` : v.en_title}
-                  </Typography>
+                <Box height={44} display="flex" alignItems="center" width={189}>
+                  {v.type === 'en' && (
+                    <Typography
+                      position="absolute"
+                      top={2}
+                      left={2}
+                      variant="body2"
+                    >
+                      ({index + 1})
+                    </Typography>
+                  )}
+
+                  {(v.type !== 'en' || props.isShowAnswer) && (
+                    <Typography
+                      variant="h6"
+                      component="p"
+                      pl={props.isShowAnswer && v.type === 'en' ? 3 : 0}
+                      color={
+                        props.isShowAnswer && v.type === 'en'
+                          ? 'red'
+                          : 'initial'
+                      }
+                      fontWeight={
+                        props.isShowAnswer && v.type === 'en'
+                          ? 'bold'
+                          : 'initial'
+                      }
+                    >
+                      {v.en_title}
+                    </Typography>
+                  )}
                 </Box>
               </TableCell>
               <TableCell
@@ -149,15 +183,35 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
                 }}
               >
                 <Box height={44} display="flex" alignItems="center">
-                  <Typography
-                    position={v.type === 'jp' ? 'absolute' : 'initial'}
-                    top={2}
-                    left={2}
-                    variant={v.type === 'jp' ? 'body2' : 'h6'}
-                    component="p"
-                  >
-                    {v.type === 'jp' ? `(${index + 1})` : v.jp_title}
-                  </Typography>
+                  {v.type === 'jp' && (
+                    <Typography
+                      position="absolute"
+                      top={2}
+                      left={2}
+                      variant="body2"
+                    >
+                      ({index + 1})
+                    </Typography>
+                  )}
+                  {(v.type !== 'jp' || props.isShowAnswer) && (
+                    <Typography
+                      variant="h6"
+                      component="p"
+                      pl={props.isShowAnswer && v.type === 'jp' ? 3 : 0}
+                      color={
+                        props.isShowAnswer && v.type === 'jp'
+                          ? 'red'
+                          : 'initial'
+                      }
+                      fontWeight={
+                        props.isShowAnswer && v.type === 'jp'
+                          ? 'bold'
+                          : 'initial'
+                      }
+                    >
+                      {v.jp_title}
+                    </Typography>
+                  )}
                 </Box>
               </TableCell>
             </TableRow>
