@@ -26,6 +26,9 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
       display="flex"
       alignItems="center"
       p={0.3}
+      sx={{
+        fontFamily: '"メイリオ", "Meiryo", sans-serif',
+      }}
     >
       <Typography
         flex={1}
@@ -50,8 +53,15 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
         名前
       </Typography>
     </Box>
-    <Box>
-      <Typography>（問） 次の空欄を埋めよ。</Typography>
+    <Box
+      sx={{
+        '& p': {
+          fontFamily:
+            '"游明朝", YuMincho, "Hiragino Mincho ProN W3", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", "ＭＳ 明朝", serif',
+        },
+      }}
+    >
+      <Typography lineHeight={1.5}>（問） 次の空欄を埋めよ。</Typography>
       <Table
         sx={{
           border: (theme) => `1px solid ${theme.palette.text.primary}`,
@@ -60,7 +70,6 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
         <TableHead>
           <TableRow
             sx={{
-              // height: 40,
               '& th': {
                 p: 0.3,
                 borderBottom: (theme) =>
@@ -96,9 +105,12 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
               sx={{
                 '& td': {
                   px: 0.8,
-                  py: 1.2,
+                  py: 0,
                   borderBottom: (theme) =>
                     `1px solid ${theme.palette.text.primary}`,
+                  '& p': {
+                    lineHeight: 1,
+                  },
                 },
               }}
             >
@@ -117,14 +129,17 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
                   position: 'relative',
                 }}
               >
-                <Typography
-                  position={v.type === 'en' ? 'absolute' : 'initial'}
-                  top={0}
-                  left={4}
-                  variant={v.type === 'en' ? 'body2' : 'body1'}
-                >
-                  {v.type === 'en' ? `(${index + 1})` : v.en_title}
-                </Typography>
+                <Box height={44} display="flex" alignItems="center">
+                  <Typography
+                    position={v.type === 'en' ? 'absolute' : 'initial'}
+                    top={2}
+                    left={2}
+                    variant={v.type === 'en' ? 'body2' : 'h6'}
+                    component="p"
+                  >
+                    {v.type === 'en' ? `(${index + 1})` : v.en_title}
+                  </Typography>
+                </Box>
               </TableCell>
               <TableCell
                 sx={{
@@ -133,14 +148,17 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
                   position: 'relative',
                 }}
               >
-                <Typography
-                  position={v.type === 'jp' ? 'absolute' : 'initial'}
-                  top={0}
-                  left={4}
-                  variant={v.type === 'jp' ? 'body2' : 'body1'}
-                >
-                  {v.type === 'jp' ? `(${index + 1})` : v.jp_title}
-                </Typography>
+                <Box height={44} display="flex" alignItems="center">
+                  <Typography
+                    position={v.type === 'jp' ? 'absolute' : 'initial'}
+                    top={2}
+                    left={2}
+                    variant={v.type === 'jp' ? 'body2' : 'h6'}
+                    component="p"
+                  >
+                    {v.type === 'jp' ? `(${index + 1})` : v.jp_title}
+                  </Typography>
+                </Box>
               </TableCell>
             </TableRow>
           ))}

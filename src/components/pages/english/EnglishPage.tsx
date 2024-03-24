@@ -25,8 +25,12 @@ const words: { en_title: string; jp_title: string; type: 'en' | 'jp' }[] = [
   { en_title: 'variable', jp_title: '変数', type: 'en' },
   { en_title: 'variable', jp_title: '変数', type: 'en' },
   { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
+  { en_title: 'Australia/Australian', jp_title: '変数', type: 'jp' },
+  {
+    en_title: 'Australia/Australian',
+    jp_title: '～によって・～のそばに・～までに・～によって',
+    type: 'en',
+  },
 ];
 
 const printList = [
