@@ -57,7 +57,7 @@ export const PrintLayoutPreview: React.FC<PrintLayoutPreviewProps> = (
       <Button onClick={handlePrint} variant="contained">
         印刷しちゃう
       </Button>
-      <PrintLayoutContainer componentRef={componentRef}>
+      <PrintLayoutContainer componentRef={componentRef} isShowPreview>
         {props.children}
       </PrintLayoutContainer>
     </Box>
