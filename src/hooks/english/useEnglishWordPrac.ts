@@ -12,17 +12,16 @@ export const useEnglishWordPrac = () => {
     React.useState<IEnglishWordPracSession['id']>();
 
   // Word取得の関数
-  const fetchWords = React.useCallback(async () => {
-    if (!selectedSessionId) return;
+  const fetchWords = React.useCallback(async (sessionId: number) => {
     const response = await fetch(
-      `/api/english/word_prac/words?session_id=${selectedSessionId}`,
+      `/api/english/word_prac/words?session_id=${sessionId}`,
       {
         method: 'GET',
       }
     );
     const { words } = await response.json();
     setWords(words);
-  }, [selectedSessionId]);
+  }, []);
 
   // セッション取得の関数
   const fetchSessions = React.useCallback(async () => {
@@ -31,7 +30,7 @@ export const useEnglishWordPrac = () => {
     });
     const { sessions } = await response.json();
     setSessions(sessions);
-    fetchWords();
+    sessions.length !== 0 && fetchWords(sessions[0].id);
     setSelectedSessionId(sessions[0].id ?? undefined);
   }, [fetchWords]);
 
@@ -43,6 +42,7 @@ export const useEnglishWordPrac = () => {
   // セッションの切り替え
   const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
     setSelectedSessionId(id);
+    fetchWords(id);
   };
 
   const uploadWords = React.useCallback(
@@ -57,13 +57,13 @@ export const useEnglishWordPrac = () => {
     ) => {
       try {
         await axios.put('/api/english/word_prac/words', { words });
-        fetchWords();
+        selectedSessionId && fetchWords(selectedSessionId);
       } catch (error) {
         // eslint-disable-next-line
         console.error('Wordデータのアップロードに失敗しました:', error);
       }
     },
-    [fetchWords]
+    [fetchWords, selectedSessionId]
   );
 
   // Excelファイルを処理する関数
