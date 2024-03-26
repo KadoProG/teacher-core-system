@@ -15,15 +15,24 @@ export interface EnglishWordPracPrintProps {
   isShowAnswer?: boolean;
 }
 
+const customCorderColor = '1px solid black';
+
 /**
  * # 単語テスト
  */
 export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
   props
 ) => (
-  <Box px={5} pt={5} position="relative" height={1080}>
+  <Box
+    px={5}
+    pt={5}
+    position="relative"
+    height={1080}
+    bgcolor="#fff"
+    color="#000"
+  >
     <Box
-      border={(theme) => `1px solid ${theme.palette.text.primary}`}
+      border={customCorderColor}
       display="flex"
       alignItems="center"
       p={0.3}
@@ -32,11 +41,12 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
       }}
     >
       <Typography
+        color="initial"
         flex={1}
         height={54}
         px={0.3}
         lineHeight="54px"
-        border={(theme) => `1px solid ${theme.palette.text.primary}`}
+        border={customCorderColor}
       >
         {props.title}
         <Typography variant="body2" component="span">
@@ -48,9 +58,9 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
         height={54}
         ml={0.3}
         px={0.3}
-        border={(theme) => `1px solid ${theme.palette.text.primary}`}
+        border={customCorderColor}
       >
-        <Typography variant="body2" position="absolute">
+        <Typography variant="body2" position="absolute" color="initial">
           名前
         </Typography>
         {props.isShowAnswer && (
@@ -74,10 +84,12 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
         },
       }}
     >
-      <Typography lineHeight={1.5}>（問） 次の空欄を埋めよ。</Typography>
+      <Typography lineHeight={1.5} color="initial">
+        （問） 次の空欄を埋めよ。
+      </Typography>
       <Table
         sx={{
-          border: (theme) => `1px solid ${theme.palette.text.primary}`,
+          border: customCorderColor,
         }}
       >
         <TableHead>
@@ -85,29 +97,30 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
             sx={{
               '& th': {
                 p: 0.3,
-                borderBottom: (theme) =>
-                  `1px solid ${theme.palette.text.primary}`,
+                borderBottom: customCorderColor,
               },
             }}
           >
             <TableCell
               width="9%"
               sx={{
-                borderRight: (theme) =>
-                  `1px solid ${theme.palette.text.primary}`,
+                borderRight: customCorderColor,
               }}
             ></TableCell>
             <TableCell
               width="30%"
               sx={{
-                borderRight: (theme) =>
-                  `1px solid ${theme.palette.text.primary}`,
+                borderRight: customCorderColor,
               }}
             >
-              <Typography variant="body2">英語</Typography>
+              <Typography variant="body2" color="initial">
+                英語
+              </Typography>
             </TableCell>
             <TableCell>
-              <Typography variant="body2">日本語</Typography>
+              <Typography variant="body2" color="initial">
+                日本語
+              </Typography>
             </TableCell>
           </TableRow>
         </TableHead>
@@ -119,8 +132,7 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
                 '& td': {
                   px: 0.8,
                   py: 0,
-                  borderBottom: (theme) =>
-                    `1px solid ${theme.palette.text.primary}`,
+                  borderBottom: customCorderColor,
                   '& p': {
                     lineHeight: 1,
                   },
@@ -129,16 +141,16 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
             >
               <TableCell
                 sx={{
-                  borderRight: (theme) =>
-                    `1px solid ${theme.palette.text.primary}`,
+                  borderRight: customCorderColor,
                 }}
               >
-                <Typography align="center">{index + 1}</Typography>
+                <Typography align="center" color="initial">
+                  {index + 1}
+                </Typography>
               </TableCell>
               <TableCell
                 sx={{
-                  borderRight: (theme) =>
-                    `1px solid ${theme.palette.text.primary}`,
+                  borderRight: customCorderColor,
                   position: 'relative',
                 }}
               >
@@ -149,6 +161,7 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
                       top={2}
                       left={2}
                       variant="body2"
+                      color="initial"
                     >
                       ({index + 1})
                     </Typography>
@@ -177,8 +190,7 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
               </TableCell>
               <TableCell
                 sx={{
-                  borderRight: (theme) =>
-                    `1px solid ${theme.palette.text.primary}`,
+                  borderRight: customCorderColor,
                   position: 'relative',
                 }}
               >
@@ -189,6 +201,7 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
                       top={2}
                       left={2}
                       variant="body2"
+                      color="initial"
                     >
                       ({index + 1})
                     </Typography>
@@ -218,7 +231,7 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
           ))}
         </TableBody>
       </Table>
-      <Typography>☆2024/03/23実施</Typography>
+      <Typography color="initial">☆2024/03/23実施</Typography>
     </Box>
   </Box>
 );
