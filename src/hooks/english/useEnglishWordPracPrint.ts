@@ -28,7 +28,19 @@ const pageStyle = `
 export const useEnglishWordPracPrint = (
   englishWordPrac: ReturnType<typeof useEnglishWordPrac>
 ) => {
-  const form = useForm();
+  const form = useForm<{
+    is_randam_jp_en: boolean;
+    is_randam_word: boolean;
+    is_print_answer: boolean;
+    word_count: number;
+  }>({
+    defaultValues: {
+      is_randam_jp_en: false,
+      is_randam_word: false,
+      is_print_answer: false,
+      word_count: 10,
+    },
+  });
 
   const componentRef = React.useRef<HTMLDivElement>(null);
 
@@ -38,14 +50,27 @@ export const useEnglishWordPracPrint = (
 
   const sessionTitle = `アイプロⅢ　level${session?.id}「${session?.title}」`;
 
-  const wordPracList: EnglishWordPracPrintProps['words'] = React.useMemo(
-    () =>
-      englishWordPrac.words.map((word) => ({
-        ...word,
-        type: 'en',
-      })),
-    [englishWordPrac.words]
-  );
+  const wordPracListBefore: EnglishWordPracPrintProps['words'] =
+    englishWordPrac.words.map((word) => {
+      let type: EnglishWordPracPrintProps['words'][number]['type'] = 'en';
+      if (form.watch('is_randam_jp_en'))
+        type = Math.round(Math.random()) ? 'en' : 'jp';
+
+      return { ...word, type };
+    });
+
+  if (form.watch('is_randam_word')) {
+    // シャッフルするロジック（Fisher-Yatesアルゴリズム）
+    for (let i = wordPracListBefore.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [wordPracListBefore[i], wordPracListBefore[j]] = [
+        wordPracListBefore[j],
+        wordPracListBefore[i],
+      ];
+    }
+  }
+
+  const wordPracList = wordPracListBefore.slice(0, form.watch('word_count'));
 
   /**
    * 印刷対象のコンポーネントを設定します

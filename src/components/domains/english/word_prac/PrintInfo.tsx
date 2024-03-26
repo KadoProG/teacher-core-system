@@ -57,11 +57,18 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
           name="is_randam_word"
         />
         <FormCheckBox
-          label="答えを印刷する"
+          label="英語・日本語の出題をランダムにする"
           activeLabel="はい"
           negativeLabel="いいえ"
           control={form.control}
           name="is_randam_jp_en"
+        />
+        <FormCheckBox
+          label="答えを印刷する"
+          activeLabel="はい"
+          negativeLabel="いいえ"
+          control={form.control}
+          name="is_print_answer"
         />
       </Box>
     </Paper>
