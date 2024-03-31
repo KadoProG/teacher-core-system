@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
 import { ThemeRegistry } from '@/components/theme/themeRegistry';
 import '@/app/style.scss';
 
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <ThemeRegistry>
+          <SnackbarProvider>{children}</SnackbarProvider>
+        </ThemeRegistry>
       </body>
     </html>
   );
