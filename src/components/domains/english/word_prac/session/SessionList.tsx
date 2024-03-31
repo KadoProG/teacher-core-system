@@ -18,15 +18,6 @@ import { useEnglishWordPracSession } from '@/hooks/english/useEnglishWordPracSes
 export const SessionList: React.FC = () => {
   const englishWordPracSession = useEnglishWordPracSession();
 
-  const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
-
-  const handleClose = () => {
-    setIsOpenDialog(false);
-  };
-  const handleOpen = () => {
-    setIsOpenDialog(true);
-  };
-
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -34,26 +25,22 @@ export const SessionList: React.FC = () => {
           セッションを編集します
         </Typography>
         <Box>
-          <Button variant="outlined" color="inherit" size="small">
-            並び替え
+          <Button variant="contained" color="error" size="small">
+            削除する
           </Button>
           <Button
             variant="outlined"
             color="inherit"
             size="small"
-            onClick={handleOpen}
+            onClick={englishWordPracSession.dropDialog.handleOpen}
           >
             インポートする
           </Button>
           <ImportExcelDialog
-            worksheetName="セッションマスタ"
-            isOpen={isOpenDialog}
-            onClose={handleClose}
-            processExcelData={englishWordPracSession.processSessionExcelData}
+            isOpen={englishWordPracSession.dropDialog.isOpen}
+            onClose={englishWordPracSession.dropDialog.handleClose}
+            dropzone={englishWordPracSession.dropzone}
           />
-          <Button variant="outlined" color="inherit" size="small">
-            追加する
-          </Button>
         </Box>
       </Box>
       <Paper component={Box} p={2}>

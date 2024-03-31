@@ -1,11 +1,33 @@
 import axios from 'axios';
 import exceljs from 'exceljs';
 import React from 'react';
+import { useDropzone } from 'react-dropzone';
+import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
+import { dropExcelData } from '@/utils/dropExcelData';
 import { convertCellToString } from '@/utils/excelUtils';
 
 export const useEnglishWordPrac = () => {
+  const { addMessageObject } = useSnackbar();
   const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
   const [words, setWords] = React.useState<IEnglishWordPracWord[]>([]);
+  const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
+
+  const handleClose = () => {
+    setIsOpenDialog(false);
+  };
+  const handleOpen = () => {
+    setIsOpenDialog(true);
+  };
+
+  const dropzone = useDropzone({
+    onDrop: async (acceptedFiles) => {
+      try {
+        await dropExcelData(acceptedFiles, '単語マスタ', processWordExcelData);
+      } catch (e: any) {
+        addMessageObject(e.message, 'error');
+      }
+    },
+  });
 
   // 選択中のSession
   const [selectedSessionId, setSelectedSessionId] =
@@ -57,13 +79,17 @@ export const useEnglishWordPrac = () => {
     ) => {
       try {
         await axios.put('/api/english/word_prac/words', { words });
+        addMessageObject('アップロードが完了しました', 'success');
+        setIsOpenDialog(false);
         selectedSessionId && fetchWords(selectedSessionId);
       } catch (error) {
-        // eslint-disable-next-line
-        console.error('Wordデータのアップロードに失敗しました:', error);
+        addMessageObject(
+          `Wordデータのアップロードに失敗しました：${error}`,
+          'error'
+        );
       }
     },
-    [fetchWords, selectedSessionId]
+    [fetchWords, selectedSessionId, addMessageObject]
   );
 
   // Excelファイルを処理する関数
@@ -106,12 +132,12 @@ export const useEnglishWordPrac = () => {
             });
           }
         } catch (e) {
-          throw new Error(`${i}行目付近にエラーがありました：${e}`);
+          addMessageObject(`${i}行目付近にエラーがありました：${e}`, 'error');
         }
       }
       await uploadWords(words);
     },
-    [sessions, uploadWords]
+    [sessions, uploadWords, addMessageObject]
   );
 
   return {
@@ -123,6 +149,18 @@ export const useEnglishWordPrac = () => {
      * Wordデータ
      */
     words,
+    /**
+     * ドロップゾーンのオブジェクト
+     */
+    dropzone,
+    /**
+     * ドロップダイアログの表示、非表示
+     */
+    dropDialog: {
+      isOpen: isOpenDialog,
+      handleClose,
+      handleOpen,
+    },
     /**
      * Excelデータアップロード（ワーク取得成功）時の処理
      */

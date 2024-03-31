@@ -11,8 +11,7 @@ export const dropExcelData = async (
     const worksheet = workbook.getWorksheet(workbookName);
     if (worksheet) await processExcelData(worksheet);
   } catch (error) {
-    // eslint-disable-next-line
-    console.error('Excelデータの処理中にエラーが発生しました:', error);
+    throw new Error(`Excelデータの処理中にエラーが発生しました：${error}`);
   }
 };
 

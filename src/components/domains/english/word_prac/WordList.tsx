@@ -19,57 +19,46 @@ interface WordListProps {
   englishWordPrac: ReturnType<typeof useEnglishWordPrac>;
 }
 
-export const WordList: React.FC<WordListProps> = (props) => {
-  const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
-
-  const handleClose = () => {
-    setIsOpenDialog(false);
-  };
-  const handleOpen = () => {
-    setIsOpenDialog(true);
-  };
-  return (
-    <>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h5" component="h2" fontWeight="bold">
-          単語リスト
-        </Typography>
-        <Box>
-          <Button variant="outlined" color="inherit" size="small">
-            編集する
-          </Button>
-          <Button
-            variant="outlined"
-            color="inherit"
-            size="small"
-            onClick={handleOpen}
-          >
-            インポートする
-          </Button>
-          <ImportExcelDialog
-            worksheetName="単語マスタ"
-            isOpen={isOpenDialog}
-            onClose={handleClose}
-            processExcelData={props.englishWordPrac.processWordExcelData}
-          />
-        </Box>
+export const WordList: React.FC<WordListProps> = (props) => (
+  <>
+    <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Typography variant="h5" component="h2" fontWeight="bold">
+        単語リスト
+      </Typography>
+      <Box>
+        <Button variant="outlined" color="inherit" size="small">
+          編集する
+        </Button>
+        <Button
+          variant="outlined"
+          color="inherit"
+          size="small"
+          onClick={props.englishWordPrac.dropDialog.handleOpen}
+        >
+          インポートする
+        </Button>
+        <ImportExcelDialog
+          isOpen={props.englishWordPrac.dropDialog.isOpen}
+          onClose={props.englishWordPrac.dropDialog.handleClose}
+          dropzone={props.englishWordPrac.dropzone}
+        />
       </Box>
-      <Paper component={Box} p={2}>
-        {props.englishWordPrac.words.length === 0 ? (
-          <Typography>単語はありません</Typography>
-        ) : (
-          <Table>
-            <TableHead>
-              <WordListTableHeadRow />
-            </TableHead>
-            <TableBody>
-              {props.englishWordPrac.words.map((word) => (
-                <WordListTableBodyRow key={word.id} word={word} />
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </Paper>
-    </>
-  );
-};
+    </Box>
+    <Paper component={Box} p={2}>
+      {props.englishWordPrac.words.length === 0 ? (
+        <Typography>単語はありません</Typography>
+      ) : (
+        <Table>
+          <TableHead>
+            <WordListTableHeadRow />
+          </TableHead>
+          <TableBody>
+            {props.englishWordPrac.words.map((word) => (
+              <WordListTableBodyRow key={word.id} word={word} />
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </Paper>
+  </>
+);
