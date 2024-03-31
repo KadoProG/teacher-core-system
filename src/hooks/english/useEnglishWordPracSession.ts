@@ -17,6 +17,19 @@ export const useEnglishWordPracSession = () => {
     setIsOpenDialog(true);
   };
 
+  /**
+   * セッションの削除を実行
+   */
+  const handleSessionsDelete = async () => {
+    try {
+      await axios.delete('/api/english/word_prac/sessions');
+      addMessageObject('セッションの削除が完了しました', 'success');
+      fetchSessions();
+    } catch (e) {
+      addMessageObject(`単語の削除に失敗しました：${e}`, 'error');
+    }
+  };
+
   const { addMessageObject } = useSnackbar();
 
   const dropzone = useDropzone({
@@ -24,7 +37,7 @@ export const useEnglishWordPracSession = () => {
       try {
         await dropExcelData(
           acceptedFiles,
-          '単語マスタ',
+          'セッションマスタ',
           processSessionExcelData
         );
       } catch (e: any) {
@@ -89,6 +102,10 @@ export const useEnglishWordPracSession = () => {
      */
     dropzone,
     /**
+     * セッションの削除を実行
+     */
+    handleSessionsDelete,
+    /**
      * ドロップダイアログの表示、非表示
      */
     dropDialog: {
@@ -96,9 +113,5 @@ export const useEnglishWordPracSession = () => {
       handleClose,
       handleOpen,
     },
-    /**
-     * Excelデータアップロード（ワーク取得成功）時の処理
-     */
-    processSessionExcelData,
   };
 };

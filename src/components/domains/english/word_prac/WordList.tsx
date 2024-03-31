@@ -26,8 +26,13 @@ export const WordList: React.FC<WordListProps> = (props) => (
         単語リスト
       </Typography>
       <Box>
-        <Button variant="outlined" color="inherit" size="small">
-          編集する
+        <Button
+          variant="contained"
+          color="error"
+          size="small"
+          onClick={props.englishWordPrac.handleWordsDelete}
+        >
+          削除する
         </Button>
         <Button
           variant="outlined"

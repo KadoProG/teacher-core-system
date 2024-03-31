@@ -52,7 +52,6 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
     <nav aria-label="secondary mailbox folders">
       <List>
         {props.englishWordPrac.sessions.map((session) => (
-          // <ListItem disablePadding key={session.id}>
           <ListItemButton
             key={session.id}
             onClick={() => props.englishWordPrac.onSelectedSession(session.id)}
@@ -63,9 +62,8 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
               },
             }}
           >
-            <ListItemText primary={`${session.id}　${session.title}`} />
+            <ListItemText primary={`${session.row}　${session.title}`} />
           </ListItemButton>
-          // </ListItem>
         ))}
       </List>
     </nav>

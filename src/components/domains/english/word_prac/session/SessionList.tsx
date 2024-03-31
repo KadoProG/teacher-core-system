@@ -25,7 +25,12 @@ export const SessionList: React.FC = () => {
           セッションを編集します
         </Typography>
         <Box>
-          <Button variant="contained" color="error" size="small">
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={englishWordPracSession.handleSessionsDelete}
+          >
             削除する
           </Button>
           <Button

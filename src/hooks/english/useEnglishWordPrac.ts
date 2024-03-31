@@ -29,6 +29,16 @@ export const useEnglishWordPrac = () => {
     },
   });
 
+  const handleWordsDelete = async () => {
+    try {
+      await axios.delete('/api/english/word_prac/words');
+      addMessageObject('単語の削除が完了しました', 'success');
+      selectedSessionId && fetchWords(selectedSessionId);
+    } catch (e) {
+      addMessageObject(`単語の削除に失敗しました：${e}`, 'error');
+    }
+  };
+
   // 選択中のSession
   const [selectedSessionId, setSelectedSessionId] =
     React.useState<IEnglishWordPracSession['id']>();
@@ -103,6 +113,8 @@ export const useEnglishWordPrac = () => {
         study_year: string;
       }[] = [];
 
+      console.log(worksheet);
+
       for (let i = 2; i < 1000; i++) {
         const row: exceljs.Row = worksheet.getRow(i);
         const id = row.getCell(1).value as number;
@@ -113,10 +125,11 @@ export const useEnglishWordPrac = () => {
 
         try {
           if (id && sessionStringValue && enTitleValue && jpTitleValue) {
+            console.log(id, sessionStringValue);
             const sessionString = convertCellToString(sessionStringValue);
             const session_id = sessions.find(
               (session) =>
-                `${String(session.id).padStart(2, '0')}　${session.title}` ===
+                `${String(session.row).padStart(2, '0')}　${session.title}` ===
                 sessionString
             )?.id;
             if (!session_id) throw new Error('存在しないSessionです');
@@ -162,9 +175,9 @@ export const useEnglishWordPrac = () => {
       handleOpen,
     },
     /**
-     * Excelデータアップロード（ワーク取得成功）時の処理
+     * 単語の削除を実行
      */
-    processWordExcelData,
+    handleWordsDelete,
     /**
      * セッションの選択
      */
