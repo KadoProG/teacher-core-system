@@ -36,3 +36,23 @@ model EnglishWordPracWord {
   updated_at    DateTime  @updatedAt @default(now()) // 更新日時  
   @@unique([session_id, row])
 }
+
+model EnglishWordPracPrint {
+  id            Int       @id @default(autoincrement())
+  title         String
+  memo          String    @default("")
+  created_at    DateTime  @default(now())            // 投稿日時
+  updated_at    DateTime  @updatedAt @default(now()) // 更新日時  
+  words         EnglishWordPracPrintWord[]
+}
+
+model EnglishWordPracPrintWord {
+  id            Int       @id @default(autoincrement())
+  print_id      Int
+  print         EnglishWordPracPrint @relation(fields: [print_id], references: [id])
+  en_title      String
+  jp_title      String
+  type          String
+  created_at    DateTime  @default(now())            // 投稿日時
+  updated_at    DateTime  @updatedAt @default(now()) // 更新日時  
+}
