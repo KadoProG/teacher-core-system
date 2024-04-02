@@ -41,6 +41,14 @@ export const SessionList: React.FC = () => {
           >
             インポートする
           </Button>
+          <Button
+            variant="outlined"
+            color="inherit"
+            size="small"
+            onClick={englishWordPracSession.handleExportExcelData}
+          >
+            エクスポートする
+          </Button>
           <ImportExcelDialog
             isOpen={englishWordPracSession.dropDialog.isOpen}
             onClose={englishWordPracSession.dropDialog.handleClose}

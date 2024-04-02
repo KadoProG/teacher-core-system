@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { convertCellToString } from '@/utils/excelUtils';
+import { exportExcelData } from '@/utils/exportExcelData';
 
 export const useEnglishWordPracSession = () => {
   const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
@@ -45,6 +46,18 @@ export const useEnglishWordPracSession = () => {
       }
     },
   });
+
+  const handleExportExcelData = async () => {
+    try {
+      await exportExcelData();
+      addMessageObject('Excelのエクスポートが完了しました。', 'success');
+    } catch (e: any) {
+      addMessageObject(
+        'Excelのエクスポートに失敗しました。' + e.message,
+        'error'
+      );
+    }
+  };
 
   const fetchSessions = async () => {
     const response = await fetch('/api/english/word_prac/sessions', {
@@ -105,6 +118,10 @@ export const useEnglishWordPracSession = () => {
      * セッションの削除を実行
      */
     handleSessionsDelete,
+    /**
+     * Excelのエクスポート
+     */
+    handleExportExcelData,
     /**
      * ドロップダイアログの表示、非表示
      */

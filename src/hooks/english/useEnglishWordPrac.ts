@@ -63,7 +63,7 @@ export const useEnglishWordPrac = () => {
     const { sessions } = await response.json();
     setSessions(sessions);
     sessions.length !== 0 && fetchWords(sessions[0].id);
-    setSelectedSessionId(sessions[0].id ?? undefined);
+    setSelectedSessionId(sessions[0]?.id ?? undefined);
   }, [fetchWords]);
 
   // 起動時に実行
@@ -113,8 +113,6 @@ export const useEnglishWordPrac = () => {
         study_year: string;
       }[] = [];
 
-      console.log(worksheet);
-
       for (let i = 2; i < 1000; i++) {
         const row: exceljs.Row = worksheet.getRow(i);
         const id = row.getCell(1).value as number;
@@ -125,7 +123,6 @@ export const useEnglishWordPrac = () => {
 
         try {
           if (id && sessionStringValue && enTitleValue && jpTitleValue) {
-            console.log(id, sessionStringValue);
             const sessionString = convertCellToString(sessionStringValue);
             const session_id = sessions.find(
               (session) =>
