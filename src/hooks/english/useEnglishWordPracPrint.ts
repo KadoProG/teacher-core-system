@@ -31,13 +31,11 @@ export const useEnglishWordPracPrint = (
   const form = useForm<{
     is_randam_jp_en: boolean;
     is_randam_word: boolean;
-    is_print_answer: boolean;
     word_count: number;
   }>({
     defaultValues: {
       is_randam_jp_en: false,
       is_randam_word: false,
-      is_print_answer: false,
       word_count: 10,
     },
   });

@@ -43,7 +43,7 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
       </PrintLayoutContainer>
       <Box p={2} component={Stack} spacing={2}>
         <FormTextField
-          label="単語の個数"
+          label="最大出題数"
           type="number"
           name="word_count"
           isRequired
@@ -62,13 +62,6 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
           negativeLabel="いいえ"
           control={form.control}
           name="is_randam_jp_en"
-        />
-        <FormCheckBox
-          label="答えを印刷する"
-          activeLabel="はい"
-          negativeLabel="いいえ"
-          control={form.control}
-          name="is_print_answer"
         />
       </Box>
     </Paper>

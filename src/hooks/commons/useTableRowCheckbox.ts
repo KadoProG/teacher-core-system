@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const useTableRowCheckbox = (ids: number[]) => {
-  const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = React.useState<number[]>(ids);
   const handleSingleClick = (id: number) => {
     if (selectedIds.includes(id)) {
       const newSelectedIds = selectedIds.filter((v) => v !== id);
@@ -17,7 +17,7 @@ export const useTableRowCheckbox = (ids: number[]) => {
     if (isAllSelected) {
       setSelectedIds([]);
     } else {
-      setSelectedIds([...ids]);
+      setSelectedIds(ids);
     }
   };
 
