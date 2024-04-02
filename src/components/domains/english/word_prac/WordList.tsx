@@ -1,18 +1,7 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableHead,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Paper, Skeleton, Typography } from '@mui/material';
 import React from 'react';
 import { ImportExcelDialog } from '@/components/commons/ImportExcelDialog';
-import {
-  WordListTableBodyRow,
-  WordListTableHeadRow,
-} from '@/components/domains/english/word_prac/WordListTableRow';
+import { WordListTable } from '@/components/domains/english/word_prac/WordListTable';
 import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
 
 interface WordListProps {
@@ -50,19 +39,14 @@ export const WordList: React.FC<WordListProps> = (props) => (
       </Box>
     </Box>
     <Paper component={Box} p={2}>
-      {props.englishWordPrac.words.length === 0 ? (
-        <Typography>単語はありません</Typography>
+      {props.englishWordPrac.isLoadingWords ? (
+        <>
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v) => (
+            <Skeleton key={v} height={50} />
+          ))}
+        </>
       ) : (
-        <Table>
-          <TableHead>
-            <WordListTableHeadRow />
-          </TableHead>
-          <TableBody>
-            {props.englishWordPrac.words.map((word) => (
-              <WordListTableBodyRow key={word.id} word={word} />
-            ))}
-          </TableBody>
-        </Table>
+        <WordListTable words={props.englishWordPrac.words} />
       )}
     </Paper>
   </>

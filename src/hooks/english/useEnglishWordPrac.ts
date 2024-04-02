@@ -2,15 +2,17 @@ import axios from 'axios';
 import exceljs from 'exceljs';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
+import useSWR, { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { convertCellToString } from '@/utils/excelUtils';
 
 export const useEnglishWordPrac = () => {
   const { addMessageObject } = useSnackbar();
-  const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
-  const [words, setWords] = React.useState<IEnglishWordPracWord[]>([]);
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
+  // 選択中のSession
+  const [selectedSessionId, setSelectedSessionId] =
+    React.useState<IEnglishWordPracSession['id']>();
 
   const handleClose = () => {
     setIsOpenDialog(false);
@@ -29,52 +31,75 @@ export const useEnglishWordPrac = () => {
     },
   });
 
+  const fetcher = (key: string) => axios.get(key).then((res) => res.data);
+
   const handleWordsDelete = async () => {
     try {
       await axios.delete('/api/english/word_prac/words');
       addMessageObject('単語の削除が完了しました', 'success');
-      selectedSessionId && fetchWords(selectedSessionId);
+      mutate(
+        (key) =>
+          typeof key === 'string' &&
+          key.startsWith('/api/english/word_prac/words'),
+        undefined,
+        { revalidate: true }
+      );
     } catch (e) {
       addMessageObject(`単語の削除に失敗しました：${e}`, 'error');
     }
   };
 
-  // 選択中のSession
-  const [selectedSessionId, setSelectedSessionId] =
-    React.useState<IEnglishWordPracSession['id']>();
+  const {
+    data,
+    error,
+    isLoading: isLoadingWords,
+  } = useSWR(
+    selectedSessionId
+      ? `/api/english/word_prac/words?session_id=${selectedSessionId}`
+      : null,
+    fetcher,
+    {
+      // 自動fetchの無効化
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
+  const words: IEnglishWordPracWord[] = data?.words ?? [];
 
-  // Word取得の関数
-  const fetchWords = React.useCallback(async (sessionId: number) => {
-    const response = await fetch(
-      `/api/english/word_prac/words?session_id=${sessionId}`,
-      {
-        method: 'GET',
-      }
-    );
-    const { words } = await response.json();
-    setWords(words);
-  }, []);
+  if (error) {
+    // eslint-disable-next-line
+    console.error(error.message);
+  }
 
-  // セッション取得の関数
-  const fetchSessions = React.useCallback(async () => {
-    const response = await fetch('/api/english/word_prac/sessions', {
-      method: 'GET',
-    });
-    const { sessions } = await response.json();
-    setSessions(sessions);
-    sessions.length !== 0 && fetchWords(sessions[0].id);
-    setSelectedSessionId(sessions[0]?.id ?? undefined);
-  }, [fetchWords]);
+  const {
+    data: dataSessions,
+    error: errorSessions,
+    isLoading: isLoadingSessions,
+  } = useSWR('/api/english/word_prac/sessions', fetcher, {
+    // 自動fetchの無効化
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
-  // 起動時に実行
-  React.useEffect(() => {
-    fetchSessions();
-  }, [fetchSessions]);
+  const sessions: IEnglishWordPracSession[] = React.useMemo(
+    () => dataSessions?.sessions ?? [],
+    [dataSessions?.sessions]
+  );
+
+  if (sessions.length !== 0 && !selectedSessionId) {
+    setSelectedSessionId(sessions[0].id);
+  }
+
+  if (errorSessions) {
+    // eslint-disable-next-line
+    console.error(errorSessions);
+  }
 
   // セッションの切り替え
   const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
     setSelectedSessionId(id);
-    fetchWords(id);
   };
 
   const uploadWords = React.useCallback(
@@ -91,7 +116,13 @@ export const useEnglishWordPrac = () => {
         await axios.put('/api/english/word_prac/words', { words });
         addMessageObject('アップロードが完了しました', 'success');
         setIsOpenDialog(false);
-        selectedSessionId && fetchWords(selectedSessionId);
+        mutate(
+          (key) =>
+            typeof key === 'string' &&
+            key.startsWith('/api/english/word_prac/words'),
+          undefined,
+          { revalidate: true }
+        );
       } catch (error) {
         addMessageObject(
           `Wordデータのアップロードに失敗しました：${error}`,
@@ -99,7 +130,7 @@ export const useEnglishWordPrac = () => {
         );
       }
     },
-    [fetchWords, selectedSessionId, addMessageObject]
+    [addMessageObject]
   );
 
   // Excelファイルを処理する関数
@@ -156,9 +187,17 @@ export const useEnglishWordPrac = () => {
      */
     sessions,
     /**
+     * セッションデータLoading中…
+     */
+    isLoadingSessions,
+    /**
      * Wordデータ
      */
     words,
+    /**
+     * WordデータLoading中…
+     */
+    isLoadingWords: isLoadingSessions || isLoadingWords,
     /**
      * ドロップゾーンのオブジェクト
      */

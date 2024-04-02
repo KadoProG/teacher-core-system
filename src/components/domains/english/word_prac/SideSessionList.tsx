@@ -7,6 +7,7 @@ import {
   List,
   ListItemButton,
   ListItemText,
+  Skeleton,
   Typography,
 } from '@mui/material';
 import React from 'react';
@@ -46,9 +47,17 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
       </IconButton>
     </Box>
     <Divider />
-    {props.englishWordPrac.sessions.length === 0 && (
-      <Typography>セッションはありません。</Typography>
+    {props.englishWordPrac.isLoadingSessions && (
+      <Box px={2}>
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((v) => (
+          <Skeleton key={v} height={60} />
+        ))}
+      </Box>
     )}
+    {!props.englishWordPrac.isLoadingSessions &&
+      props.englishWordPrac.sessions.length === 0 && (
+        <Typography>セッションはありません。</Typography>
+      )}
     <nav aria-label="secondary mailbox folders">
       <List>
         {props.englishWordPrac.sessions.map((session) => (
