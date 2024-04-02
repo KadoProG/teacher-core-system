@@ -18,3 +18,9 @@ interface IEnglishWordPracSession {
   created_at: Date;
   updated_at: Date;
 }
+
+interface EnglishWordPracPrintProps {
+  title: string;
+  words: { en_title: string; jp_title: string; type: 'en' | 'jp' }[];
+  isShowAnswer?: boolean;
+}

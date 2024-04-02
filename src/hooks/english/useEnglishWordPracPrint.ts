@@ -1,7 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useReactToPrint } from 'react-to-print';
-import { EnglishWordPracPrintProps } from '@/components/prints/EnglishWordPracPrint';
 import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
 
 /**
