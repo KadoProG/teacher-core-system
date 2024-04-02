@@ -78,14 +78,14 @@ export const useEnglishWordPracSession = () => {
   const processSessionExcelData = async (worksheet: exceljs.Worksheet) => {
     const sessions: { row: number; title: string }[] = [];
 
-    for (let i = 2; i < 1000; i++) {
+    for (let i = 2; i < 101; i++) {
       const row: exceljs.Row = worksheet.getRow(i);
-      const id = row.getCell(1).value as number;
+      const idValue = row.getCell(1).value as string;
       const titleValue = row.getCell(2).value;
 
-      if (id && titleValue) {
+      if (idValue && titleValue) {
         const title = convertCellToString(titleValue);
-        sessions.push({ row: id, title });
+        sessions.push({ row: parseInt(idValue), title });
       }
     }
 
