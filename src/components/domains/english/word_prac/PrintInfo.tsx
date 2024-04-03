@@ -18,7 +18,7 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
     handlePrintButtonClick,
     componentRef,
     sessionTitle,
-    handleSavaButtonClick,
+    handleSaveButtonClick,
   } = useEnglishWordPracPrint(props.englishWordPrac);
 
   return (
@@ -31,7 +31,7 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
           <Button
             variant="outlined"
             color="inherit"
-            onClick={handleSavaButtonClick}
+            onClick={handleSaveButtonClick}
           >
             保存する
           </Button>

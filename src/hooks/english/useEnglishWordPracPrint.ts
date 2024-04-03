@@ -86,7 +86,7 @@ export const useEnglishWordPracPrint = (
     removeAfterPrint: true, // 印刷後に印刷用のiframeを削除する
   });
 
-  const handleSavaButtonClick = async () => {
+  const handleSaveButtonClick = async () => {
     addMessageObject('保存の処理が実行されます', 'success');
   };
 
@@ -106,7 +106,7 @@ export const useEnglishWordPracPrint = (
     /**
      * 保存ボタンクリック時の処理
      */
-    handleSavaButtonClick,
+    handleSaveButtonClick,
     /**
      * 印刷レイアウト
      */
