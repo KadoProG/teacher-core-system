@@ -18,6 +18,7 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
     handlePrintButtonClick,
     componentRef,
     sessionTitle,
+    handleSavaButtonClick,
   } = useEnglishWordPracPrint(props.englishWordPrac);
 
   return (
@@ -26,13 +27,22 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
         <Typography fontWeight="bold" variant="h5">
           印刷する
         </Typography>
-        <Button
-          variant="outlined"
-          color="inherit"
-          onClick={handlePrintButtonClick}
-        >
-          印刷する
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={handleSavaButtonClick}
+          >
+            保存する
+          </Button>
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={handlePrintButtonClick}
+          >
+            すぐ印刷する
+          </Button>
+        </Stack>
       </Box>
       <PrintLayoutContainer componentRef={componentRef}>
         <EnglishWordPracPrint

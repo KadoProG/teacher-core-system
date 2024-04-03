@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useReactToPrint } from 'react-to-print';
+import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
 
 /**
@@ -27,6 +28,8 @@ const pageStyle = `
 export const useEnglishWordPracPrint = (
   englishWordPrac: ReturnType<typeof useEnglishWordPrac>
 ) => {
+  const { addMessageObject } = useSnackbar();
+
   const form = useForm<{
     is_randam_jp_en: boolean;
     is_randam_word: boolean;
@@ -83,6 +86,10 @@ export const useEnglishWordPracPrint = (
     removeAfterPrint: true, // 印刷後に印刷用のiframeを削除する
   });
 
+  const handleSavaButtonClick = async () => {
+    addMessageObject('保存の処理が実行されます', 'success');
+  };
+
   return {
     /**
      * 印刷条件のフォーム
@@ -96,6 +103,10 @@ export const useEnglishWordPracPrint = (
      * 印刷ボタンクリック時の処理
      */
     handlePrintButtonClick,
+    /**
+     * 保存ボタンクリック時の処理
+     */
+    handleSavaButtonClick,
     /**
      * 印刷レイアウト
      */
