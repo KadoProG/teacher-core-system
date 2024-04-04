@@ -41,6 +41,10 @@ export const GET = async (req: NextRequest) => {
 export const POST = async (req: NextRequest) => {
   const { word, words } = await req.json();
   try {
+    if (!word && !words) {
+      throw new Error('I do not know what to do');
+    }
+
     // Wordを作成（単体）
     word && (await wordCreate(word));
 

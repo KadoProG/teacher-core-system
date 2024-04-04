@@ -50,9 +50,9 @@ export const useEnglishWordPracPrint = (
 
   const sessionTitle = `アイプロⅢ　level${session?.id}「${session?.title}」`;
 
-  const wordPracListBefore: EnglishWordPracPrintProps['words'] =
+  const wordPracListBefore: EnglishWordPracPrint['words'] =
     englishWordPrac.words.map((word) => {
-      let type: EnglishWordPracPrintProps['words'][number]['type'] = 'en';
+      let type: EnglishWordPracPrint['words'][number]['type'] = 'en';
       if (form.watch('is_randam_jp_en'))
         type = Math.round(Math.random()) ? 'en' : 'jp';
 

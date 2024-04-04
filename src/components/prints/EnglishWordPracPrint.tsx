@@ -14,9 +14,7 @@ const customCorderColor = '1px solid black';
 /**
  * # 単語テスト
  */
-export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
-  props
-) => (
+export const EnglishWordPracPrint: React.FC<EnglishWordPracPrint> = (props) => (
   <Box
     px={5}
     pt={5}

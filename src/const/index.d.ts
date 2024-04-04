@@ -19,7 +19,7 @@ interface IEnglishWordPracSession {
   updated_at: Date;
 }
 
-interface EnglishWordPracPrintProps {
+interface EnglishWordPracPrint {
   title: string;
   words: { en_title: string; jp_title: string; type: 'en' | 'jp' }[];
   isShowAnswer?: boolean;
