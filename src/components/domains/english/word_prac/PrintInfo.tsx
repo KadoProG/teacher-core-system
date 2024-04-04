@@ -4,11 +4,11 @@ import { FormCheckBox } from '@/components/commons/input/FormCheckBox';
 import { FormTextField } from '@/components/commons/input/FormTextField';
 import { PrintLayoutContainer } from '@/components/commons/PrintLayoutContainer';
 import { EnglishWordPracPrint } from '@/components/prints/EnglishWordPracPrint';
-import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
-import { useEnglishWordPracPrint } from '@/hooks/english/useEnglishWordPracPrint';
+import { useEnglishWordPracPrinting } from '@/hooks/english/useEnglishWordPracPrinting';
+import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
 interface PrintInfoProps {
-  englishWordPrac: ReturnType<typeof useEnglishWordPrac>;
+  englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>;
 }
 
 export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
@@ -19,7 +19,7 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
     componentRef,
     sessionTitle,
     handleSaveButtonClick,
-  } = useEnglishWordPracPrint(props.englishWordPrac);
+  } = useEnglishWordPracPrinting(props.englishWordPrac);
 
   return (
     <Paper component={Box} p={2}>

@@ -11,12 +11,12 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
+import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
 const drawerWidth = 250;
 
 interface SideSessionListProps {
-  englishWordPrac: ReturnType<typeof useEnglishWordPrac>;
+  englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>;
 }
 
 export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
