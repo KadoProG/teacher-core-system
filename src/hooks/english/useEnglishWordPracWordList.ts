@@ -7,7 +7,7 @@ import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { convertCellToString } from '@/utils/excelUtils';
 
-export const useEnglishWordPrac = () => {
+export const useEnglishWordPracWordList = () => {
   const { addMessageObject } = useSnackbar();
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
   // 選択中のSession

@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useReactToPrint } from 'react-to-print';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
-import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
+import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
 /**
  * 印刷時のスタイル設定（印刷仕様に応じてスタイリングを調整します）
@@ -25,8 +25,8 @@ const pageStyle = `
     }
   `;
 
-export const useEnglishWordPracPrint = (
-  englishWordPrac: ReturnType<typeof useEnglishWordPrac>
+export const useEnglishWordPracPrinting = (
+  englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>
 ) => {
   const { addMessageObject } = useSnackbar();
 
@@ -50,9 +50,9 @@ export const useEnglishWordPracPrint = (
 
   const sessionTitle = `アイプロⅢ　level${session?.id}「${session?.title}」`;
 
-  const wordPracListBefore: EnglishWordPracPrint['words'] =
+  const wordPracListBefore: IEnglishWordPracPrint['words'] =
     englishWordPrac.words.map((word) => {
-      let type: EnglishWordPracPrint['words'][number]['type'] = 'en';
+      let type: IEnglishWordPracPrint['words'][number]['type'] = 'en';
       if (form.watch('is_randam_jp_en'))
         type = Math.round(Math.random()) ? 'en' : 'jp';
 

@@ -1,7 +1,7 @@
 interface EnglishWordPracPrintInput {
   id?: number;
-  title?: EnglishWordPracPrint['title'];
-  words?: EnglishWordPracPrint['words'];
+  title?: IEnglishWordPracPrint['title'];
+  words?: IEnglishWordPracPrint['words'];
 }
 
 /**

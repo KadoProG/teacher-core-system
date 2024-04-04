@@ -2,10 +2,10 @@ import { Box, Button, Paper, Skeleton, Typography } from '@mui/material';
 import React from 'react';
 import { ImportExcelDialog } from '@/components/commons/ImportExcelDialog';
 import { WordListTable } from '@/components/domains/english/word_prac/WordListTable';
-import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
+import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
 interface WordListProps {
-  englishWordPrac: ReturnType<typeof useEnglishWordPrac>;
+  englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>;
 }
 
 export const WordList: React.FC<WordListProps> = (props) => (

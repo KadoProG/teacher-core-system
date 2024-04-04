@@ -5,10 +5,10 @@ import React from 'react';
 import { PrintInfo } from '@/components/domains/english/word_prac/PrintInfo';
 import { SideSessionList } from '@/components/domains/english/word_prac/SideSessionList';
 import { WordList } from '@/components/domains/english/word_prac/WordList';
-import { useEnglishWordPrac } from '@/hooks/english/useEnglishWordPrac';
+import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
 export const EnglishWordPracPage: React.FC = () => {
-  const englishWordPrac = useEnglishWordPrac();
+  const englishWordPrac = useEnglishWordPracWordList();
   return (
     <Box display="flex">
       <SideSessionList englishWordPrac={englishWordPrac} />
