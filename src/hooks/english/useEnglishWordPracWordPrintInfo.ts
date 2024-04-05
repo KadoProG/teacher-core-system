@@ -26,7 +26,7 @@ export const useEnglishWordPracWordPrintInfo = (
   const session = englishWordPrac.sessions.find(
     (session) => englishWordPrac.selectedSessionId === session.id
   );
-  const sessionTitle = `アイプロⅢ　level${session?.row}「${session?.title}」`;
+  const sessionTitle = `アイプロⅢ　level${String(session?.row).padStart(2, '0')}「${session?.title}」`;
 
   // 単語データの設定（form条件に準ずる）
   const wordPracListBefore: IEnglishWordPracPrint['words'] =

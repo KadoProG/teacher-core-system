@@ -31,9 +31,6 @@ export const useEnglishWordPracPrintList = ({
   const [selectedPrint, setSelectedPrint] =
     React.useState<IEnglishWordPracPrint>();
 
-  if (selectedPrint) {
-  }
-
   /**
    * 印刷を実行
    */
@@ -42,7 +39,7 @@ export const useEnglishWordPracPrintList = ({
     if (!newSelectedPrint) return;
     setSelectedPrint(newSelectedPrint);
     setTimeout(() => {
-      handlePrintProp();
+      handlePrintProp(); // 本来の印刷関数を呼び出す（setTimeoutにすることで印刷レイアウト完了を待つ）
     });
   };
 
