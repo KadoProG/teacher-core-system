@@ -3,7 +3,14 @@ import React from 'react';
 import useSWR from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 
-export const useEnglishWordPracPrintList = () => {
+export const useEnglishWordPracPrintList = ({
+  handlePrintProp,
+}: {
+  /**
+   * 印刷する関数（本hookがhandlePrintを使用するため、呼び出し用）
+   */
+  handlePrintProp: () => void;
+}) => {
   const { addMessageObject } = useSnackbar();
 
   const fetcher = (key: string) => axios.get(key).then((res) => res.data);
@@ -34,6 +41,9 @@ export const useEnglishWordPracPrintList = () => {
     const newSelectedPrint = prints.find((print) => print.id === id);
     if (!newSelectedPrint) return;
     setSelectedPrint(newSelectedPrint);
+    setTimeout(() => {
+      handlePrintProp();
+    });
   };
 
   /**
