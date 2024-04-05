@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { formatDate } from '@/utils/formatDate';
 
 const customCorderColor = '1px solid black';
 
@@ -227,7 +228,9 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrint> = (props) => (
           ))}
         </TableBody>
       </Table>
-      <Typography color="initial">☆2024/03/23実施</Typography>
+      <Typography color="initial">
+        ☆{formatDate(props.print.created_at)}実施
+      </Typography>
     </Box>
   </Box>
 );
