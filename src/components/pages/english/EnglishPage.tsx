@@ -6,45 +6,43 @@ import { PrintLayoutPreview } from '@/components/commons/PrintLayoutPreview';
 import { EnglishWordPracDailyReportPrint } from '@/components/prints/EnglishWordPracDailyReportPrint';
 import { EnglishWordPracPrint } from '@/components/prints/EnglishWordPracPrint';
 
-const words: { en_title: string; jp_title: string; type: 'en' | 'jp' }[] = [
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
-  { en_title: 'Internal Server Error', jp_title: '内部エラー', type: 'en' },
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
-  { en_title: 'variable', jp_title: '変数', type: 'en' },
-  { en_title: 'variable', jp_title: '変数', type: 'jp' },
-  { en_title: 'Australia/Australian', jp_title: '変数', type: 'jp' },
-  {
-    en_title: 'Australia / Australian',
-    jp_title: '～によって・～のそばに・～までに・～によって',
-    type: 'en',
-  },
-];
+const print: IEnglishWordPracPrint = {
+  id: 1,
+  title: 'アイプロ３　Level21「中２レベルの基本動詞①」',
+  words: [
+    { en_title: 'variable', jp_title: '変数', type: 'en' },
+    { en_title: 'Internal Server Error', jp_title: '内部エラー', type: 'en' },
+    { en_title: 'variable', jp_title: '変数', type: 'en' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'variable', jp_title: '変数', type: 'en' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'variable', jp_title: '変数', type: 'en' },
+    { en_title: 'variable', jp_title: '変数', type: 'en' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'variable', jp_title: '変数', type: 'en' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'variable', jp_title: '変数', type: 'en' },
+    { en_title: 'variable', jp_title: '変数', type: 'en' },
+    { en_title: 'variable', jp_title: '変数', type: 'jp' },
+    { en_title: 'Australia/Australian', jp_title: '変数', type: 'jp' },
+    {
+      en_title: 'Australia / Australian',
+      jp_title: '～によって・～のそばに・～までに・～によって',
+      type: 'en',
+    },
+  ],
+  isShowAnswer: true,
+};
 
 const printList = [
   {
     id: 1,
     title: '単語テスト',
-    component: (
-      <EnglishWordPracPrint
-        id={1}
-        title="アイプロ３　Level21「中２レベルの基本動詞①」"
-        words={words}
-        isShowAnswer={true}
-      />
-    ),
+    component: <EnglishWordPracPrint print={print} />,
   },
   {
     id: 2,
