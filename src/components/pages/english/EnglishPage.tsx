@@ -39,6 +39,7 @@ const printList = [
     title: '単語テスト',
     component: (
       <EnglishWordPracPrint
+        id={1}
         title="アイプロ３　Level21「中２レベルの基本動詞①」"
         words={words}
         isShowAnswer={true}

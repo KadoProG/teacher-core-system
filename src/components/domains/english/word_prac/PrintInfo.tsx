@@ -46,6 +46,7 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
       </Box>
       <PrintLayoutContainer componentRef={componentRef}>
         <EnglishWordPracPrint
+          id={1}
           title={sessionTitle}
           words={wordPracList}
           isShowAnswer={true}
