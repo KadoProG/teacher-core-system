@@ -4,22 +4,20 @@ import { FormCheckBox } from '@/components/commons/input/FormCheckBox';
 import { FormTextField } from '@/components/commons/input/FormTextField';
 import { PrintLayoutContainer } from '@/components/commons/PrintLayoutContainer';
 import { EnglishWordPracPrint } from '@/components/prints/EnglishWordPracPrint';
-import { useEnglishWordPracPrinting } from '@/hooks/english/useEnglishWordPracPrinting';
+import { usePrinting } from '@/hooks/commons/usePrinting';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
+import { useEnglishWordPracWordPrintInfo } from '@/hooks/english/useEnglishWordPracWordPrintInfo';
 
 interface PrintInfoProps {
   englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>;
 }
 
-export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
-  const {
-    form,
-    wordPracList,
-    handlePrintButtonClick,
-    componentRef,
-    sessionTitle,
-    handleSaveButtonClick,
-  } = useEnglishWordPracPrinting(props.englishWordPrac);
+export const WordPrintInfo: React.FC<PrintInfoProps> = (props) => {
+  const { form, print, handleSave } = useEnglishWordPracWordPrintInfo(
+    props.englishWordPrac
+  );
+  const componentRef = React.useRef<HTMLDivElement>(null);
+  const { handlePrint } = usePrinting({ componentRef });
 
   return (
     <Paper component={Box} p={2}>
@@ -28,29 +26,16 @@ export const PrintInfo: React.FC<PrintInfoProps> = (props) => {
           印刷する
         </Typography>
         <Stack direction="row" spacing={1}>
-          <Button
-            variant="outlined"
-            color="inherit"
-            onClick={handleSaveButtonClick}
-          >
+          <Button variant="outlined" color="inherit" onClick={handleSave}>
             保存する
           </Button>
-          <Button
-            variant="outlined"
-            color="inherit"
-            onClick={handlePrintButtonClick}
-          >
+          <Button variant="outlined" color="inherit" onClick={handlePrint}>
             すぐ印刷する
           </Button>
         </Stack>
       </Box>
       <PrintLayoutContainer componentRef={componentRef}>
-        <EnglishWordPracPrint
-          id={1}
-          title={sessionTitle}
-          words={wordPracList}
-          isShowAnswer={true}
-        />
+        <EnglishWordPracPrint print={print} />
       </PrintLayoutContainer>
       <Box p={2} component={Stack} spacing={2}>
         <FormTextField

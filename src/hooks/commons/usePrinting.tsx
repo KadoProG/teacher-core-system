@@ -24,27 +24,27 @@ const pageStyle = `
 
 /**
  * 印刷を行うhook関数
- * @param printingComponentRef 実際に印刷するref要素
+ * @param componentRef 実際に印刷するref要素
  */
 export const usePrinting = ({
-  printingComponentRef,
+  componentRef,
 }: {
-  printingComponentRef: React.RefObject<HTMLDivElement>;
+  componentRef: React.RefObject<HTMLDivElement>;
 }) => {
   /**
    * 印刷対象のコンポーネントを設定します
    */
   const reactToPrintContent = React.useCallback(() => {
-    if (!printingComponentRef.current) return null;
-    return printingComponentRef.current;
-  }, [printingComponentRef]);
+    if (!componentRef.current) return null;
+    return componentRef.current;
+  }, [componentRef]);
 
   // 印刷プレビューを発火する関数
-  const handlePrintingButtonClick = useReactToPrint({
+  const handlePrint = useReactToPrint({
     pageStyle, // 印刷のスタイリングを指定
     content: reactToPrintContent, // 印刷エリアを指定
     removeAfterPrint: true, // 印刷後に印刷用のiframeを削除する
   });
 
-  return { handlePrintingButtonClick };
+  return { handlePrint };
 };

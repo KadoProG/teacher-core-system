@@ -11,12 +11,14 @@ import React from 'react';
 
 const customCorderColor = '1px solid black';
 
+interface EnglishWordPracPrint {
+  print: IEnglishWordPracPrint;
+}
+
 /**
  * # 単語テスト
  */
-export const EnglishWordPracPrint: React.FC<IEnglishWordPracPrint> = (
-  props
-) => (
+export const EnglishWordPracPrint: React.FC<EnglishWordPracPrint> = (props) => (
   <Box
     px={5}
     pt={5}
@@ -42,9 +44,9 @@ export const EnglishWordPracPrint: React.FC<IEnglishWordPracPrint> = (
         lineHeight="54px"
         border={customCorderColor}
       >
-        {props.title}
+        {props.print.title}
         <Typography variant="body2" component="span">
-          （{props.words.length}問）
+          （{props.print.words.length}問）
         </Typography>
       </Typography>
       <Box
@@ -57,7 +59,7 @@ export const EnglishWordPracPrint: React.FC<IEnglishWordPracPrint> = (
         <Typography variant="body2" position="absolute" color="initial">
           名前
         </Typography>
-        {props.isShowAnswer && (
+        {props.print.isShowAnswer && (
           <Typography
             color="red"
             pl={4}
@@ -119,7 +121,7 @@ export const EnglishWordPracPrint: React.FC<IEnglishWordPracPrint> = (
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.words.map((v, index) => (
+          {props.print.words.map((v, index) => (
             <TableRow
               key={index}
               sx={{
@@ -161,18 +163,18 @@ export const EnglishWordPracPrint: React.FC<IEnglishWordPracPrint> = (
                     </Typography>
                   )}
 
-                  {(v.type !== 'en' || props.isShowAnswer) && (
+                  {(v.type !== 'en' || props.print.isShowAnswer) && (
                     <Typography
                       variant="h6"
                       component="p"
-                      pl={props.isShowAnswer && v.type === 'en' ? 3 : 0}
+                      pl={props.print.isShowAnswer && v.type === 'en' ? 3 : 0}
                       color={
-                        props.isShowAnswer && v.type === 'en'
+                        props.print.isShowAnswer && v.type === 'en'
                           ? 'red'
                           : 'initial'
                       }
                       fontWeight={
-                        props.isShowAnswer && v.type === 'en'
+                        props.print.isShowAnswer && v.type === 'en'
                           ? 'bold'
                           : 'initial'
                       }
@@ -200,18 +202,18 @@ export const EnglishWordPracPrint: React.FC<IEnglishWordPracPrint> = (
                       ({index + 1})
                     </Typography>
                   )}
-                  {(v.type !== 'jp' || props.isShowAnswer) && (
+                  {(v.type !== 'jp' || props.print.isShowAnswer) && (
                     <Typography
                       variant="h6"
                       component="p"
-                      pl={props.isShowAnswer && v.type === 'jp' ? 3 : 0}
+                      pl={props.print.isShowAnswer && v.type === 'jp' ? 3 : 0}
                       color={
-                        props.isShowAnswer && v.type === 'jp'
+                        props.print.isShowAnswer && v.type === 'jp'
                           ? 'red'
                           : 'initial'
                       }
                       fontWeight={
-                        props.isShowAnswer && v.type === 'jp'
+                        props.print.isShowAnswer && v.type === 'jp'
                           ? 'bold'
                           : 'initial'
                       }

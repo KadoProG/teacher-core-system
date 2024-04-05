@@ -62,7 +62,9 @@ const createPrintWords = async (
       await prismaIncludeTransaction.englishWordPracPrintWord.create({
         data: {
           print_id,
-          ...word,
+          jp_title: word.jp_title,
+          en_title: word.en_title,
+          type: word.type,
         },
       });
     })
