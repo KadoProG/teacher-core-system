@@ -6,10 +6,13 @@ import { formatDate } from '@/utils/formatDate';
 
 interface PrintListTableRowProps {
   print: IEnglishWordPracPrint;
+  handlePrint: (id: number) => void;
+  handleDelete: (id: number) => void;
 }
 
 export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
   const [isSelected, setIsSelected] = React.useState<boolean>(false);
+
   return (
     <Box key={props.print.title + props.print.id}>
       <Box key={props.print.title} display="flex" alignItems="center">
@@ -31,10 +34,10 @@ export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
           <Typography flex={1}>{props.print.title}</Typography>
         </Box>
         <Box>
-          <IconButton>
+          <IconButton onClick={() => props.handlePrint(props.print.id)}>
             <PrintIcon />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={() => props.handleDelete(props.print.id)}>
             <DeleteIcon />
           </IconButton>
         </Box>

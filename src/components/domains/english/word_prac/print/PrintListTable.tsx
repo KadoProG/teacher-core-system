@@ -32,7 +32,12 @@ export const PrintListTable: React.FC<PrintListTableProps> = (props) => {
         <Divider />
       </Box>
       {props.printHook.prints.map((print, index) => (
-        <PrintListTableRow print={print} key={print.id + index} />
+        <PrintListTableRow
+          print={print}
+          handlePrint={props.printHook.handlePrint}
+          handleDelete={props.printHook.handleDelete}
+          key={print.id + index}
+        />
       ))}
     </Box>
   );

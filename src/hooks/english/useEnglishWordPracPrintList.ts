@@ -1,7 +1,11 @@
 import axios from 'axios';
+import React from 'react';
 import useSWR from 'swr';
+import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 
 export const useEnglishWordPracPrintList = () => {
+  const { addMessageObject } = useSnackbar();
+
   const fetcher = (key: string) => axios.get(key).then((res) => res.data);
 
   const { data, error, isLoading } = useSWR(
@@ -17,9 +21,36 @@ export const useEnglishWordPracPrintList = () => {
 
   const prints: IEnglishWordPracPrint[] = data?.prints ?? [];
 
+  const [selectedPrint, setSelectedPrint] =
+    React.useState<IEnglishWordPracPrint>();
+
+  if (selectedPrint) {
+  }
+
+  /**
+   * 印刷を実行
+   */
+  const handlePrint = (id: number) => {
+    const newSelectedPrint = prints.find((print) => print.id === id);
+    if (!newSelectedPrint) return;
+    setSelectedPrint(newSelectedPrint);
+  };
+
+  /**
+   * 印刷アーカイブ（単体）削除
+   */
+  const handleDelete = (id: number) => {
+    axios
+      .delete(`/api/english/word_prac/prints/${id}`)
+      .then(() => addMessageObject('削除が完了しました。', 'success'))
+      .catch((e) =>
+        addMessageObject(`削除時にエラーが発生しました${e}`, 'error')
+      );
+  };
+
   if (error) {
     // eslint-disable-next-line
     console.error(error.message);
   }
-  return { prints, isLoading };
+  return { prints, isLoading, selectedPrint, handlePrint, handleDelete };
 };
