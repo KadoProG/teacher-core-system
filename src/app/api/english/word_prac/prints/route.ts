@@ -2,11 +2,16 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { NextRequest, NextResponse } from 'next/server';
 import { printCreate } from '@/components/domains/api/english/word_prac/prints/create';
+import { checkAuth } from '@/utils/api/checkAuth';
 
 /**
  * 印刷アーカイブデータの取得
  */
 export const GET = async () => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
   try {
     const prisma = new PrismaClient();
 
@@ -27,6 +32,10 @@ export const GET = async () => {
  * 印刷アーカイブデータの追加
  */
 export const POST = async (req: NextRequest) => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
   const { print } = await req.json();
 
   try {

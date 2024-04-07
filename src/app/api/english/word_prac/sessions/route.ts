@@ -7,8 +7,13 @@ import {
 } from '@/components/domains/api/english/word_prac/sessions/create';
 import { sessionsDelete } from '@/components/domains/api/english/word_prac/sessions/delete';
 import { sessionsOverwrite } from '@/components/domains/api/english/word_prac/sessions/update';
+import { checkAuth } from '@/utils/api/checkAuth';
 
 export const GET = async () => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
   try {
     const prisma = new PrismaClient();
     const sessions = await prisma.englishWordPracSession.findMany();
@@ -22,6 +27,10 @@ export const GET = async () => {
  * セッションの追加
  */
 export const POST = async (req: NextRequest) => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
   const { session, sessions } = await req.json();
   try {
     // セッションを作成（単体）
@@ -48,6 +57,10 @@ export const POST = async (req: NextRequest) => {
  * セッションの上書き
  */
 export const PUT = async (req: NextRequest) => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
   try {
     const { sessions } = await req.json();
 
@@ -76,6 +89,10 @@ export const PUT = async (req: NextRequest) => {
 };
 
 export const DELETE = async () => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
   try {
     await sessionsDelete();
     return NextResponse.json({});

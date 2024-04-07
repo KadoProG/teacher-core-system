@@ -7,11 +7,17 @@ import {
 } from '@/components/domains/api/english/word_prac/words/create';
 import { wordsDelete } from '@/components/domains/api/english/word_prac/words/delete';
 import { wordsOverwrite } from '@/components/domains/api/english/word_prac/words/update';
+import { checkAuth } from '@/utils/api/checkAuth';
 
 /**
  * EnglishWordデータの取得
  */
 export const GET = async (req: NextRequest) => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
+
   const { searchParams } = new URL(req.url);
   const session_id = searchParams.get('session_id');
 
@@ -39,6 +45,11 @@ export const GET = async (req: NextRequest) => {
  * EnglishWordの追加
  */
 export const POST = async (req: NextRequest) => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
+
   const { word, words } = await req.json();
   try {
     if (!word && !words) {
@@ -73,6 +84,10 @@ export const POST = async (req: NextRequest) => {
  * EnglishWordの上書き
  */
 export const PUT = async (req: NextRequest) => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
   try {
     const { words } = await req.json();
 
@@ -98,6 +113,10 @@ export const PUT = async (req: NextRequest) => {
 };
 
 export const DELETE = async () => {
+  const isAuthenticated = await checkAuth();
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
+  }
   try {
     await wordsDelete();
     return NextResponse.json({});
