@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { EnglishLayoutToolbar } from '@/components/commons/layout/englishLayout';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
 const drawerWidth = 250;
@@ -33,6 +34,7 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
     variant="persistent"
     anchor="left"
   >
+    <EnglishLayoutToolbar />
     <Box
       display="flex"
       justifyContent="space-between"

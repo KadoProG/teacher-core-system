@@ -57,7 +57,8 @@ export const SessionList: React.FC = () => {
         </Box>
       </Box>
       <Paper component={Box} p={2}>
-        {englishWordPracSession.sessions.length === 0 ? (
+        {!englishWordPracSession.sessions ||
+        englishWordPracSession.sessions.length === 0 ? (
           <Typography>セッションはありません</Typography>
         ) : (
           <Table>
