@@ -1,16 +1,31 @@
 {
-  "extends": ["prettier", "next/core-web-vitals", "plugin:import/typescript"],
+  "extends": [
+    "prettier",
+    "eslint:recommended",
+    "next/core-web-vitals",
+    "plugin:import/typescript"
+  ],
   "env": {
     "browser": true,
     "jquery": true
   },
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "etc",
+    "node",
+    "material-ui",
+    "mui-unused-classes"
+  ],
   "rules": {
     "no-console": "warn",
     "no-extra-semi": "warn",
     // TypeScriptは@typescriptで実行する
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["warn"],
+    // 全角空白の禁止 これは一旦OFF
+    "no-irregular-whitespace": ["off"],
     "no-undef": "off",
     "react/prop-types": "off",
     "quotes": ["warn", "single"],
@@ -34,6 +49,7 @@
     "no-fallthrough": "error",
     // 変数に{""}ではなく""で入力させる
     "react/jsx-curly-brace-presence": ["error"],
+    "import/prefer-default-export": ["off"],
     "import/order": [
       "warn",
       {

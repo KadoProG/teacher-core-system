@@ -16,21 +16,16 @@ export const printCreate = async (
     return NextResponse.json({ errors: validatedErrors }, { status: 400 });
   }
 
-  try {
-    if (prismaIncludeTransaction) {
-      const prisma = prismaIncludeTransaction;
+  if (prismaIncludeTransaction) {
+    const prisma = prismaIncludeTransaction;
+    const printId = await createPrintRow(print, prisma);
+    await createPrintWords(printId, print.words, prisma);
+  } else {
+    const prisma = new PrismaClient();
+    prisma.$transaction(async (prisma) => {
       const printId = await createPrintRow(print, prisma);
       await createPrintWords(printId, print.words, prisma);
-    } else {
-      const prisma = new PrismaClient();
-      prisma.$transaction(async (prisma) => {
-        const printId = await createPrintRow(print, prisma);
-        await createPrintWords(printId, print.words, prisma);
-      });
-    }
-  } catch (e) {
-    // 例外が発生した場合はログに記録するなど適切な処理を行う
-    throw e; // エラーを再度スローして呼び出し元でキャッチする
+    });
   }
 };
 

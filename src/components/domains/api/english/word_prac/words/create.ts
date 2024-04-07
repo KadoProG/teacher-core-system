@@ -45,19 +45,14 @@ export const wordsCreate = async (
     throw new Error(validatedErrors.join(', ')); // エラーをスローして呼び出し元でキャッチする
   }
 
-  try {
-    if (prismaIncludeTransaction) {
-      const prisma = prismaIncludeTransaction;
+  if (prismaIncludeTransaction) {
+    const prisma = prismaIncludeTransaction;
+    await createMany(words, prisma);
+  } else {
+    const prisma = new PrismaClient();
+    await prisma.$transaction(async (prisma) => {
       await createMany(words, prisma);
-    } else {
-      const prisma = new PrismaClient();
-      await prisma.$transaction(async (prisma) => {
-        await createMany(words, prisma);
-      });
-    }
-  } catch (error) {
-    // 例外が発生した場合はログに記録するなど適切な処理を行う
-    throw error; // エラーを再度スローして呼び出し元でキャッチする
+    });
   }
 };
 

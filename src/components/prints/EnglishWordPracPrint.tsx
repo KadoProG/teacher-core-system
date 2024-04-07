@@ -12,14 +12,16 @@ import { formatDate } from '@/utils/formatDate';
 
 const customCorderColor = '1px solid black';
 
-interface EnglishWordPracPrint {
+interface EnglishWordPracPrintProps {
   print: IEnglishWordPracPrint;
 }
 
 /**
  * # 単語テスト
  */
-export const EnglishWordPracPrint: React.FC<EnglishWordPracPrint> = (props) => (
+export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
+  props
+) => (
   <Box
     px={5}
     pt={5}
