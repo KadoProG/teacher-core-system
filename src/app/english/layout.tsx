@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { EnglishLayout } from '@/components/commons/layout/englishLayout';
+import { EnglishLayout } from '@/components/commons/layout/EnglishLayout';
 
 export const metadata: Metadata = {
   title: '塾基幹システム',

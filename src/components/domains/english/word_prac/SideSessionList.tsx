@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import { EnglishLayoutToolbar } from '@/components/commons/layout/englishLayout';
+import { EnglishLayoutToolbar } from '@/components/commons/layout/EnglishLayoutToolbar';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
 const drawerWidth = 250;
