@@ -55,14 +55,18 @@ export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
               <Typography
                 flex={1}
                 variant="body2"
-                color={word.type === 'en' ? 'red' : 'initial'}
+                color={(theme) =>
+                  word.type === 'en' ? 'red' : theme.palette.text.primary
+                }
               >
                 {word.en_title}
               </Typography>
               <Typography
                 flex={2}
                 variant="body2"
-                color={word.type === 'jp' ? 'red' : 'initial'}
+                color={(theme) =>
+                  word.type === 'jp' ? 'red' : theme.palette.text.primary
+                }
               >
                 {word.jp_title}
               </Typography>

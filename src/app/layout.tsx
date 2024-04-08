@@ -10,6 +10,16 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: '塾基幹システム',
   description: '塾基幹システムです。',
+  keywords: 'Webサイト,塾,印刷',
+  openGraph: {
+    type: 'website',
+    images: ['/icatch.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@KadoUniversity',
+    images: ['/icatch.png'],
+  },
 };
 
 const Layout = ({
@@ -18,6 +28,11 @@ const Layout = ({
   children: React.ReactNode;
 }>) => (
   <html lang="en">
+    <head>
+      <link rel="manifest" href="/manifest.json" />
+      <link rel="apple-touch-icon" href="/icon.png" />
+      <meta name="theme-color" content="#b8e986" />
+    </head>
     <body className={inter.className}>
       <NextAuthProvider>
         <ThemeRegistry>
