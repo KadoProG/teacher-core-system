@@ -8,6 +8,7 @@ import '@/app/style.scss';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.BASE_URL as string),
   title: '塾基幹システム',
   description: '塾基幹システムです。',
   keywords: 'Webサイト,塾,印刷',
