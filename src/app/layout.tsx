@@ -1,11 +1,19 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Noto_Sans_JP } from 'next/font/google';
 import NextAuthProvider from '@/components/commons/auth/NextAuth';
 import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
 import { ThemeRegistry } from '@/components/theme/themeRegistry';
 import '@/app/style.scss';
 
-const inter = Inter({ subsets: ['latin'] });
+const notoSansJP = Noto_Sans_JP({
+  subsets: ['latin'],
+  variable: '--font-noto-sans-jp',
+  // weight: 'variable', // default なので不要。バリアブルフォントでなければ必要
+  // display: 'swap', // default なので不要
+  // preload: true, // default なので不要
+  // adjustFontFallback: true, // next/font/google で default なので不要
+  // fallback: ['system-ui', 'arial'], // local font fallback なので不要
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.BASE_URL as string),
@@ -34,7 +42,7 @@ const Layout = ({
       <link rel="apple-touch-icon" href="/icon.png" />
       <meta name="theme-color" content="#b8e986" />
     </head>
-    <body className={inter.className}>
+    <body className={notoSansJP.className}>
       <NextAuthProvider>
         <ThemeRegistry>
           <SnackbarProvider>{children}</SnackbarProvider>

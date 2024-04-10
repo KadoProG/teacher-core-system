@@ -12,6 +12,10 @@ import { formatDate } from '@/utils/formatDate';
 
 const customCorderColor = '1px solid black';
 
+const JpFont = {
+  fontFamily: 'ipaexg',
+};
+
 interface EnglishWordPracPrintProps {
   print: IEnglishWordPracPrint;
 }
@@ -35,9 +39,7 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
       display="flex"
       alignItems="center"
       p={0.3}
-      sx={{
-        fontFamily: '"メイリオ", "Meiryo", sans-serif',
-      }}
+      sx={JpFont}
     >
       <Typography
         color="initial"
@@ -75,14 +77,7 @@ export const EnglishWordPracPrint: React.FC<EnglishWordPracPrintProps> = (
         )}
       </Box>
     </Box>
-    <Box
-      sx={{
-        '& p': {
-          fontFamily:
-            '"游明朝", YuMincho, "Hiragino Mincho ProN W3", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", "ＭＳ 明朝", serif',
-        },
-      }}
-    >
+    <Box sx={JpFont}>
       <Typography lineHeight={1.5} color="initial">
         （問） 次の空欄を埋めよ。
       </Typography>

@@ -1,8 +1,10 @@
 'use client';
 import { Box, Button } from '@mui/material';
+import jsPDF from 'jspdf';
 import React from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { PrintLayoutContainer } from '@/components/commons/PrintLayoutContainer';
+import './ipaexg-normal';
 
 /**
  * 印刷時のスタイル設定（印刷仕様に応じてスタイリングを調整します）
@@ -37,7 +39,7 @@ export const PrintLayoutPreview: React.FC<PrintLayoutPreviewProps> = (
   props
 ) => {
   const componentRef = React.useRef<HTMLDivElement>(null);
-
+  const pdfRef = React.useRef(new jsPDF());
   /**
    * 印刷対象のコンポーネントを設定します
    */
@@ -46,11 +48,26 @@ export const PrintLayoutPreview: React.FC<PrintLayoutPreviewProps> = (
     return componentRef.current;
   }, []);
 
-  const handlePrint = useReactToPrint({
-    pageStyle, // 印刷のスタイリングを指定
-    content: reactToPrintContent, // 印刷エリアを指定
-    removeAfterPrint: true, // 印刷後に印刷用のiframeを削除する
-  });
+  const handlePrint = () => {
+    if (!componentRef.current) return;
+    pdfRef.current.html(componentRef.current, {
+      callback(doc) {
+        const fileName = 'test.pdf';
+        doc.setFont('ipaexg', 'normal'); // ここもuseEffect使用しなくても大丈夫でした。
+        doc.setFontSize(12);
+        doc.save(fileName);
+      },
+      x: 15,
+      y: 15,
+      width: 170,
+      windowWidth: 775,
+    });
+  };
+  // const handlePrint = useReactToPrint({
+  //   pageStyle, // 印刷のスタイリングを指定
+  //   content: reactToPrintContent, // 印刷エリアを指定
+  //   removeAfterPrint: true, // 印刷後に印刷用のiframeを削除する
+  // });
 
   return (
     <Box>

@@ -24,6 +24,12 @@ export const ThemeRegistry = (props: { children: React.ReactNode }) => {
     []
   );
 
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   React.useEffect(() => {
     setMode(prefersInit);
   }, [prefersInit]);
@@ -32,6 +38,8 @@ export const ThemeRegistry = (props: { children: React.ReactNode }) => {
     () => (mode === 'light' ? lightTheme : darkTheme),
     [mode]
   );
+
+  if (!mounted) return null;
 
   return (
     <ColorModeContext.Provider value={colorMode}>
