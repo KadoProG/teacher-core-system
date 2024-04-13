@@ -23,7 +23,7 @@ export const useEnglishWordPracSession = () => {
    */
   const handleSessionsDelete = async () => {
     try {
-      await axios.delete('/api/english/word_prac/sessions');
+      await axios.delete('/api/v2/sessions');
       addMessageObject('セッションの削除が完了しました', 'success');
       fetchSessions();
     } catch (e) {
@@ -60,7 +60,7 @@ export const useEnglishWordPracSession = () => {
   };
 
   const fetchSessions = async () => {
-    const response = await fetch('/api/english/word_prac/sessions', {
+    const response = await fetch('/api/v2/sessions', {
       method: 'GET',
     });
     const { sessions } = await response.json();
@@ -73,7 +73,7 @@ export const useEnglishWordPracSession = () => {
 
   const uploadSessions = async (sessions: { row: number; title: string }[]) => {
     try {
-      await axios.put('/api/english/word_prac/sessions', { sessions });
+      await axios.put('/api/v2/sessions', { sessions });
       setIsOpenDialog(false);
       addMessageObject(
         'セッションデータのアップロードが完了しました。',

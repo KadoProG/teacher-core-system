@@ -1,6 +1,6 @@
 interface IEnglishWordPracWord {
-  id: number;
-  session_id: number;
+  id?: string;
+  session_id: string;
   row: number;
   jp_title: string;
   en_title: string;
@@ -11,7 +11,7 @@ interface IEnglishWordPracWord {
 }
 
 interface IEnglishWordPracSession {
-  id: number;
+  id: string;
   title: string;
   row: number;
   memo: string;

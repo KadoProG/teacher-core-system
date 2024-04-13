@@ -35,12 +35,10 @@ export const useEnglishWordPracWordList = () => {
 
   const handleWordsDelete = async () => {
     try {
-      await axios.delete('/api/english/word_prac/words');
+      await axios.delete('/api/v2/words');
       addMessageObject('単語の削除が完了しました', 'success');
       mutate(
-        (key) =>
-          typeof key === 'string' &&
-          key.startsWith('/api/english/word_prac/words'),
+        (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
         undefined,
         { revalidate: true }
       );
@@ -54,9 +52,7 @@ export const useEnglishWordPracWordList = () => {
     error,
     isLoading: isLoadingWords,
   } = useSWR(
-    selectedSessionId
-      ? `/api/english/word_prac/words?session_id=${selectedSessionId}`
-      : null,
+    selectedSessionId ? `/api/v2/words?session_id=${selectedSessionId}` : null,
     fetcher,
     {
       // 自動fetchの無効化
@@ -76,7 +72,7 @@ export const useEnglishWordPracWordList = () => {
     data: dataSessions,
     error: errorSessions,
     isLoading: isLoadingSessions,
-  } = useSWR('/api/english/word_prac/sessions', fetcher, {
+  } = useSWR('/api/v2/sessions', fetcher, {
     // 自動fetchの無効化
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -106,20 +102,18 @@ export const useEnglishWordPracWordList = () => {
     async (
       words: {
         row: number;
-        session_id: number;
+        session_id: string;
         en_title: string;
         jp_title: string;
         study_year: string;
       }[]
     ) => {
       try {
-        await axios.put('/api/english/word_prac/words', { words });
+        await axios.put('/api/v2/words', { words });
         addMessageObject('アップロードが完了しました', 'success');
         setIsOpenDialog(false);
         mutate(
-          (key) =>
-            typeof key === 'string' &&
-            key.startsWith('/api/english/word_prac/words'),
+          (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
           undefined,
           { revalidate: true }
         );
@@ -138,7 +132,7 @@ export const useEnglishWordPracWordList = () => {
     async (worksheet: exceljs.Worksheet) => {
       const words: {
         row: number;
-        session_id: number;
+        session_id: string;
         en_title: string;
         jp_title: string;
         study_year: string;

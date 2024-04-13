@@ -5,7 +5,7 @@ import exceljs from 'exceljs';
  * Excelファイルを構築してダウンロード
  */
 export const exportExcelData = async () => {
-  const result = await axios.get('/api/english/word_prac/sessions');
+  const result = await axios.get('/api/v2/sessions');
   const sessions: IEnglishWordPracSession[] = await result.data.sessions;
 
   // Workbookの作成
@@ -71,7 +71,7 @@ const makeExcelSheetWordMaster = async (
   const worksheet = workbook.getWorksheet('単語マスタ');
   if (!worksheet) throw new Error('作成失敗');
 
-  const result = await axios.get('/api/english/word_prac/words');
+  const result = await axios.get('/api/v2/words');
   const words: IEnglishWordPracWord[] = await result.data.words;
 
   // 列を定義
