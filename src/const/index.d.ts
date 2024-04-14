@@ -20,7 +20,7 @@ interface IEnglishWordPracSession {
 }
 
 interface IEnglishWordPracPrint {
-  id: number;
+  id?: string;
   title: string;
   words: { en_title: string; jp_title: string; type: 'en' | 'jp' }[];
   isShowAnswer?: boolean;

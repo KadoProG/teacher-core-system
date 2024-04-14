@@ -7,7 +7,6 @@ import { EnglishWordPracDailyReportPrint } from '@/components/prints/EnglishWord
 import { EnglishWordPracPrint } from '@/components/prints/EnglishWordPracPrint';
 
 const print: IEnglishWordPracPrint = {
-  id: 1,
   title: 'アイプロ３　Level21「中２レベルの基本動詞①」',
   words: [
     { en_title: 'variable', jp_title: '変数', type: 'en' },

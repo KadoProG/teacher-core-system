@@ -52,7 +52,6 @@ export const useEnglishWordPracWordPrintInfo = (
 
   // 現在生成中の印刷データ
   const print: IEnglishWordPracPrint = {
-    id: 1,
     title: sessionTitle,
     words: wordPracList,
     isShowAnswer: true,
@@ -61,7 +60,7 @@ export const useEnglishWordPracWordPrintInfo = (
   // 印刷データを保存する処理
   const handleSave = async () => {
     axios
-      .post('/api/english/word_prac/prints', {
+      .post('/api/v2/prints', {
         print,
       })
       .then(() =>

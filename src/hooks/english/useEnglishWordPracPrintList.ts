@@ -15,16 +15,12 @@ export const useEnglishWordPracPrintList = ({
 
   const fetcher = (key: string) => axios.get(key).then((res) => res.data);
 
-  const { data, error, isLoading } = useSWR(
-    '/api/english/word_prac/prints',
-    fetcher,
-    {
-      // 自動fetchの無効化
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const { data, error, isLoading } = useSWR('/api/v2/prints', fetcher, {
+    // 自動fetchの無効化
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const prints: IEnglishWordPracPrint[] = data?.prints ?? [];
 
@@ -34,7 +30,7 @@ export const useEnglishWordPracPrintList = ({
   /**
    * 印刷を実行
    */
-  const handlePrint = (id: number) => {
+  const handlePrint = (id: string) => {
     const newSelectedPrint = prints.find((print) => print.id === id);
     if (!newSelectedPrint) return;
     setSelectedPrint(newSelectedPrint);
@@ -46,9 +42,9 @@ export const useEnglishWordPracPrintList = ({
   /**
    * 印刷アーカイブ（単体）削除
    */
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     axios
-      .delete(`/api/english/word_prac/prints/${id}`)
+      .delete(`/api/v2/prints/${id}`)
       .then(() => addMessageObject('削除が完了しました。', 'success'))
       .catch((e) =>
         addMessageObject(`削除時にエラーが発生しました${e}`, 'error')

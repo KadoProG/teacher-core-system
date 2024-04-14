@@ -36,7 +36,7 @@ export const PrintListTable: React.FC<PrintListTableProps> = (props) => {
           print={print}
           handlePrint={props.printHook.handlePrint}
           handleDelete={props.printHook.handleDelete}
-          key={print.id + index}
+          key={(print.id ?? 'aaa') + '___' + index}
         />
       ))}
     </Box>

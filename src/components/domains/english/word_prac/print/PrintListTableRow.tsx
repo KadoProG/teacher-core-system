@@ -6,8 +6,8 @@ import { formatDate } from '@/utils/formatDate';
 
 interface PrintListTableRowProps {
   print: IEnglishWordPracPrint;
-  handlePrint: (id: number) => void;
-  handleDelete: (id: number) => void;
+  handlePrint: (id: string) => void;
+  handleDelete: (id: string) => void;
 }
 
 export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
@@ -34,10 +34,14 @@ export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
           <Typography flex={1}>{props.print.title}</Typography>
         </Box>
         <Box>
-          <IconButton onClick={() => props.handlePrint(props.print.id)}>
+          <IconButton
+            onClick={() => props.print.id && props.handlePrint(props.print.id)}
+          >
             <PrintIcon />
           </IconButton>
-          <IconButton onClick={() => props.handleDelete(props.print.id)}>
+          <IconButton
+            onClick={() => props.print.id && props.handleDelete(props.print.id)}
+          >
             <DeleteIcon />
           </IconButton>
         </Box>
