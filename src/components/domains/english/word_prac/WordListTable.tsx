@@ -30,7 +30,7 @@ export const WordListTable: React.FC<WordListTableProps> = (props) => {
           <WordListTableBodyRow
             key={word.id}
             word={word}
-            isChecked={selectedIds.includes(word.id)}
+            isChecked={selectedIds.includes(word.id ?? '')}
             handleSingleClick={handleSingleClick}
           />
         ))}

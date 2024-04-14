@@ -70,7 +70,7 @@ export const WordListTableBodyRow: React.FC<WordListTableBodyRowProps> = (
     <TableCell>
       <Checkbox
         checked={props.isChecked}
-        onChange={() => props.handleSingleClick(props.word.id)}
+        onChange={() => props.word.id && props.handleSingleClick(props.word.id)}
       />
     </TableCell>
   </TableRow>
