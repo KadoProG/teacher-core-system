@@ -17,6 +17,8 @@ export const printsGET = async (): Promise<NextResponse> => {
   const prints = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
+    created_at: doc.data().created_at.toDate(),
+    updated_at: doc.data().updated_at.toDate(),
   }));
   return NextResponse.json({ prints });
 };

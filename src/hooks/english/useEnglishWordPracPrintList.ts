@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 
 export const useEnglishWordPracPrintList = ({
@@ -45,7 +45,15 @@ export const useEnglishWordPracPrintList = ({
   const handleDelete = (id: string) => {
     axios
       .delete(`/api/v2/prints/${id}`)
-      .then(() => addMessageObject('削除が完了しました。', 'success'))
+      .then(() => {
+        addMessageObject('削除が完了しました。', 'success');
+        mutate(
+          (key) => typeof key === 'string' && key.startsWith('/api/v2/prints'),
+          undefined,
+          { revalidate: true }
+        );
+      })
+
       .catch((e) =>
         addMessageObject(`削除時にエラーが発生しました${e}`, 'error')
       );

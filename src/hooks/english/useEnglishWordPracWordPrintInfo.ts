@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
@@ -63,9 +64,15 @@ export const useEnglishWordPracWordPrintInfo = (
       .post('/api/v2/prints', {
         print,
       })
-      .then(() =>
-        addMessageObject('印刷アーカイブの保存が完了しました。', 'success')
-      )
+      .then(() => {
+        addMessageObject('印刷アーカイブの保存が完了しました。', 'success');
+        mutate(
+          (key) => typeof key === 'string' && key.startsWith('/api/v2/prints'),
+          undefined,
+          { revalidate: true }
+        );
+      })
+
       .catch((e) => addMessageObject(`保存に失敗しました。${e}`, 'error'));
   };
 
