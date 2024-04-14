@@ -9,7 +9,7 @@ import { NextResponse } from 'next/server';
 import { validateEnglishWordPracWord } from '@/components/domains/api/english/word_prac/words/validate';
 import { firestore } from '@/libs/firebase/firebase';
 
-export const wordCreate = async (word: any) => {
+export const wordCreate = async (word: any): Promise<NextResponse> => {
   const validatedErrors = validateEnglishWordPracWord(word, 'create');
   if (validatedErrors.length !== 0) {
     return NextResponse.json({ errors: validatedErrors }, { status: 400 });
@@ -29,9 +29,11 @@ export const wordCreate = async (word: any) => {
   };
 
   await addDoc(wordDocRef, newWord);
+
+  return NextResponse.json({}, { status: 201 });
 };
 
-export const wordsCreate = async (words: any[]) => {
+export const wordsCreate = async (words: any[]): Promise<NextResponse> => {
   const validatedErrors: string[] = [];
 
   words.forEach((word) => {
@@ -69,7 +71,7 @@ export const wordsCreate = async (words: any[]) => {
   return NextResponse.json({}, { status: 201 });
 };
 
-export const wordsOverwrite = async (words: any[]) => {
+export const wordsOverwrite = async (words: any[]): Promise<NextResponse> => {
   const validatedErrors: string[] = [];
 
   words.forEach((word) => {
@@ -108,4 +110,6 @@ export const wordsOverwrite = async (words: any[]) => {
       })
     );
   });
+
+  return NextResponse.json({}, { status: 200 });
 };

@@ -60,16 +60,20 @@ export const POST = async (req: NextRequest) => {
   }
 
   const { word, words } = await req.json();
+
+  if (!word && !words) {
+    return NextResponse.json({ error: 'no data' }, { status: 400 });
+  }
+
   try {
-    if (!word && !words) {
-      throw new Error('I do not know what to do');
-    }
-
     // Wordを作成（単体）
-    word && (await wordCreate(word));
-
+    if (word) {
+      return await wordCreate(word);
+    }
     // Wordを作成（複数）
-    words && (await wordsCreate(words));
+    if (words) {
+      return await wordsCreate(words);
+    }
   } catch (e: any) {
     return NextResponse.json({ errors: e.message as string }, { status: 400 });
   }
@@ -91,8 +95,7 @@ export const PUT = async (req: NextRequest) => {
     }
 
     // Wordの上書き（削除して保存）
-    await wordsOverwrite(words);
-    return NextResponse.json({}, { status: 200 });
+    return await wordsOverwrite(words);
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 });
   }

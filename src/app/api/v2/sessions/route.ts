@@ -43,12 +43,21 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ error: '未認証ユーザ' }, { status: 403 });
   }
   const { session, sessions } = await req.json();
+
+  if (!session && !sessions) {
+    return NextResponse.json({ error: 'no data' }, { status: 400 });
+  }
+
   try {
     // セッションを作成（単体）
-    session && (await sessionCreate(session));
+    if (session) {
+      return await sessionCreate(session);
+    }
 
     // セッションを作成（複数）
-    sessions && (await sessionsCreate(sessions));
+    if (sessions) {
+      return await sessionsCreate(sessions);
+    }
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 });
   }
@@ -73,7 +82,7 @@ export const PUT = async (req: NextRequest) => {
     }
 
     // セッションの上書き（削除して保存）
-    await sessionsOverwrite(sessions);
+    return await sessionsOverwrite(sessions);
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 });
   }
