@@ -5,6 +5,7 @@ const paths = [
   { title: '印刷プレビューリスト画面', path: '/english' },
   { title: '単語リスト画面', path: '/english/word_prac' },
   { title: 'セッションリスト画面', path: '/english/word_prac/session' },
+  { title: '印刷アーカイブ画面', path: '/english/word_prac/print' },
 ];
 
 const Page = () => (

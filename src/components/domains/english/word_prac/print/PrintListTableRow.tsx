@@ -1,6 +1,13 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrintIcon from '@mui/icons-material/Print';
-import { Box, Divider, IconButton, Typography } from '@mui/material';
+import {
+  Box,
+  Divider,
+  IconButton,
+  ListItemButton,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import React from 'react';
 import { formatDate } from '@/utils/formatDate';
 
@@ -13,14 +20,16 @@ interface PrintListTableRowProps {
 export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
   const [isSelected, setIsSelected] = React.useState<boolean>(false);
 
+  const isMin600 = useMediaQuery('(min-width:600px)');
+
   return (
     <Box key={props.print.title + props.print.id}>
       <Box key={props.print.title} display="flex" alignItems="center">
         <Box
+          component={ListItemButton}
           display="flex"
           alignItems="center"
           flex={1}
-          height={40}
           onClick={() => {
             setIsSelected((prev) => !prev);
           }}
@@ -28,9 +37,20 @@ export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
             cursor: 'pointer',
           }}
         >
-          <Typography width={100} align="center">
-            {formatDate(props.print.created_at)}
-          </Typography>
+          <Box width={{ xs: 50, sm: 100 }}>
+            {isMin600 ? (
+              <Typography>{formatDate(props.print.created_at)}</Typography>
+            ) : (
+              <>
+                <Typography component="p">
+                  {formatDate(props.print.created_at).slice(0, 4)}
+                </Typography>
+                <Typography component="p">
+                  {formatDate(props.print.created_at).slice(5, 10)}
+                </Typography>
+              </>
+            )}
+          </Box>
           <Typography flex={1}>{props.print.title}</Typography>
         </Box>
         <Box>
