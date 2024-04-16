@@ -1,4 +1,4 @@
-import { Checkbox, TableCell, TableRow, Typography } from '@mui/material';
+import { TableCell, TableRow, Typography } from '@mui/material';
 import React from 'react';
 import { useTableRowCheckbox } from '@/hooks/commons/useTableRowCheckbox';
 
@@ -7,9 +7,7 @@ interface WordListTableHeadRowProps {
   handleAllClick: ReturnType<typeof useTableRowCheckbox>['handleAllClick'];
 }
 
-export const WordListTableHeadRow: React.FC<WordListTableHeadRowProps> = (
-  props
-) => (
+export const WordListTableHeadRow: React.FC<WordListTableHeadRowProps> = () => (
   <TableRow
     sx={{
       th: {
@@ -24,17 +22,21 @@ export const WordListTableHeadRow: React.FC<WordListTableHeadRowProps> = (
       <Typography fontWeight="bold">英単語</Typography>
     </TableCell>
     <TableCell>
-      <Typography fontWeight="bold">日本語</Typography>
-    </TableCell>
-    <TableCell width={100}>
-      <Typography fontWeight="bold">履修学年</Typography>
+      <Typography fontWeight="bold" minWidth={220}>
+        日本語
+      </Typography>
     </TableCell>
     <TableCell>
+      <Typography fontWeight="bold" minWidth={40}>
+        履修学年
+      </Typography>
+    </TableCell>
+    {/* <TableCell>
       <Checkbox
         checked={props.isChecked}
         onChange={() => props.handleAllClick()}
       />
-    </TableCell>
+    </TableCell> */}
   </TableRow>
 );
 
@@ -67,11 +69,11 @@ export const WordListTableBodyRow: React.FC<WordListTableBodyRowProps> = (
     <TableCell>
       <Typography>{props.word.study_year}</Typography>
     </TableCell>
-    <TableCell>
+    {/* <TableCell>
       <Checkbox
         checked={props.isChecked}
         onChange={() => props.word.id && props.handleSingleClick(props.word.id)}
       />
-    </TableCell>
+    </TableCell> */}
   </TableRow>
 );

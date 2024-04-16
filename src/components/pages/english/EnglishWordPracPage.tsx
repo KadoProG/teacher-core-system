@@ -23,18 +23,24 @@ export const EnglishWordPracPage: React.FC = () => {
     setIsOpen(isMin600);
   }, [isMin600]);
 
+  const handleClose = () => {
+    if (!isMin600) {
+      setIsOpen((prev) => !prev);
+    }
+  };
+
   return (
     <Box display="flex">
       <SideSessionList
         englishWordPrac={englishWordPrac}
         isOpen={isOpen}
         isMin600={isMin600}
-        onClose={() => setIsOpen(false)}
+        onClose={handleClose}
       />
-      <Box p={2} component={Stack} spacing={2}>
+      <Box p={2} component={Stack} spacing={2} width="100%" maxWidth={700}>
         {!isMin600 && (
           <Box component={Paper} display="flex" alignItems="center">
-            <IconButton onClick={() => setIsOpen((prev) => !prev)}>
+            <IconButton onClick={handleClose}>
               <MenuIcon />
             </IconButton>
             <Typography>セッションを変更する</Typography>

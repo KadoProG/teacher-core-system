@@ -26,10 +26,20 @@ export const WordPrintInfo: React.FC<PrintInfoProps> = (props) => {
           印刷する
         </Typography>
         <Stack direction="row" spacing={1}>
-          <Button variant="outlined" color="inherit" onClick={handleSave}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={handleSave}
+            size="small"
+          >
             保存する
           </Button>
-          <Button variant="outlined" color="inherit" onClick={handlePrint}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={handlePrint}
+            size="small"
+          >
             すぐ印刷する
           </Button>
         </Stack>

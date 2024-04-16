@@ -69,7 +69,10 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
         {props.englishWordPrac.sessions.map((session) => (
           <ListItemButton
             key={session.id}
-            onClick={() => props.englishWordPrac.onSelectedSession(session.id)}
+            onClick={() => {
+              props.englishWordPrac.onSelectedSession(session.id);
+              props.onClose();
+            }}
             selected={props.englishWordPrac.selectedSessionId === session.id}
             sx={{
               '&.Mui-selected': {

@@ -18,7 +18,7 @@ export const WordListTable: React.FC<WordListTableProps> = (props) => {
   }
 
   return (
-    <Table>
+    <Table sx={{ overflow: 'scroll' }}>
       <TableHead>
         <WordListTableHeadRow
           isChecked={isAllSelected}
