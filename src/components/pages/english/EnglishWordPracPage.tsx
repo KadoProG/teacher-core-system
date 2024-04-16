@@ -1,6 +1,14 @@
 'use client';
 
-import { Box, Stack } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import {
+  Box,
+  IconButton,
+  Paper,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import React from 'react';
 import { SideSessionList } from '@/components/domains/english/word_prac/SideSessionList';
 import { WordList } from '@/components/domains/english/word_prac/WordList';
@@ -9,10 +17,29 @@ import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWo
 
 export const EnglishWordPracPage: React.FC = () => {
   const englishWordPrac = useEnglishWordPracWordList();
+  const isMin600 = useMediaQuery('(min-width:600px)');
+  const [isOpen, setIsOpen] = React.useState<boolean>(isMin600);
+  React.useEffect(() => {
+    setIsOpen(isMin600);
+  }, [isMin600]);
+
   return (
     <Box display="flex">
-      <SideSessionList englishWordPrac={englishWordPrac} />
+      <SideSessionList
+        englishWordPrac={englishWordPrac}
+        isOpen={isOpen}
+        isMin600={isMin600}
+        onClose={() => setIsOpen(false)}
+      />
       <Box p={2} component={Stack} spacing={2}>
+        {!isMin600 && (
+          <Box component={Paper} display="flex" alignItems="center">
+            <IconButton onClick={() => setIsOpen((prev) => !prev)}>
+              <MenuIcon />
+            </IconButton>
+            <Typography>セッションを変更する</Typography>
+          </Box>
+        )}
         <WordPrintInfo englishWordPrac={englishWordPrac} />
         <WordList englishWordPrac={englishWordPrac} />
       </Box>

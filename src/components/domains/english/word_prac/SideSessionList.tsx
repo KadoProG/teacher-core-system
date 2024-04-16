@@ -18,20 +18,24 @@ const drawerWidth = 250;
 
 interface SideSessionListProps {
   englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>;
+  isOpen: boolean;
+  isMin600?: boolean;
+  onClose: () => void;
 }
 
 export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
   <Drawer
-    open={true}
+    open={props.isOpen}
+    onClose={props.onClose}
     sx={{
-      width: drawerWidth,
+      width: props.isOpen ? drawerWidth : 0,
       flexShrink: 0,
       '& .MuiDrawer-paper': {
         width: drawerWidth,
         boxSizing: 'border-box',
       },
     }}
-    variant="persistent"
+    variant={props.isMin600 ? 'persistent' : 'temporary'}
     anchor="left"
   >
     <EnglishLayoutToolbar />
