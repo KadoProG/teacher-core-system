@@ -4,6 +4,7 @@ import { useMediaQuery } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
+import { LoadingContainer } from '@/components/commons/layout/LoadingContainer';
 import { darkTheme, lightTheme } from '@/components/theme/theme';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
@@ -24,6 +25,12 @@ export const ThemeRegistry = (props: { children: React.ReactNode }) => {
     []
   );
 
+  const [mounted, setMounted] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   React.useEffect(() => {
     setMode(prefersInit);
   }, [prefersInit]);
@@ -36,8 +43,10 @@ export const ThemeRegistry = (props: { children: React.ReactNode }) => {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {props.children}
+        <LoadingContainer isLoading={!mounted}>
+          <CssBaseline />
+          {props.children}
+        </LoadingContainer>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
