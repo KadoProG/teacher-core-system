@@ -1,6 +1,11 @@
 import exceljs from 'exceljs';
 
-// ドロップされたExcelファイルを処理する関数
+/**
+ * ドロップされたExcelファイルを処理する関数
+ * @param acceptedFiles ファイルオブジェクト（一応配列のFile[]）
+ * @param workbookName ワークシートの名前
+ * @param processExcelData ワークシート解析成功後の処理
+ */
 export const dropExcelData = async (
   acceptedFiles: File[],
   workbookName: string,

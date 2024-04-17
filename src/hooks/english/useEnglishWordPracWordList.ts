@@ -24,7 +24,9 @@ export const useEnglishWordPracWordList = () => {
   const dropzone = useDropzone({
     onDrop: async (acceptedFiles) => {
       try {
-        await dropExcelData(acceptedFiles, '単語マスタ', processWordExcelData);
+        await dropExcelData(acceptedFiles, '単語マスタ', async (workbook) =>
+          processWordExcelData(workbook, sessions)
+        );
       } catch (e: any) {
         addMessageObject(e.message, 'error');
       }
@@ -129,7 +131,10 @@ export const useEnglishWordPracWordList = () => {
 
   // Excelファイルを処理する関数
   const processWordExcelData = React.useCallback(
-    async (worksheet: exceljs.Worksheet) => {
+    async (
+      worksheet: exceljs.Worksheet,
+      sessions: IEnglishWordPracSession[]
+    ) => {
       const words: {
         row: number;
         session_id: string;
@@ -172,7 +177,7 @@ export const useEnglishWordPracWordList = () => {
       }
       await uploadWords(words);
     },
-    [sessions, uploadWords, addMessageObject]
+    [uploadWords, addMessageObject]
   );
 
   return {
