@@ -1,7 +1,9 @@
 import axios from 'axios';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
+import { usePrinting } from '@/hooks/commons/usePrinting';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 
 /**
@@ -10,6 +12,9 @@ import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWo
 export const useEnglishWordPracWordPrintInfo = (
   englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>
 ) => {
+  const componentRef = React.useRef<HTMLDivElement>(null);
+  const [isShowAnswer, setIsShowAnswer] = React.useState<boolean>(false);
+  const { handlePrint: handleHookPrint } = usePrinting({ componentRef });
   const { addMessageObject } = useSnackbar();
   const form = useForm<{
     is_randam_jp_en: boolean; // 英語・日本語の出題をランダムにする
@@ -52,14 +57,17 @@ export const useEnglishWordPracWordPrintInfo = (
   const wordPracList = wordPracListBefore.slice(0, form.watch('word_count'));
 
   // 現在生成中の印刷データ
-  const print: IEnglishWordPracPrint = {
-    title: sessionTitle,
-    words: wordPracList,
-    isShowAnswer: true,
-  };
+  const print: IEnglishWordPracPrint = React.useMemo(
+    () => ({
+      title: sessionTitle,
+      words: wordPracList,
+      isShowAnswer,
+    }),
+    [sessionTitle, wordPracList, isShowAnswer]
+  );
 
   // 印刷データを保存する処理
-  const handleSave = async () => {
+  const handleSave = React.useCallback(async () => {
     axios
       .post('/api/v2/prints', {
         print,
@@ -74,7 +82,18 @@ export const useEnglishWordPracWordPrintInfo = (
       })
 
       .catch((e) => addMessageObject(`保存に失敗しました。${e}`, 'error'));
-  };
+  }, [addMessageObject, print]);
+
+  const handlePrint = React.useCallback(
+    async (currentIsShowAnswer?: boolean) => {
+      await handleSave();
+      setIsShowAnswer(currentIsShowAnswer ?? false);
+      setTimeout(() => {
+        handleHookPrint();
+      });
+    },
+    [handleHookPrint, handleSave]
+  );
 
   return {
     /**
@@ -89,5 +108,13 @@ export const useEnglishWordPracWordPrintInfo = (
      * 印刷データを保存する処理
      */
     handleSave,
+    /**
+     * 印刷コンポーネント
+     */
+    componentRef,
+    /**
+     * プリントが押されたときの動作
+     */
+    handlePrint,
   };
 };

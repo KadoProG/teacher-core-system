@@ -4,7 +4,6 @@ import { FormCheckBox } from '@/components/commons/input/FormCheckBox';
 import { FormTextField } from '@/components/commons/input/FormTextField';
 import { PrintLayoutContainer } from '@/components/commons/PrintLayoutContainer';
 import { EnglishWordPracPrint } from '@/components/prints/EnglishWordPracPrint';
-import { usePrinting } from '@/hooks/commons/usePrinting';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 import { useEnglishWordPracWordPrintInfo } from '@/hooks/english/useEnglishWordPracWordPrintInfo';
 
@@ -13,11 +12,8 @@ interface PrintInfoProps {
 }
 
 export const WordPrintInfo: React.FC<PrintInfoProps> = (props) => {
-  const { form, print, handleSave } = useEnglishWordPracWordPrintInfo(
-    props.englishWordPrac
-  );
-  const componentRef = React.useRef<HTMLDivElement>(null);
-  const { handlePrint } = usePrinting({ componentRef });
+  const { form, print, handleSave, handlePrint, componentRef } =
+    useEnglishWordPracWordPrintInfo(props.englishWordPrac);
 
   return (
     <Paper component={Box} p={2}>
@@ -37,10 +33,22 @@ export const WordPrintInfo: React.FC<PrintInfoProps> = (props) => {
           <Button
             variant="outlined"
             color="inherit"
-            onClick={handlePrint}
+            onClick={() => {
+              handlePrint(false);
+            }}
             size="small"
           >
             すぐ印刷する
+          </Button>
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={() => {
+              handlePrint(true);
+            }}
+            size="small"
+          >
+            (答)印刷する
           </Button>
         </Stack>
       </Box>
