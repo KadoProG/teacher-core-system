@@ -2,6 +2,7 @@
 
 import { Box, Paper, Skeleton, Typography } from '@mui/material';
 import React from 'react';
+import { FormSwitch } from '@/components/commons/input/FormSwitch';
 import { PrintLayoutContainer } from '@/components/commons/PrintLayoutContainer';
 import { PrintListTable } from '@/components/domains/english/word_prac/print/PrintListTable';
 import { EnglishWordPracPrint } from '@/components/prints/EnglishWordPracPrint';
@@ -23,6 +24,15 @@ export const PrintList: React.FC = () => {
         <Typography variant="h5" component="h2" fontWeight="bold">
           印刷アーカイブ
         </Typography>
+        <Box component={Paper} display="inline-flex" alignItems="center">
+          <Typography px={1}>答えを印刷</Typography>
+          <FormSwitch
+            name="is_show_answer"
+            control={printHook.form.control}
+            label=""
+            isDense
+          />
+        </Box>
       </Box>
       <Paper component={Box} p={2}>
         {printHook.isLoading ? (

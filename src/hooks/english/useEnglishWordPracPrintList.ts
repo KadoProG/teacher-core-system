@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React from 'react';
+import { useForm } from 'react-hook-form';
 import useSWR, { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 
@@ -11,7 +12,12 @@ export const useEnglishWordPracPrintList = ({
    */
   handlePrintProp: () => void;
 }) => {
+  const form = useForm<{ is_show_answer: boolean }>({
+    defaultValues: { is_show_answer: false },
+  });
   const { addMessageObject } = useSnackbar();
+
+  const isShowAnswer = form.watch('is_show_answer');
 
   const fetcher = (key: string) => axios.get(key).then((res) => res.data);
 
@@ -22,7 +28,14 @@ export const useEnglishWordPracPrintList = ({
     revalidateOnReconnect: false,
   });
 
-  const prints: IEnglishWordPracPrint[] = data?.prints ?? [];
+  const prints: IEnglishWordPracPrint[] = React.useMemo(
+    () =>
+      data?.prints.map((print: IEnglishWordPracPrint) => ({
+        ...print,
+        isShowAnswer: isShowAnswer,
+      })) ?? [],
+    [data?.prints, isShowAnswer]
+  );
 
   const [selectedPrint, setSelectedPrint] =
     React.useState<IEnglishWordPracPrint>();
@@ -30,38 +43,48 @@ export const useEnglishWordPracPrintList = ({
   /**
    * 印刷を実行
    */
-  const handlePrint = (id: string) => {
-    const newSelectedPrint = prints.find((print) => print.id === id);
-    if (!newSelectedPrint) return;
-    setSelectedPrint(newSelectedPrint);
-    setTimeout(() => {
-      handlePrintProp(); // 本来の印刷関数を呼び出す（setTimeoutにすることで印刷レイアウト完了を待つ）
-    });
-  };
+  const handlePrint = React.useCallback(
+    (id: string) => {
+      const newSelectedPrint = prints.find((print) => print.id === id);
+      if (!newSelectedPrint) return;
+      newSelectedPrint.isShowAnswer = isShowAnswer;
+      setSelectedPrint(newSelectedPrint);
+
+      setTimeout(() => {
+        handlePrintProp(); // 本来の印刷関数を呼び出す（setTimeoutにすることで印刷レイアウト完了を待つ）
+      });
+    },
+    [handlePrintProp, prints, isShowAnswer]
+  );
 
   /**
    * 印刷アーカイブ（単体）削除
    */
-  const handleDelete = (id: string) => {
-    axios
-      .delete(`/api/v2/prints/${id}`)
-      .then(() => {
-        addMessageObject('削除が完了しました。', 'success');
-        mutate(
-          (key) => typeof key === 'string' && key.startsWith('/api/v2/prints'),
-          undefined,
-          { revalidate: true }
-        );
-      })
+  const handleDelete = React.useCallback(
+    (id: string) => {
+      axios
+        .delete(`/api/v2/prints/${id}`)
+        .then(() => {
+          addMessageObject('削除が完了しました。', 'success');
+          mutate(
+            (key) =>
+              typeof key === 'string' && key.startsWith('/api/v2/prints'),
+            undefined,
+            { revalidate: true }
+          );
+        })
 
-      .catch((e) =>
-        addMessageObject(`削除時にエラーが発生しました${e}`, 'error')
-      );
-  };
+        .catch((e) =>
+          addMessageObject(`削除時にエラーが発生しました${e}`, 'error')
+        );
+    },
+    [addMessageObject]
+  );
 
   if (error) {
     // eslint-disable-next-line
     console.error(error.message);
   }
-  return { prints, isLoading, selectedPrint, handlePrint, handleDelete };
+
+  return { prints, isLoading, selectedPrint, handlePrint, handleDelete, form };
 };
