@@ -45,7 +45,7 @@
     "eslint-plugin-mui-unused-classes": "^2.0.2",
     "eslint-plugin-node": "^11.1.0",
     "husky": "^8.0.3",
-    "lint-staged": "^15.2.2",
+    "lint-staged": "^15.2.0",
     "prettier": "^3.2.5",
     "typescript": "^5"
   }
