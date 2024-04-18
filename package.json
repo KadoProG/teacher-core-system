@@ -10,6 +10,7 @@
     "lint": "eslint --no-cache . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "fix": "eslint --no-cache --fix . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json,css}'",
+    "check-types": "tsc --noEmit",
     "prepare": "husky install"
   },
   "dependencies": {
