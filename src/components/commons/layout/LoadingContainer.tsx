@@ -1,4 +1,4 @@
-import { CircularProgress, Container } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import React from 'react';
 
 interface LoadingContainerProps {
@@ -8,17 +8,16 @@ interface LoadingContainerProps {
 export const LoadingContainer: React.FC<LoadingContainerProps> = (props) => {
   if (props.isLoading) {
     return (
-      <Container
-        sx={{
-          height: '100svh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'fixed',
-        }}
+      <Box
+        width="100%"
+        height="100%"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        position="fixed"
       >
         <CircularProgress />
-      </Container>
+      </Box>
     );
   }
   return props.children;
