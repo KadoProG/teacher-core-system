@@ -1,11 +1,10 @@
 import axios from 'axios';
-import exceljs from 'exceljs';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import useSWR, { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
-import { convertCellToString } from '@/utils/excelUtils';
+import { processWordExcelData } from '@/utils/excel/processWordExcelData';
 
 export const useEnglishWordPracWordList = () => {
   const { addMessageObject } = useSnackbar();
@@ -24,9 +23,11 @@ export const useEnglishWordPracWordList = () => {
   const dropzone = useDropzone({
     onDrop: async (acceptedFiles) => {
       try {
-        await dropExcelData(acceptedFiles, '単語マスタ', async (workbook) =>
-          processWordExcelData(workbook, sessions)
-        );
+        await dropExcelData(acceptedFiles, '単語マスタ', async (workbook) => {
+          // 添付されたWordデータの処理とアップロード
+          const words = await processWordExcelData(workbook, sessions);
+          await uploadWords(words);
+        });
       } catch (e: any) {
         addMessageObject(e.message, 'error');
       }
@@ -127,57 +128,6 @@ export const useEnglishWordPracWordList = () => {
       }
     },
     [addMessageObject]
-  );
-
-  // Excelファイルを処理する関数
-  const processWordExcelData = React.useCallback(
-    async (
-      worksheet: exceljs.Worksheet,
-      sessions: IEnglishWordPracSession[]
-    ) => {
-      const words: {
-        row: number;
-        session_id: string;
-        en_title: string;
-        jp_title: string;
-        study_year: string;
-      }[] = [];
-
-      for (let i = 2; i < 1000; i++) {
-        const row: exceljs.Row = worksheet.getRow(i);
-        const id = row.getCell(1).value as number;
-        const sessionStringValue = row.getCell(2).value; // セッション
-        const enTitleValue = row.getCell(3).value; // 英語
-        const jpTitleValue = row.getCell(4).value; // 日本語
-        const studyYear = row.getCell(5).value; // 履修学年
-
-        try {
-          if (id && sessionStringValue && enTitleValue && jpTitleValue) {
-            const sessionString = convertCellToString(sessionStringValue);
-            const session_id = sessions.find(
-              (session) =>
-                `${String(session.row).padStart(2, '0')}　${session.title}` ===
-                sessionString
-            )?.id;
-            if (!session_id) throw new Error('存在しないSessionです');
-            const en_title = convertCellToString(enTitleValue);
-            const jp_title = convertCellToString(jpTitleValue);
-            const study_year = convertCellToString(studyYear);
-            words.push({
-              row: id,
-              session_id,
-              en_title,
-              jp_title,
-              study_year,
-            });
-          }
-        } catch (e) {
-          addMessageObject(`${i}行目付近にエラーがありました：${e}`, 'error');
-        }
-      }
-      await uploadWords(words);
-    },
-    [uploadWords, addMessageObject]
   );
 
   return {
