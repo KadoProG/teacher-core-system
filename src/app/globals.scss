@@ -1,0 +1,13 @@
+:root {
+  --init-background: #fff;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --init-background: #333;
+  }
+}
+
+body {
+  background: var(--init-background);
+}

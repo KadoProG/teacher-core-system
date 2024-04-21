@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { cookies } from 'next/headers';
 import NextAuthProvider from '@/components/commons/auth/NextAuth';
 import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
-import { ThemeRegistry } from '@/libs/theme/themeRegistry';
-import '@/app/style.scss';
+import { ColorModeChoice, ThemeRegistry } from '@/libs/theme/themeRegistry';
+import '@/app/globals.scss';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,21 +28,34 @@ const Layout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) => (
-  <html lang="ja">
-    <head>
-      <link rel="manifest" href="/manifest.json" />
-      <link rel="apple-touch-icon" href="/icon.png" />
-      <meta name="theme-color" content="#b8e986" />
-    </head>
-    <body className={inter.className}>
-      <NextAuthProvider>
-        <ThemeRegistry>
-          <SnackbarProvider>{children}</SnackbarProvider>
-        </ThemeRegistry>
-      </NextAuthProvider>
-    </body>
-  </html>
-);
+}>) => {
+  const preColorMode = cookies().get('colorMode')?.value;
+  const initColorMode: ColorModeChoice =
+    preColorMode === 'light' || preColorMode === 'dark'
+      ? preColorMode
+      : 'device';
+
+  // 初期表示のカスタムスタイルを適用
+  let style: any = {};
+  if (['light', 'dark'].includes(initColorMode)) {
+    style['--init-background'] = initColorMode === 'dark' ? '#333' : '#fff';
+  }
+  return (
+    <html lang="ja" style={style}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon.png" />
+        <meta name="theme-color" content="#b8e986" />
+      </head>
+      <body className={inter.className}>
+        <NextAuthProvider>
+          <ThemeRegistry initColorMode={initColorMode}>
+            <SnackbarProvider>{children}</SnackbarProvider>
+          </ThemeRegistry>
+        </NextAuthProvider>
+      </body>
+    </html>
+  );
+};
 
 export default Layout;
