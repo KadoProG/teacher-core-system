@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { LoadingContainer } from '@/components/commons/layout/LoadingContainer';
-import { darkTheme, lightTheme } from '@/components/theme/theme';
+import { darkTheme, lightTheme } from '@/libs/theme/theme';
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
