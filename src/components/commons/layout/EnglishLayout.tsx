@@ -1,21 +1,32 @@
 'use client';
-
-import { AppBar, Box, Button, CssBaseline, Toolbar } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import {
+  AppBar,
+  Box,
+  Button,
+  CssBaseline,
+  IconButton,
+  Toolbar,
+} from '@mui/material';
 import Link from 'next/link';
-import { signIn, signOut, useSession } from 'next-auth/react';
 import React from 'react';
+import { EnglishLayoutRightDrawer } from '@/components/commons/layout/EnglishLayoutRightDrawer';
 import { EnglishLayoutToolbar } from '@/components/commons/layout/EnglishLayoutToolbar';
 
 export const EnglishLayout = (props: { children: React.ReactNode }) => {
-  const { data: session } = useSession();
+  const [isRightDrawerOpen, setIsRightDrawerOpen] =
+    React.useState<boolean>(false);
 
   return (
-    <Box>
+    <Box pr={0}>
       <CssBaseline />
       <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar
           variant="dense"
-          sx={{ display: 'flex', justifyContent: 'space-between' }}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
         >
           <Box>
             <Button
@@ -35,15 +46,14 @@ export const EnglishLayout = (props: { children: React.ReactNode }) => {
               印刷アーカイブ
             </Button>
           </Box>
-          <Button
-            color="inherit"
-            variant="outlined"
-            size="small"
-            onClick={() => (session?.user ? signOut() : signIn())}
-          >
-            {session?.user ? 'ログアウト' : 'ログイン'}
-          </Button>
+          <IconButton onClick={() => setIsRightDrawerOpen(true)}>
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
+        <EnglishLayoutRightDrawer
+          isOpen={isRightDrawerOpen}
+          onClose={() => setIsRightDrawerOpen(false)}
+        />
       </AppBar>
       <Box>
         <EnglishLayoutToolbar />
