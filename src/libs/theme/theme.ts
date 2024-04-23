@@ -25,6 +25,9 @@ export const darkTheme = createTheme({
     primary: {
       main: '#a98c5e',
     },
+    error: {
+      main: '#705151',
+    },
     background: {
       default: '#333',
       paper: '#111',
