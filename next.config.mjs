@@ -1,5 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+import withPWAInit from 'next-pwa';
+import runtimeCaching from 'next-pwa/cache.js';
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  runtimeCaching,
+  // 現状この設定を追加しないとエラーになってしまうので追加
+  // 参考: https://github.com/shadowwalker/next-pwa/issues/288
+  buildExcludes: [/middleware-manifest.json$/],
+});
+
+const nextConfig = withPWA({
   // Next.jsの設定をここに追加する
   async rewrites() {
     return [
@@ -9,6 +21,6 @@ const nextConfig = {
       },
     ];
   },
-};
+});
 
 export default nextConfig;

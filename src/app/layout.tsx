@@ -45,7 +45,7 @@ const Layout = ({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon.png" />
-        <meta name="theme-color" content="#b8e986" />
+        <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>
         <NextAuthProvider>
