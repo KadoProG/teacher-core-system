@@ -37,9 +37,14 @@ export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
             cursor: 'pointer',
           }}
         >
-          <Box width={{ xs: 50, sm: 100 }}>
+          <Box width={{ xs: 50, sm: 240 }}>
             {isMin600 ? (
-              <Typography>{formatDate(props.print.created_at)}</Typography>
+              <Box display="flex">
+                <Typography pr={1} width={90}>
+                  {formatDate(props.print.created_at)}
+                </Typography>
+                <Typography variant="body2">{props.print.email}</Typography>
+              </Box>
             ) : (
               <>
                 <Typography component="p">
@@ -73,6 +78,9 @@ export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
           borderTop={(theme) => `1px dashed ${theme.palette.divider}`}
           px={2}
         >
+          <Typography variant="body2" py={1}>
+            作成者：{props.print.email}
+          </Typography>
           {props.print.words.map((word, index) => (
             <Box key={word.en_title + word.jp_title + index} display="flex">
               <Typography width={32} variant="body2">

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
@@ -56,14 +57,17 @@ export const useEnglishWordPracWordPrintInfo = (
   }
   const wordPracList = wordPracListBefore.slice(0, form.watch('word_count'));
 
+  const { data } = useSession();
+
   // 現在生成中の印刷データ
   const print: IEnglishWordPracPrint = React.useMemo(
     () => ({
       title: sessionTitle,
       words: wordPracList,
       isShowAnswer,
+      email: data?.user.name ?? '',
     }),
-    [sessionTitle, wordPracList, isShowAnswer]
+    [sessionTitle, wordPracList, isShowAnswer, data?.user.name]
   );
 
   // 印刷データを保存する処理

@@ -2,6 +2,7 @@ interface EnglishWordPracPrintInput {
   id?: number;
   title?: IEnglishWordPracPrint['title'];
   words?: IEnglishWordPracPrint['words'];
+  email?: string;
 }
 
 /**
@@ -26,6 +27,10 @@ export const validateEnglishWordPracPrint = (
   if (!print.words || print.words?.length === 0) {
     messages.push('Words is required');
     return messages;
+  }
+
+  if (!print.email || !print.email.trim()) {
+    messages.push('Email is Required');
   }
 
   print.words.forEach((word, index) => {
