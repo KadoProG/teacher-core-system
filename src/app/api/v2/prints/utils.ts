@@ -39,6 +39,7 @@ export const printCreate = async (print: any): Promise<NextResponse> => {
     created_at: new Date(),
     updated_at: new Date(),
     words: print.words,
+    email: print.email,
   };
   // 新しいセッションデータを追加
   await addDoc(collectionRef, newPrint);

@@ -14,15 +14,26 @@ export const PrintListTable: React.FC<PrintListTableProps> = (props) => {
     <Box>
       <Box>
         <Box display="flex" py={1}>
-          <Typography
-            ml={1}
-            width={{ xs: 50, sm: 100 }}
-            align="center"
-            variant="body2"
-            fontWeight="bold"
-          >
-            発行日
-          </Typography>
+          <Box ml={1} width={{ xs: 50, sm: 240 }} display="flex">
+            <Typography
+              variant="body2"
+              fontWeight="bold"
+              align="center"
+              width={90}
+            >
+              発行日
+            </Typography>
+
+            <Typography
+              variant="body2"
+              fontWeight="bold"
+              align="center"
+              flex={1}
+              display={{ xs: 'none', sm: 'block' }}
+            >
+              作成者
+            </Typography>
+          </Box>
           <Typography fontWeight="bold" flex={1} variant="body2" ml={1}>
             タイトル
           </Typography>
