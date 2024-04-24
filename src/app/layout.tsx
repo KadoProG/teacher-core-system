@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-import NextAuthProvider from '@/components/commons/auth/NextAuth';
 import { ConfirmDialogProvider } from '@/components/commons/feedback/ConfirmDialogContext';
 import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
+import NextAuthProvider from '@/libs/auth/NextAuthProvider';
 import { ColorModeChoice, ThemeRegistry } from '@/libs/theme/themeRegistry';
 import '@/app/globals.scss';
 
