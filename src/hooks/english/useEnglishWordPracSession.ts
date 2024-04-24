@@ -2,12 +2,14 @@ import axios from 'axios';
 import exceljs from 'exceljs';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { convertCellToString } from '@/utils/excelUtils';
 import { exportExcelData } from '@/utils/exportExcelData';
 
 export const useEnglishWordPracSession = () => {
+  const { confirmDialog } = useConfirmDialog();
   const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
 
@@ -22,6 +24,13 @@ export const useEnglishWordPracSession = () => {
    * セッションの削除を実行
    */
   const handleSessionsDelete = async () => {
+    const { isAccepted } = await confirmDialog({
+      title: '削除の確認',
+      children: 'セッションを削除します。よろしいですか？',
+      negativeButtonText: 'いいえ',
+      positiveButtonText: 'はい',
+    });
+    if (!isAccepted) return;
     try {
       await axios.delete('/api/v2/sessions');
       addMessageObject('セッションの削除が完了しました', 'success');

@@ -4,6 +4,7 @@ import SmartphoneOutlinedIcon from '@mui/icons-material/SmartphoneOutlined';
 import { Box, Button, ButtonGroup, Drawer, Typography } from '@mui/material';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import React from 'react';
+import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { useColorModeContext } from '@/libs/theme/themeRegistry';
 
 const drawerWidth = 300;
@@ -18,6 +19,25 @@ export const EnglishLayoutRightDrawer: React.FC<
 > = (props) => {
   const { selectedMode, toggleColorMode } = useColorModeContext();
   const { data: session } = useSession();
+  const { confirmDialog } = useConfirmDialog();
+
+  const handleSignClick = React.useCallback(async () => {
+    if (!session?.user) {
+      return signIn();
+    }
+    const { isAccepted } = await confirmDialog({
+      title: 'サインアウトの確認',
+      children: 'サイン・アウトします。よろしいですか？',
+      negativeButtonText: 'いいえ',
+      positiveButtonText: 'はい',
+    });
+
+    if (!isAccepted) {
+      return;
+    }
+
+    signOut();
+  }, [session?.user, confirmDialog]);
 
   return (
     <Drawer
@@ -39,12 +59,12 @@ export const EnglishLayoutRightDrawer: React.FC<
         <Typography variant="h6" fontWeight="bold">
           Account
         </Typography>
-        <Box>
+        <Box mb={2}>
           <Button
             color="inherit"
             variant="outlined"
             size="small"
-            onClick={() => (session?.user ? signOut() : signIn())}
+            onClick={handleSignClick}
           >
             {session?.user ? 'ログアウト' : 'ログイン'}
           </Button>
@@ -52,7 +72,7 @@ export const EnglishLayoutRightDrawer: React.FC<
         <Typography variant="h6" fontWeight="bold">
           ColorMode
         </Typography>
-        <Box>
+        <Box mb={2}>
           <ButtonGroup
             color="inherit"
             aria-label="ColorMode button group"
