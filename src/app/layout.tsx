@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import NextAuthProvider from '@/components/commons/auth/NextAuth';
+import { ConfirmDialogProvider } from '@/components/commons/feedback/ConfirmDialogContext';
 import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
 import { ColorModeChoice, ThemeRegistry } from '@/libs/theme/themeRegistry';
 import '@/app/globals.scss';
@@ -50,7 +51,9 @@ const Layout = ({
       <body className={inter.className}>
         <NextAuthProvider>
           <ThemeRegistry initColorMode={initColorMode}>
-            <SnackbarProvider>{children}</SnackbarProvider>
+            <SnackbarProvider>
+              <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
+            </SnackbarProvider>
           </ThemeRegistry>
         </NextAuthProvider>
       </body>
