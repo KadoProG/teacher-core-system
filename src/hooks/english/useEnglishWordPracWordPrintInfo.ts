@@ -65,9 +65,9 @@ export const useEnglishWordPracWordPrintInfo = (
       title: sessionTitle,
       words: wordPracList,
       isShowAnswer,
-      email: data?.user.email ?? '',
+      email: data?.user.name ?? '',
     }),
-    [sessionTitle, wordPracList, isShowAnswer, data?.user.email]
+    [sessionTitle, wordPracList, isShowAnswer, data?.user.name]
   );
 
   // 印刷データを保存する処理
