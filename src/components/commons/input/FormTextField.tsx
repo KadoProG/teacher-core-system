@@ -30,7 +30,25 @@ export const FormTextField = <T extends FieldValues>(
         {props.isRequired && <RequiredLabel />}
       </Box>
       <Box>
-        <TextField {...controller.field} size="small" type={props.type} />
+        <TextField
+          {...controller.field}
+          size="small"
+          type={props.type}
+          id={`filled_${controller.field.name}`}
+          label={props.label}
+          InputLabelProps={{
+            sx: {
+              opacity: 0,
+            },
+          }}
+          inputProps={{
+            sx: {
+              '+ fieldset legend': {
+                display: 'none',
+              },
+            },
+          }}
+        />
       </Box>
     </Box>
   );

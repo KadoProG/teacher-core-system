@@ -40,7 +40,10 @@ export const EnglishWordPracPage: React.FC = () => {
       <Box p={2} component={Stack} spacing={2} width="100%" maxWidth={700}>
         {!isMin600 && (
           <Box component={Paper} display="flex" alignItems="center">
-            <IconButton onClick={handleClose}>
+            <IconButton
+              onClick={handleClose}
+              aria-label="セッションリストを表示"
+            >
               <MenuIcon />
             </IconButton>
             <Typography>セッションを変更する</Typography>

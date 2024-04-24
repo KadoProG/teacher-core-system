@@ -30,6 +30,8 @@ export const PrintList: React.FC = () => {
             name="is_show_answer"
             control={printHook.form.control}
             label=""
+            activeLabel="はい　"
+            negativeLabel="いいえ"
             isDense
           />
         </Box>

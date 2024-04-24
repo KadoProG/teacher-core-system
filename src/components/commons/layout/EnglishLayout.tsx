@@ -46,7 +46,10 @@ export const EnglishLayout = (props: { children: React.ReactNode }) => {
               印刷アーカイブ
             </Button>
           </Box>
-          <IconButton onClick={() => setIsRightDrawerOpen(true)}>
+          <IconButton
+            onClick={() => setIsRightDrawerOpen(true)}
+            aria-label="メニューダイアログを表示"
+          >
             <MenuIcon />
           </IconButton>
         </Toolbar>
