@@ -26,4 +26,5 @@ interface IEnglishWordPracPrint {
   isShowAnswer?: boolean;
   created_at?: Date;
   updated_at?: Date;
+  email: string;
 }

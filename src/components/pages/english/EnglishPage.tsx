@@ -35,6 +35,7 @@ const print: IEnglishWordPracPrint = {
     },
   ],
   isShowAnswer: true,
+  email: '',
 };
 
 const printList = [
