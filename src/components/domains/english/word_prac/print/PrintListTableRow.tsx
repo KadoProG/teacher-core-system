@@ -55,11 +55,13 @@ export const PrintListTableRow: React.FC<PrintListTableRowProps> = (props) => {
         </Box>
         <Box>
           <IconButton
+            aria-label="対象のデータを印刷"
             onClick={() => props.print.id && props.handlePrint(props.print.id)}
           >
             <PrintIcon />
           </IconButton>
           <IconButton
+            aria-label="対象のデータを削除"
             onClick={() => props.print.id && props.handleDelete(props.print.id)}
           >
             <DeleteIcon />
