@@ -2,12 +2,14 @@ import axios from 'axios';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import useSWR, { mutate } from 'swr';
+import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { processWordExcelData } from '@/utils/excel/processWordExcelData';
 
 export const useEnglishWordPracWordList = () => {
   const { addMessageObject } = useSnackbar();
+  const { confirmDialog } = useConfirmDialog();
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
   // 選択中のSession
   const [selectedSessionId, setSelectedSessionId] =
@@ -37,6 +39,14 @@ export const useEnglishWordPracWordList = () => {
   const fetcher = (key: string) => axios.get(key).then((res) => res.data);
 
   const handleWordsDelete = async () => {
+    const { isAccepted } = await confirmDialog({
+      title: '削除の確認',
+      negativeButtonText: 'いいえ',
+      positiveButtonText: 'はい',
+      children: '本当に削除してよろしいですか？',
+    });
+
+    if (!isAccepted) return;
     try {
       await axios.delete('/api/v2/words');
       addMessageObject('単語の削除が完了しました', 'success');
