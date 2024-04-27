@@ -1,4 +1,17 @@
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import {
+  DocumentData,
+  DocumentReference,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  runTransaction,
+  where,
+} from 'firebase/firestore';
 import { firestore } from '@/libs/firebase/firebase';
 
 /**
@@ -6,7 +19,7 @@ import { firestore } from '@/libs/firebase/firebase';
  * @param sessionId
  */
 export const fetchEnglishWordPracWordList = async (
-  sessionId: string
+  sessionId?: string
 ): Promise<{ words: IEnglishWordPracWord[] }> => {
   const wordDocRef = collection(firestore, 'words');
 
@@ -63,4 +76,139 @@ export const fetchEnglishWordPracPrint = async (): Promise<{
   })) as IEnglishWordPracPrint[];
 
   return { prints };
+};
+
+/**
+ * Wordデータを上書き保存するプログラム
+ * @param words
+ */
+export const saveEnglishWordPracWordList = async (
+  words: IEnglishWordPracWord[]
+): Promise<void> => {
+  await runTransaction(firestore, async () => {
+    const wordDocRef = collection(firestore, 'words');
+    const snapShot = await getDocs(wordDocRef);
+    snapShot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
+
+    await Promise.all(
+      words.map(async (word) => {
+        const newWord: IEnglishWordPracWord = {
+          row: word.row,
+          session_id: word.session_id,
+          jp_title: word.jp_title,
+          en_title: word.en_title,
+          created_at: word.created_at,
+          updated_at: word.created_at,
+          study_year: word.study_year,
+          memo: word.memo,
+        };
+
+        await addDoc(wordDocRef, newWord);
+      })
+    );
+  });
+};
+
+/**
+ * Wordデータを削除するプログラム
+ */
+export const deleteAllEnglishWordPracWordList = async (): Promise<void> => {
+  await runTransaction(firestore, async () => {
+    const wordDocRef = collection(firestore, 'words');
+    const snapShot = await getDocs(wordDocRef);
+    const snapShotRefs: DocumentReference<DocumentData, DocumentData>[] = [];
+    snapShot.forEach((doc) => snapShotRefs.push(doc.ref));
+    await Promise.all(
+      snapShotRefs.map(async (ref) => {
+        await deleteDoc(ref);
+      })
+    );
+  });
+};
+
+/**
+ * 印刷アーカイブを保存するプログラム
+ * @param print
+ */
+export const saveEnglishWordPracPrint = async (
+  print: IEnglishWordPracPrint
+): Promise<void> => {
+  // コネクションを定義
+  const collectionRef = collection(firestore, 'prints');
+
+  const newPrint: IEnglishWordPracPrint = {
+    title: print.title,
+    created_at: print.created_at,
+    updated_at: print.updated_at,
+    words: print.words,
+    email: print.email,
+  };
+  // 新しいセッションデータを追加
+  await addDoc(collectionRef, newPrint);
+};
+
+/**
+ * Sessionを上書き保存するプログラム
+ */
+export const saveEnglishWordPracSession = async (
+  sessions: IEnglishWordPracSession[]
+): Promise<void> => {
+  await runTransaction(firestore, async () => {
+    // コネクションを定義
+    const sessionDocRef = collection(firestore, 'sessions');
+
+    // セッションデータを削除
+    const snapShot = await getDocs(sessionDocRef);
+    snapShot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
+
+    await Promise.all(
+      sessions.map(async (session) => {
+        const newSession = {
+          row: session.row,
+          title: session.title,
+          memo: session.memo ?? '',
+          created_at: new Date(),
+          updated_at: new Date(),
+        };
+
+        await addDoc(sessionDocRef, newSession);
+      })
+    );
+  });
+};
+
+/**
+ * セッションを削除するプログラム
+ */
+export const deleteAllEnglishWordPracSession = async (): Promise<void> => {
+  const sessionDocRef = collection(firestore, 'sessions');
+  const snapShot = await getDocs(sessionDocRef);
+  const snapShotRefs: DocumentReference<DocumentData, DocumentData>[] = [];
+  snapShot.forEach((doc) => snapShotRefs.push(doc.ref));
+  await Promise.all(
+    snapShotRefs.map(async (ref) => {
+      await deleteDoc(ref);
+    })
+  );
+};
+
+/**
+ * 印刷アーカイブの単体削除
+ * @param printId
+ */
+export const deleteEnglishWordPracPrint = async (
+  printId: string
+): Promise<void> => {
+  // 単体取得
+  const docRef = doc(firestore, 'prints', printId);
+  const snapshot = await getDoc(docRef);
+
+  if (!snapshot.exists()) {
+    throw new Error('not found');
+  }
+  await deleteDoc(docRef);
 };
