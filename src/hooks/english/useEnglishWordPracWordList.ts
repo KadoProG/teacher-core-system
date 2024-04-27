@@ -6,6 +6,10 @@ import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogCon
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { processWordExcelData } from '@/utils/excel/processWordExcelData';
+import {
+  fetchEnglishWordPracSession,
+  fetchEnglishWordPracWordList,
+} from '@/utils/fetch/fetchEnglishWordPrac';
 
 export const useEnglishWordPracWordList = () => {
   const { addMessageObject } = useSnackbar();
@@ -36,8 +40,6 @@ export const useEnglishWordPracWordList = () => {
     },
   });
 
-  const fetcher = (key: string) => axios.get(key).then((res) => res.data);
-
   const handleWordsDelete = async () => {
     const { isAccepted } = await confirmDialog({
       title: '削除の確認',
@@ -65,8 +67,8 @@ export const useEnglishWordPracWordList = () => {
     error,
     isLoading: isLoadingWords,
   } = useSWR(
-    selectedSessionId ? `/api/v2/words?session_id=${selectedSessionId}` : null,
-    fetcher,
+    selectedSessionId ? selectedSessionId : null,
+    fetchEnglishWordPracWordList,
     {
       // 自動fetchの無効化
       revalidateIfStale: false,
@@ -85,7 +87,7 @@ export const useEnglishWordPracWordList = () => {
     data: dataSessions,
     error: errorSessions,
     isLoading: isLoadingSessions,
-  } = useSWR('/api/v2/sessions', fetcher, {
+  } = useSWR('/api/v2/sessions', fetchEnglishWordPracSession, {
     // 自動fetchの無効化
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -141,45 +143,27 @@ export const useEnglishWordPracWordList = () => {
   );
 
   return {
-    /**
-     * セッションデータ
-     */
+    /**セッションデータ */
     sessions,
-    /**
-     * セッションデータLoading中…
-     */
+    /**セッションデータLoading中… */
     isLoadingSessions,
-    /**
-     * Wordデータ
-     */
+    /**Wordデータ */
     words,
-    /**
-     * WordデータLoading中…
-     */
+    /**WordデータLoading中… */
     isLoadingWords: isLoadingSessions || isLoadingWords,
-    /**
-     * ドロップゾーンのオブジェクト
-     */
+    /**ドロップゾーンのオブジェクト */
     dropzone,
-    /**
-     * ドロップダイアログの表示、非表示
-     */
+    /**ドロップダイアログの表示、非表示 */
     dropDialog: {
       isOpen: isOpenDialog,
       handleClose,
       handleOpen,
     },
-    /**
-     * 単語の削除を実行
-     */
+    /**単語の削除を実行 */
     handleWordsDelete,
-    /**
-     * セッションの選択
-     */
+    /**セッションの選択 */
     onSelectedSession,
-    /**
-     * 選択中のセッションID
-     */
+    /**選択中のセッションID */
     selectedSessionId,
   };
 };
