@@ -2,9 +2,10 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import SmartphoneOutlinedIcon from '@mui/icons-material/SmartphoneOutlined';
 import { Box, Button, ButtonGroup, Drawer, Typography } from '@mui/material';
-import { signIn, signOut, useSession } from 'next-auth/react';
 import React from 'react';
 import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
+import { login, logout } from '@/libs/firebase/firebaseAuth';
+import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import { useColorModeContext } from '@/libs/theme/themeRegistry';
 
 const drawerWidth = 300;
@@ -18,16 +19,16 @@ export const EnglishLayoutRightDrawer: React.FC<
   EnglishLayoutRightDrawerProps
 > = (props) => {
   const { selectedMode, toggleColorMode } = useColorModeContext();
-  const { data: session } = useSession();
   const { confirmDialog } = useConfirmDialog();
+  const user = useAuth();
 
   const handleSignClick = React.useCallback(async () => {
-    if (!session?.user) {
-      return signIn();
+    if (!user) {
+      return login();
     }
     const { isAccepted } = await confirmDialog({
-      title: 'サインアウトの確認',
-      children: 'サイン・アウトします。よろしいですか？',
+      title: 'ログアウトの確認',
+      children: 'ログアウトします。よろしいですか？',
       negativeButtonText: 'いいえ',
       positiveButtonText: 'はい',
     });
@@ -36,8 +37,8 @@ export const EnglishLayoutRightDrawer: React.FC<
       return;
     }
 
-    signOut();
-  }, [session?.user, confirmDialog]);
+    logout();
+  }, [confirmDialog, user]);
 
   return (
     <Drawer
@@ -66,7 +67,7 @@ export const EnglishLayoutRightDrawer: React.FC<
             size="small"
             onClick={handleSignClick}
           >
-            {session?.user ? 'ログアウト' : 'ログイン'}
+            {user ? 'ログアウト' : 'ログイン'}
           </Button>
         </Box>
         <Typography variant="h6" fontWeight="bold">
