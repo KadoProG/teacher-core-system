@@ -3,6 +3,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR, { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
+import { fetchEnglishWordPracPrint } from '@/utils/fetch/fetchEnglishWordPrac';
 
 export const useEnglishWordPracPrintList = ({
   handlePrintProp,
@@ -19,14 +20,16 @@ export const useEnglishWordPracPrintList = ({
 
   const isShowAnswer = form.watch('is_show_answer');
 
-  const fetcher = (key: string) => axios.get(key).then((res) => res.data);
-
-  const { data, error, isLoading } = useSWR('/api/v2/prints', fetcher, {
-    // 自動fetchの無効化
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  const { data, error, isLoading } = useSWR(
+    '/api/v2/prints',
+    fetchEnglishWordPracPrint,
+    {
+      // 自動fetchの無効化
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
   const prints: IEnglishWordPracPrint[] = React.useMemo(
     () =>

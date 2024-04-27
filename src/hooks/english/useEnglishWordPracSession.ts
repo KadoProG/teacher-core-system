@@ -2,15 +2,16 @@ import axios from 'axios';
 import exceljs from 'exceljs';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
+import useSWR, { mutate } from 'swr';
 import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { convertCellToString } from '@/utils/excelUtils';
 import { exportExcelData } from '@/utils/exportExcelData';
+import { fetchEnglishWordPracSession } from '@/utils/fetch/fetchEnglishWordPrac';
 
 export const useEnglishWordPracSession = () => {
   const { confirmDialog } = useConfirmDialog();
-  const [sessions, setSessions] = React.useState<IEnglishWordPracSession[]>([]);
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
 
   const handleClose = () => {
@@ -34,7 +35,7 @@ export const useEnglishWordPracSession = () => {
     try {
       await axios.delete('/api/v2/sessions');
       addMessageObject('セッションの削除が完了しました', 'success');
-      fetchSessions();
+      mutate('sessions');
     } catch (e) {
       addMessageObject(`単語の削除に失敗しました：${e}`, 'error');
     }
@@ -68,17 +69,23 @@ export const useEnglishWordPracSession = () => {
     }
   };
 
-  const fetchSessions = async () => {
-    const response = await fetch('/api/v2/sessions', {
-      method: 'GET',
-    });
-    const { sessions } = await response.json();
-    setSessions(sessions);
-  };
+  const { data, error, isLoading } = useSWR(
+    'sessions',
+    fetchEnglishWordPracSession,
+    {
+      // 自動fetchの無効化
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
-  React.useEffect(() => {
-    fetchSessions();
-  }, []);
+  if (error) {
+    // eslint-disable-next-line
+    console.error(error.message);
+  }
+
+  const sessions: IEnglishWordPracSession[] = data?.sessions ?? [];
 
   const uploadSessions = async (sessions: { row: number; title: string }[]) => {
     try {
@@ -88,7 +95,7 @@ export const useEnglishWordPracSession = () => {
         'セッションデータのアップロードが完了しました。',
         'success'
       );
-      fetchSessions();
+      mutate('sessions');
     } catch (error) {
       addMessageObject(
         `セッションデータのアップロードに失敗しました：${error}`,
@@ -115,25 +122,17 @@ export const useEnglishWordPracSession = () => {
   };
 
   return {
-    /**
-     * セッションデータ
-     */
+    /**セッションデータ */
     sessions,
-    /**
-     * ドロップゾーンのオブジェクト
-     */
+    /**ドロップゾーンのオブジェクト */
     dropzone,
-    /**
-     * セッションの削除を実行
-     */
+    /**セッションの削除を実行 */
     handleSessionsDelete,
-    /**
-     * Excelのエクスポート
-     */
+    /**Excelのエクスポート */
     handleExportExcelData,
-    /**
-     * ドロップダイアログの表示、非表示
-     */
+    /**ローディング中か */
+    isLoading,
+    /**ドロップダイアログの表示、非表示 */
     dropDialog: {
       isOpen: isOpenDialog,
       handleClose,
