@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { ConfirmDialogProvider } from '@/components/commons/feedback/ConfirmDialogContext';
 import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
 import NextAuthProvider from '@/libs/auth/NextAuthProvider';
+import { FirebaseAuthProvider } from '@/libs/firebase/FirebaseAuthContext';
 import { ColorModeChoice, ThemeRegistry } from '@/libs/theme/themeRegistry';
 import '@/app/globals.scss';
 
@@ -50,11 +51,13 @@ const Layout = ({
       </head>
       <body className={inter.className}>
         <NextAuthProvider>
-          <ThemeRegistry initColorMode={initColorMode}>
-            <SnackbarProvider>
-              <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
-            </SnackbarProvider>
-          </ThemeRegistry>
+          <FirebaseAuthProvider>
+            <ThemeRegistry initColorMode={initColorMode}>
+              <SnackbarProvider>
+                <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
+              </SnackbarProvider>
+            </ThemeRegistry>
+          </FirebaseAuthProvider>
         </NextAuthProvider>
       </body>
     </html>
