@@ -1,4 +1,13 @@
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  getDocs,
+  orderBy,
+  query,
+  runTransaction,
+  where,
+} from 'firebase/firestore';
 import { firestore } from '@/libs/firebase/firebase';
 
 /**
@@ -63,4 +72,48 @@ export const fetchEnglishWordPracPrint = async (): Promise<{
   })) as IEnglishWordPracPrint[];
 
   return { prints };
+};
+
+/**
+ * Wordデータを上書き保存するプログラム
+ * @param words
+ */
+export const saveEnglishWordPracWordList = async (
+  words: IEnglishWordPracWord[]
+): Promise<void> => {
+  await runTransaction(firestore, async () => {
+    const wordDocRef = collection(firestore, 'words');
+    const snapShot = await getDocs(wordDocRef);
+    snapShot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
+
+    Promise.all(
+      words.map(async (word) => {
+        const newWord: IEnglishWordPracWord = {
+          row: word.row,
+          session_id: word.session_id,
+          jp_title: word.jp_title,
+          en_title: word.en_title,
+          created_at: new Date(),
+          updated_at: new Date(),
+          study_year: word.study_year,
+          memo: word.memo ?? '',
+        };
+
+        await addDoc(wordDocRef, newWord);
+      })
+    );
+  });
+};
+
+/**
+ * Wordデータを削除するプログラム
+ */
+export const deleteAllEnglishWordPracWordList = async (): Promise<void> => {
+  const wordDocRef = collection(firestore, 'words');
+  const snapShot = await getDocs(wordDocRef);
+  snapShot.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
+  });
 };

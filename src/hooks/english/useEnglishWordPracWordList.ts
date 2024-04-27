@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import useSWR, { mutate } from 'swr';
@@ -7,8 +6,10 @@ import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { processWordExcelData } from '@/utils/excel/processWordExcelData';
 import {
+  deleteAllEnglishWordPracWordList,
   fetchEnglishWordPracSession,
   fetchEnglishWordPracWordList,
+  saveEnglishWordPracWordList,
 } from '@/utils/fetch/fetchEnglishWordPrac';
 
 export const useEnglishWordPracWordList = () => {
@@ -31,8 +32,26 @@ export const useEnglishWordPracWordList = () => {
       try {
         await dropExcelData(acceptedFiles, '単語マスタ', async (workbook) => {
           // 添付されたWordデータの処理とアップロード
-          const words = await processWordExcelData(workbook, sessions);
-          await uploadWords(words);
+          const preWords = await processWordExcelData(workbook, sessions);
+          const newWords: IEnglishWordPracWord[] = preWords.map((word) => ({
+            row: word.row,
+            session_id: word.session_id,
+            jp_title: word.jp_title,
+            en_title: word.en_title,
+            created_at: new Date(),
+            updated_at: new Date(),
+            study_year: word.study_year,
+            memo: '',
+          }));
+          // Wordデータを更新
+          await saveEnglishWordPracWordList(newWords);
+          addMessageObject('アップロードが完了しました', 'success');
+          setIsOpenDialog(false);
+          mutate(
+            (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
+            undefined,
+            { revalidate: true }
+          );
         });
       } catch (e: any) {
         addMessageObject(e.message, 'error');
@@ -50,7 +69,7 @@ export const useEnglishWordPracWordList = () => {
 
     if (!isAccepted) return;
     try {
-      await axios.delete('/api/v2/words');
+      await deleteAllEnglishWordPracWordList();
       addMessageObject('単語の削除が完了しました', 'success');
       mutate(
         (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
@@ -87,7 +106,7 @@ export const useEnglishWordPracWordList = () => {
     data: dataSessions,
     error: errorSessions,
     isLoading: isLoadingSessions,
-  } = useSWR('/api/v2/sessions', fetchEnglishWordPracSession, {
+  } = useSWR('sessions', fetchEnglishWordPracSession, {
     // 自動fetchの無効化
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -112,35 +131,6 @@ export const useEnglishWordPracWordList = () => {
   const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
     setSelectedSessionId(id);
   };
-
-  const uploadWords = React.useCallback(
-    async (
-      words: {
-        row: number;
-        session_id: string;
-        en_title: string;
-        jp_title: string;
-        study_year: string;
-      }[]
-    ) => {
-      try {
-        await axios.put('/api/v2/words', { words });
-        addMessageObject('アップロードが完了しました', 'success');
-        setIsOpenDialog(false);
-        mutate(
-          (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
-          undefined,
-          { revalidate: true }
-        );
-      } catch (error) {
-        addMessageObject(
-          `Wordデータのアップロードに失敗しました：${error}`,
-          'error'
-        );
-      }
-    },
-    [addMessageObject]
-  );
 
   return {
     /**セッションデータ */

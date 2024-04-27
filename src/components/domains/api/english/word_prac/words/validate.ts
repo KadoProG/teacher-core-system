@@ -1,5 +1,5 @@
 interface EnglishWordPracWordInput {
-  id?: number;
+  id?: string;
   row?: never;
   session_id?: number;
   jp_title?: string;
