@@ -66,6 +66,8 @@ export const useEnglishWordPracWordPrintInfo = (
       words: wordPracList,
       isShowAnswer,
       email: user?.name ?? '',
+      created_at: new Date(),
+      updated_at: new Date(),
     }),
     [sessionTitle, wordPracList, isShowAnswer, user?.name]
   );

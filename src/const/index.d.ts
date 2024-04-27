@@ -11,7 +11,7 @@ interface IEnglishWordPracWord {
 }
 
 interface IEnglishWordPracSession {
-  id: string;
+  id?: string;
   title: string;
   row: number;
   memo: string;

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import exceljs from 'exceljs';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -8,7 +7,11 @@ import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { dropExcelData } from '@/utils/dropExcelData';
 import { convertCellToString } from '@/utils/excelUtils';
 import { exportExcelData } from '@/utils/exportExcelData';
-import { fetchEnglishWordPracSession } from '@/utils/fetch/fetchEnglishWordPrac';
+import {
+  deleteAllEnglishWordPracSession,
+  fetchEnglishWordPracSession,
+  saveEnglishWordPracSession,
+} from '@/utils/fetch/fetchEnglishWordPrac';
 
 export const useEnglishWordPracSession = () => {
   const { confirmDialog } = useConfirmDialog();
@@ -33,7 +36,7 @@ export const useEnglishWordPracSession = () => {
     });
     if (!isAccepted) return;
     try {
-      await axios.delete('/api/v2/sessions');
+      await deleteAllEnglishWordPracSession();
       addMessageObject('セッションの削除が完了しました', 'success');
       mutate('sessions');
     } catch (e) {
@@ -87,25 +90,9 @@ export const useEnglishWordPracSession = () => {
 
   const sessions: IEnglishWordPracSession[] = data?.sessions ?? [];
 
-  const uploadSessions = async (sessions: { row: number; title: string }[]) => {
-    try {
-      await axios.put('/api/v2/sessions', { sessions });
-      setIsOpenDialog(false);
-      addMessageObject(
-        'セッションデータのアップロードが完了しました。',
-        'success'
-      );
-      mutate('sessions');
-    } catch (error) {
-      addMessageObject(
-        `セッションデータのアップロードに失敗しました：${error}`,
-        'error'
-      );
-    }
-  };
   // セッションExcelファイルを処理する関数
   const processSessionExcelData = async (worksheet: exceljs.Worksheet) => {
-    const sessions: { row: number; title: string }[] = [];
+    const sessions: IEnglishWordPracSession[] = [];
 
     for (let i = 2; i < 101; i++) {
       const row: exceljs.Row = worksheet.getRow(i);
@@ -114,11 +101,31 @@ export const useEnglishWordPracSession = () => {
 
       if (idValue && titleValue) {
         const title = convertCellToString(titleValue);
-        sessions.push({ row: parseInt(idValue), title });
+        sessions.push({
+          row: parseInt(idValue),
+          title,
+          memo: '',
+          created_at: new Date(),
+          updated_at: new Date(),
+        });
       }
     }
 
-    await uploadSessions(sessions);
+    saveEnglishWordPracSession(sessions)
+      .then(() => {
+        setIsOpenDialog(false);
+        addMessageObject(
+          'セッションデータのアップロードが完了しました。',
+          'success'
+        );
+        mutate('sessions');
+      })
+      .catch((e) => {
+        addMessageObject(
+          `セッションデータのアップロードに失敗しました：${e}`,
+          'error'
+        );
+      });
   };
 
   return {
