@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { ConfirmDialogProvider } from '@/components/commons/feedback/ConfirmDialogContext';
 import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
+import { EnglishLayout } from '@/components/commons/layout/EnglishLayout';
 import { FirebaseAuthProvider } from '@/libs/firebase/FirebaseAuthContext';
 import { ColorModeChoice, ThemeRegistry } from '@/libs/theme/themeRegistry';
 import '@/app/globals.scss';
@@ -52,7 +53,9 @@ const Layout = ({
         <FirebaseAuthProvider>
           <ThemeRegistry initColorMode={initColorMode}>
             <SnackbarProvider>
-              <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
+              <ConfirmDialogProvider>
+                <EnglishLayout>{children}</EnglishLayout>
+              </ConfirmDialogProvider>
             </SnackbarProvider>
           </ThemeRegistry>
         </FirebaseAuthProvider>
