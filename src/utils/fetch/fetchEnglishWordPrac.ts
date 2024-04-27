@@ -117,3 +117,24 @@ export const deleteAllEnglishWordPracWordList = async (): Promise<void> => {
     await deleteDoc(doc.ref);
   });
 };
+
+/**
+ * 印刷アーカイブを保存するプログラム
+ * @param print
+ */
+export const saveEnglishWordPracPrint = async (
+  print: IEnglishWordPracPrint
+): Promise<void> => {
+  // コネクションを定義
+  const collectionRef = collection(firestore, 'prints');
+
+  const newPrint: IEnglishWordPracPrint = {
+    title: print.title,
+    created_at: new Date(),
+    updated_at: new Date(),
+    words: print.words,
+    email: print.email,
+  };
+  // 新しいセッションデータを追加
+  await addDoc(collectionRef, newPrint);
+};
