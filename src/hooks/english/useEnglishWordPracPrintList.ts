@@ -1,9 +1,11 @@
-import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR, { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
-import { fetchEnglishWordPracPrint } from '@/utils/fetch/fetchEnglishWordPrac';
+import {
+  deleteEnglishWordPracPrint,
+  fetchEnglishWordPracPrint,
+} from '@/utils/fetch/fetchEnglishWordPrac';
 
 export const useEnglishWordPracPrintList = ({
   handlePrintProp,
@@ -21,7 +23,7 @@ export const useEnglishWordPracPrintList = ({
   const isShowAnswer = form.watch('is_show_answer');
 
   const { data, error, isLoading } = useSWR(
-    '/api/v2/prints',
+    'prints',
     fetchEnglishWordPracPrint,
     {
       // 自動fetchの無効化
@@ -64,22 +66,18 @@ export const useEnglishWordPracPrintList = ({
    * 印刷アーカイブ（単体）削除
    */
   const handleDelete = React.useCallback(
-    (id: string) => {
-      axios
-        .delete(`/api/v2/prints/${id}`)
-        .then(() => {
-          addMessageObject('削除が完了しました。', 'success');
-          mutate(
-            (key) =>
-              typeof key === 'string' && key.startsWith('/api/v2/prints'),
-            undefined,
-            { revalidate: true }
-          );
-        })
-
-        .catch((e) =>
-          addMessageObject(`削除時にエラーが発生しました${e}`, 'error')
+    async (id: string) => {
+      try {
+        await deleteEnglishWordPracPrint(id);
+        addMessageObject('削除が完了しました。', 'success');
+        mutate(
+          (key) => typeof key === 'string' && key.startsWith('prints'),
+          undefined,
+          { revalidate: true }
         );
+      } catch (e) {
+        addMessageObject(`削除時にエラーが発生しました${e}`, 'error');
+      }
     },
     [addMessageObject]
   );

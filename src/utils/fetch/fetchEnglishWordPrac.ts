@@ -4,6 +4,8 @@ import {
   addDoc,
   collection,
   deleteDoc,
+  doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -192,4 +194,21 @@ export const deleteAllEnglishWordPracSession = async (): Promise<void> => {
       await deleteDoc(ref);
     })
   );
+};
+
+/**
+ * 印刷アーカイブの単体削除
+ * @param printId
+ */
+export const deleteEnglishWordPracPrint = async (
+  printId: string
+): Promise<void> => {
+  // 単体取得
+  const docRef = doc(firestore, 'prints', printId);
+  const snapshot = await getDoc(docRef);
+
+  if (!snapshot.exists()) {
+    throw new Error('not found');
+  }
+  await deleteDoc(docRef);
 };
