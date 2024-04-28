@@ -5,6 +5,7 @@ import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { usePrinting } from '@/hooks/commons/usePrinting';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
+import { convertToRomanNumeral } from '@/utils/convertToRomanNumeral';
 import { saveEnglishWordPracPrint } from '@/utils/fetch/fetchEnglishWordPrac';
 
 /**
@@ -34,7 +35,9 @@ export const useEnglishWordPracWordPrintInfo = (
   const session = englishWordPrac.sessions.find(
     (session) => englishWordPrac.selectedSessionId === session.id
   );
-  const sessionTitle = `アイプロⅢ　level${String(session?.row).padStart(2, '0')}「${session?.title}」`;
+  const sessionTitle = `アイプロ${convertToRomanNumeral(
+    Math.floor(((session?.row ?? 1) - 1) / 10) + 1
+  )}　level${String(session?.row).padStart(2, '0')}「${session?.title}」`;
 
   // 単語データの設定（form条件に準ずる）
   const wordPracListBefore: IEnglishWordPracPrint['words'] =
