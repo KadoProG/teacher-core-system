@@ -5,9 +5,9 @@ interface LoadingContainerProps {
   isLoading: boolean;
   children: React.ReactNode;
 }
-export const LoadingContainer: React.FC<LoadingContainerProps> = (props) => {
-  if (props.isLoading) {
-    return (
+export const LoadingContainer: React.FC<LoadingContainerProps> = (props) => (
+  <>
+    {props.isLoading && (
       <Box
         width="100%"
         height="100%"
@@ -15,10 +15,12 @@ export const LoadingContainer: React.FC<LoadingContainerProps> = (props) => {
         justifyContent="center"
         alignItems="center"
         position="fixed"
+        zIndex={(theme) => theme.zIndex.drawer + 2}
+        bgcolor="var(--init-background)"
       >
         <CircularProgress />
       </Box>
-    );
-  }
-  return props.children;
-};
+    )}
+    {props.children}
+  </>
+);
