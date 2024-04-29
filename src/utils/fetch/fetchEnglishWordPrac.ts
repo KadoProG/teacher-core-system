@@ -10,6 +10,7 @@ import {
   orderBy,
   query,
   runTransaction,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 import { firestore } from '@/libs/firebase/firebase';
@@ -80,34 +81,44 @@ export const fetchEnglishWordPracPrint = async (): Promise<{
 
 /**
  * Wordデータを上書き保存するプログラム
+ * 現状はSession.wordsという配列要素として保存されている
+ * 上書き保存のため、過去のデータは完全に削除され、最新のWordデータのみ反映される
  * @param words
  */
 export const saveEnglishWordPracWordList = async (
   words: IEnglishWordPracWord[]
-): Promise<void> => {
+) => {
+  const sessionDocRef = collection(firestore, 'sessions');
+  const q = query(sessionDocRef, orderBy('row'));
+
+  const querySnapshot = await getDocs(q);
+
+  const sessionRefs: DocumentReference<DocumentData, DocumentData>[] = [];
+  querySnapshot.forEach((snapShot) => sessionRefs.push(snapShot.ref));
+
   await runTransaction(firestore, async () => {
-    const wordDocRef = collection(firestore, 'words');
-    const snapShot = await getDocs(wordDocRef);
-    snapShot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
-
     await Promise.all(
-      words.map(async (word) => {
-        const newWord: IEnglishWordPracWord = {
-          row: word.row,
-          session_id: word.session_id,
-          jp_title: word.jp_title,
-          en_title: word.en_title,
-          created_at: word.created_at,
-          updated_at: word.created_at,
-          study_year: word.study_year,
-          memo: word.memo,
-        };
-
-        await addDoc(wordDocRef, newWord);
+      sessionRefs.map(async (ref) => {
+        const currentWords = words.filter((word) => word.session_id === ref.id);
+        if (currentWords.length !== 0)
+          await updateDoc(ref, { words: currentWords });
       })
     );
+  });
+};
+
+/**
+ * Wordデータを更新するプログラム
+ * @param sessionId
+ * @param words
+ */
+export const updateEnglishWordPracWordList = async (
+  sessionId: string,
+  words: IEnglishWordPracWord[]
+): Promise<void> => {
+  await runTransaction(firestore, async () => {
+    const docRef = doc(firestore, 'sessions', sessionId);
+    await updateDoc(docRef, { words });
   });
 };
 

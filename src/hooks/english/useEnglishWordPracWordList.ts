@@ -43,8 +43,9 @@ export const useEnglishWordPracWordList = () => {
             study_year: word.study_year,
             memo: '',
           }));
-          // Wordデータを更新
+
           await saveEnglishWordPracWordList(newWords);
+
           addMessageObject('アップロードが完了しました', 'success');
           setIsOpenDialog(false);
           mutate(

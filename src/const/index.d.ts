@@ -17,6 +17,7 @@ interface IEnglishWordPracSession {
   memo: string;
   created_at: Date;
   updated_at: Date;
+  words: IEnglishWordPracWord[];
 }
 
 interface IEnglishWordPracPrint {
