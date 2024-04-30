@@ -26,6 +26,7 @@ export const fetchEnglishWordPracSession = async (): Promise<{
   const querySnapshot = await getDocs(q);
   const sessions = querySnapshot.docs.map((doc) => ({
     id: doc.id,
+    words: doc.data().words ?? [],
     ...doc.data(),
   })) as IEnglishWordPracSession[];
 
