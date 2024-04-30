@@ -46,11 +46,7 @@ export const useEnglishWordPracWordList = () => {
 
           addMessageObject('アップロードが完了しました', 'success');
           setIsOpenDialog(false);
-          mutate(
-            (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
-            undefined,
-            { revalidate: true }
-          );
+          mutate('sessions');
         });
       } catch (e: any) {
         addMessageObject(e.message, 'error');
@@ -70,19 +66,15 @@ export const useEnglishWordPracWordList = () => {
     try {
       await deleteAllEnglishWordPracWordList();
       addMessageObject('単語の削除が完了しました', 'success');
-      mutate(
-        (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
-        undefined,
-        { revalidate: true }
-      );
+      mutate('sessions');
     } catch (e) {
       addMessageObject(`単語の削除に失敗しました：${e}`, 'error');
     }
   };
 
   const {
-    data: dataSessions,
-    error: errorSessions,
+    data,
+    error,
     isLoading: isLoadingSessions,
   } = useSWR('sessions', fetchEnglishWordPracSession, {
     // 自動fetchの無効化
@@ -92,22 +84,28 @@ export const useEnglishWordPracWordList = () => {
   });
 
   const sessions: IEnglishWordPracSession[] = React.useMemo(
-    () => dataSessions?.sessions ?? [],
-    [dataSessions?.sessions]
+    () => data?.sessions ?? [],
+    [data?.sessions]
   );
 
   if (sessions.length !== 0 && !selectedSession) {
     setSelectedSession(sessions[0]);
   }
 
+  React.useEffect(() => {
+    setSelectedSession(
+      sessions.find((session) => session.id === selectedSession?.id)
+    );
+  }, [sessions, selectedSession?.id]);
+
   // セッションの切り替え
   const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
     setSelectedSession(sessions.find((session) => session.id === id));
   };
 
-  if (errorSessions) {
+  if (error) {
     // eslint-disable-next-line
-    console.error(errorSessions);
+    console.error(error);
   }
 
   return {

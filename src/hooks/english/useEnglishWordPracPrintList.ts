@@ -70,11 +70,7 @@ export const useEnglishWordPracPrintList = ({
       try {
         await deleteEnglishWordPracPrint(id);
         addMessageObject('削除が完了しました。', 'success');
-        mutate(
-          (key) => typeof key === 'string' && key.startsWith('prints'),
-          undefined,
-          { revalidate: true }
-        );
+        mutate('prints');
       } catch (e) {
         addMessageObject(`削除時にエラーが発生しました${e}`, 'error');
       }

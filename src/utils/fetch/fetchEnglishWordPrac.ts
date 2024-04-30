@@ -11,35 +11,8 @@ import {
   query,
   runTransaction,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { firestore } from '@/libs/firebase/firebase';
-
-/**
- * Wordデータを取得する関数
- * @param sessionId
- */
-export const fetchEnglishWordPracWordList = async (
-  sessionId?: string
-): Promise<{ words: IEnglishWordPracWord[] }> => {
-  const wordDocRef = collection(firestore, 'words');
-
-  const q = sessionId
-    ? query(
-        wordDocRef,
-        where('session_id', '==', `${sessionId}`),
-        orderBy('row')
-      )
-    : query(wordDocRef, orderBy('row'));
-
-  const querySnapshot = await getDocs(q);
-  const words = querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as IEnglishWordPracWord[];
-
-  return { words };
-};
 
 /**
  * Sessionデータを取得する関数
@@ -126,14 +99,18 @@ export const updateEnglishWordPracWordList = async (
  * Wordデータを削除するプログラム
  */
 export const deleteAllEnglishWordPracWordList = async (): Promise<void> => {
+  const sessionDocRef = collection(firestore, 'sessions');
+  const q = query(sessionDocRef, orderBy('row'));
+
+  const querySnapshot = await getDocs(q);
+
+  const sessionRefs: DocumentReference<DocumentData, DocumentData>[] = [];
+  querySnapshot.forEach((snapShot) => sessionRefs.push(snapShot.ref));
+
   await runTransaction(firestore, async () => {
-    const wordDocRef = collection(firestore, 'words');
-    const snapShot = await getDocs(wordDocRef);
-    const snapShotRefs: DocumentReference<DocumentData, DocumentData>[] = [];
-    snapShot.forEach((doc) => snapShotRefs.push(doc.ref));
     await Promise.all(
-      snapShotRefs.map(async (ref) => {
-        await deleteDoc(ref);
+      sessionRefs.map(async (ref) => {
+        await updateDoc(ref, { words: [] });
       })
     );
   });

@@ -1,4 +1,5 @@
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
+import Link from 'next/link';
 
 const paths = [
   { title: '画面', path: '/' },
@@ -22,7 +23,12 @@ const Page = () => (
       <Stack spacing={1}>
         {paths.map((path) => (
           <Box key={path.path + path.title}>
-            <Button variant="outlined" color="inherit" href={path.path}>
+            <Button
+              variant="outlined"
+              color="inherit"
+              component={Link}
+              href={path.path}
+            >
               {path.title}
               <Chip label={path.path} />
             </Button>

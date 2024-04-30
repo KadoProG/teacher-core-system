@@ -78,11 +78,7 @@ export const useEnglishWordPracWordPrintInfo = (
     await saveEnglishWordPracPrint(print)
       .then(() => {
         addMessageObject('印刷アーカイブの保存が完了しました。', 'success');
-        mutate(
-          (key) => typeof key === 'string' && key.startsWith('/api/v2/prints'),
-          undefined,
-          { revalidate: true }
-        );
+        mutate('prints');
       })
       .catch((e) => addMessageObject(`保存に失敗しました。${e}`, 'error'));
   }, [addMessageObject, print]);

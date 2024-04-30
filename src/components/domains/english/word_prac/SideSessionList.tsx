@@ -10,6 +10,7 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
+import Link from 'next/link';
 import React from 'react';
 import { EnglishLayoutToolbar } from '@/components/commons/layout/EnglishLayoutToolbar';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
@@ -48,7 +49,7 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
       <Typography variant="h6" fontWeight="bold">
         セッション
       </Typography>
-      <IconButton href="/english/word_prac/session">
+      <IconButton component={Link} href="/english/word_prac/session">
         <CreateOutlinedIcon />
       </IconButton>
     </Box>

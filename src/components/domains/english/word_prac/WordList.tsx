@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Skeleton,
-  TableContainer,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Paper, TableContainer, Typography } from '@mui/material';
 import React from 'react';
 import { ImportExcelDialog } from '@/components/commons/ImportExcelDialog';
 import { WordListTable } from '@/components/domains/english/word_prac/WordListTable';
@@ -46,15 +39,7 @@ export const WordList: React.FC<WordListProps> = (props) => (
       </Box>
     </Box>
     <TableContainer component={Paper} sx={{ p: 2 }}>
-      {!props.englishWordPrac.selectedSession ? (
-        <>
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v) => (
-            <Skeleton key={v} height={50} />
-          ))}
-        </>
-      ) : (
-        <WordListTable session={props.englishWordPrac.selectedSession} />
-      )}
+      <WordListTable session={props.englishWordPrac.selectedSession} />
     </TableContainer>
   </>
 );

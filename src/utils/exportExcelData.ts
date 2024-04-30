@@ -1,8 +1,5 @@
 import exceljs from 'exceljs';
-import {
-  fetchEnglishWordPracSession,
-  fetchEnglishWordPracWordList,
-} from '@/utils/fetch/fetchEnglishWordPrac';
+import { fetchEnglishWordPracSession } from '@/utils/fetch/fetchEnglishWordPrac';
 
 /**
  * Excelファイルを構築してダウンロード
@@ -74,8 +71,10 @@ const makeExcelSheetWordMaster = async (
   const worksheet = workbook.getWorksheet('単語マスタ');
   if (!worksheet) throw new Error('作成失敗');
 
-  const result = await fetchEnglishWordPracWordList();
-  const words: IEnglishWordPracWord[] = result.words;
+  // TODO あとでリファクタリング
+  const words: IEnglishWordPracWord[] = sessions
+    .map((session) => session.words || [])
+    .flat();
 
   // 列を定義
   worksheet.columns = [
@@ -90,7 +89,7 @@ const makeExcelSheetWordMaster = async (
   for (let i = 1; i < words.length + 2; i++) {
     const word = words[i - 1];
 
-    const session = sessions.find((v) => v.id === word?.session_id);
+    const session = sessions.find((session) => session.id === word?.session_id);
 
     const sessionText = session
       ? `${String(session.row).padStart(2, '0')}　${session.title}`
