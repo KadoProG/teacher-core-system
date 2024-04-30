@@ -8,7 +8,6 @@ import { processWordExcelData } from '@/utils/excel/processWordExcelData';
 import {
   deleteAllEnglishWordPracWordList,
   fetchEnglishWordPracSession,
-  fetchEnglishWordPracWordList,
   saveEnglishWordPracWordList,
 } from '@/utils/fetch/fetchEnglishWordPrac';
 
@@ -16,9 +15,8 @@ export const useEnglishWordPracWordList = () => {
   const { addMessageObject } = useSnackbar();
   const { confirmDialog } = useConfirmDialog();
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
-  // 選択中のSession
-  const [selectedSessionId, setSelectedSessionId] =
-    React.useState<IEnglishWordPracSession['id']>();
+  const [selectedSession, setSelectedSession] =
+    React.useState<IEnglishWordPracSession>();
 
   const handleClose = () => {
     setIsOpenDialog(false);
@@ -43,15 +41,12 @@ export const useEnglishWordPracWordList = () => {
             study_year: word.study_year,
             memo: '',
           }));
-          // Wordデータを更新
+
           await saveEnglishWordPracWordList(newWords);
+
           addMessageObject('アップロードが完了しました', 'success');
           setIsOpenDialog(false);
-          mutate(
-            (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
-            undefined,
-            { revalidate: true }
-          );
+          mutate('sessions');
         });
       } catch (e: any) {
         addMessageObject(e.message, 'error');
@@ -71,11 +66,7 @@ export const useEnglishWordPracWordList = () => {
     try {
       await deleteAllEnglishWordPracWordList();
       addMessageObject('単語の削除が完了しました', 'success');
-      mutate(
-        (key) => typeof key === 'string' && key.startsWith('/api/v2/words'),
-        undefined,
-        { revalidate: true }
-      );
+      mutate('sessions');
     } catch (e) {
       addMessageObject(`単語の削除に失敗しました：${e}`, 'error');
     }
@@ -84,27 +75,6 @@ export const useEnglishWordPracWordList = () => {
   const {
     data,
     error,
-    isLoading: isLoadingWords,
-  } = useSWR(
-    selectedSessionId ? selectedSessionId : null,
-    fetchEnglishWordPracWordList,
-    {
-      // 自動fetchの無効化
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
-  const words: IEnglishWordPracWord[] = data?.words ?? [];
-
-  if (error) {
-    // eslint-disable-next-line
-    console.error(error.message);
-  }
-
-  const {
-    data: dataSessions,
-    error: errorSessions,
     isLoading: isLoadingSessions,
   } = useSWR('sessions', fetchEnglishWordPracSession, {
     // 自動fetchの無効化
@@ -114,33 +84,39 @@ export const useEnglishWordPracWordList = () => {
   });
 
   const sessions: IEnglishWordPracSession[] = React.useMemo(
-    () => dataSessions?.sessions ?? [],
-    [dataSessions?.sessions]
+    () => data?.sessions ?? [],
+    [data?.sessions]
   );
 
-  if (sessions.length !== 0 && !selectedSessionId) {
-    setSelectedSessionId(sessions[0].id);
+  if (sessions.length !== 0 && !selectedSession) {
+    setSelectedSession(sessions[0]);
   }
 
-  if (errorSessions) {
-    // eslint-disable-next-line
-    console.error(errorSessions);
-  }
+  React.useEffect(() => {
+    setSelectedSession(
+      sessions.find((session) => session.id === selectedSession?.id)
+    );
+  }, [sessions, selectedSession?.id]);
 
   // セッションの切り替え
   const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
-    setSelectedSessionId(id);
+    setSelectedSession(sessions.find((session) => session.id === id));
   };
 
+  if (error) {
+    // eslint-disable-next-line
+    console.error(error);
+  }
+
   return {
-    /**セッションデータ */
+    /**全てのSessionデータ */
     sessions,
     /**セッションデータLoading中… */
     isLoadingSessions,
-    /**Wordデータ */
-    words,
+    /**選択中のSessionデータ */
+    selectedSession,
     /**WordデータLoading中… */
-    isLoadingWords: isLoadingSessions || isLoadingWords,
+    isLoadingWords: isLoadingSessions,
     /**ドロップゾーンのオブジェクト */
     dropzone,
     /**ドロップダイアログの表示、非表示 */
@@ -153,7 +129,5 @@ export const useEnglishWordPracWordList = () => {
     handleWordsDelete,
     /**セッションの選択 */
     onSelectedSession,
-    /**選択中のセッションID */
-    selectedSessionId,
   };
 };

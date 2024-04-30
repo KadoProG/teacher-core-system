@@ -32,23 +32,21 @@ export const useEnglishWordPracWordPrintInfo = (
   });
 
   // セッション情報→タイトルの設定
-  const session = englishWordPrac.sessions.find(
-    (session) => englishWordPrac.selectedSessionId === session.id
-  );
+  const session = englishWordPrac.selectedSession;
   const sessionTitle = `アイプロ${convertToRomanNumeral(
     Math.floor(((session?.row ?? 1) - 1) / 10) + 1
   )}　level${String(session?.row).padStart(2, '0')}「${session?.title}」`;
 
   // 単語データの設定（form条件に準ずる）
   const wordPracListBefore: IEnglishWordPracPrint['words'] =
-    englishWordPrac.words.map((word) => {
+    session?.words.map((word) => {
       let type: IEnglishWordPracPrint['words'][number]['type'] = 'en';
       // 英語・日本語の出題をランダムにする を付与
       if (form.watch('is_randam_jp_en'))
         type = Math.round(Math.random()) ? 'en' : 'jp';
 
       return { ...word, type };
-    });
+    }) ?? [];
   if (form.watch('is_randam_word')) {
     // シャッフルするロジック（Fisher-Yatesアルゴリズム）
     for (let i = wordPracListBefore.length - 1; i > 0; i--) {
@@ -80,11 +78,7 @@ export const useEnglishWordPracWordPrintInfo = (
     await saveEnglishWordPracPrint(print)
       .then(() => {
         addMessageObject('印刷アーカイブの保存が完了しました。', 'success');
-        mutate(
-          (key) => typeof key === 'string' && key.startsWith('/api/v2/prints'),
-          undefined,
-          { revalidate: true }
-        );
+        mutate('prints');
       })
       .catch((e) => addMessageObject(`保存に失敗しました。${e}`, 'error'));
   }, [addMessageObject, print]);
