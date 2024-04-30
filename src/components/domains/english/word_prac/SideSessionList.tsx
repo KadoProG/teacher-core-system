@@ -73,7 +73,7 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
               props.englishWordPrac.onSelectedSession(session.id);
               props.onClose();
             }}
-            selected={props.englishWordPrac.selectedSessionId === session.id}
+            selected={props.englishWordPrac.selectedSession?.id === session.id}
             sx={{
               '&.Mui-selected': {
                 bgcolor: (theme) => `${theme.palette.background.default}`,
