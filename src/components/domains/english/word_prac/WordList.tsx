@@ -46,14 +46,14 @@ export const WordList: React.FC<WordListProps> = (props) => (
       </Box>
     </Box>
     <TableContainer component={Paper} sx={{ p: 2 }}>
-      {props.englishWordPrac.isLoadingWords ? (
+      {!props.englishWordPrac.selectedSession ? (
         <>
           {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v) => (
             <Skeleton key={v} height={50} />
           ))}
         </>
       ) : (
-        <WordListTable words={props.englishWordPrac.words} />
+        <WordListTable session={props.englishWordPrac.selectedSession} />
       )}
     </TableContainer>
   </>

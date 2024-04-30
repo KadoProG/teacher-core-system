@@ -8,7 +8,6 @@ import { processWordExcelData } from '@/utils/excel/processWordExcelData';
 import {
   deleteAllEnglishWordPracWordList,
   fetchEnglishWordPracSession,
-  fetchEnglishWordPracWordList,
   saveEnglishWordPracWordList,
 } from '@/utils/fetch/fetchEnglishWordPrac';
 
@@ -16,9 +15,8 @@ export const useEnglishWordPracWordList = () => {
   const { addMessageObject } = useSnackbar();
   const { confirmDialog } = useConfirmDialog();
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
-  // 選択中のSession
-  const [selectedSessionId, setSelectedSessionId] =
-    React.useState<IEnglishWordPracSession['id']>();
+  const [selectedSession, setSelectedSession] =
+    React.useState<IEnglishWordPracSession>();
 
   const handleClose = () => {
     setIsOpenDialog(false);
@@ -83,27 +81,6 @@ export const useEnglishWordPracWordList = () => {
   };
 
   const {
-    data,
-    error,
-    isLoading: isLoadingWords,
-  } = useSWR(
-    selectedSessionId ? selectedSessionId : null,
-    fetchEnglishWordPracWordList,
-    {
-      // 自動fetchの無効化
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
-  const words: IEnglishWordPracWord[] = data?.words ?? [];
-
-  if (error) {
-    // eslint-disable-next-line
-    console.error(error.message);
-  }
-
-  const {
     data: dataSessions,
     error: errorSessions,
     isLoading: isLoadingSessions,
@@ -119,29 +96,29 @@ export const useEnglishWordPracWordList = () => {
     [dataSessions?.sessions]
   );
 
-  if (sessions.length !== 0 && !selectedSessionId) {
-    setSelectedSessionId(sessions[0].id);
+  if (sessions.length !== 0 && !selectedSession) {
+    setSelectedSession(sessions[0]);
   }
+
+  // セッションの切り替え
+  const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
+    setSelectedSession(sessions.find((session) => session.id === id));
+  };
 
   if (errorSessions) {
     // eslint-disable-next-line
     console.error(errorSessions);
   }
 
-  // セッションの切り替え
-  const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
-    setSelectedSessionId(id);
-  };
-
   return {
-    /**セッションデータ */
+    /**全てのSessionデータ */
     sessions,
     /**セッションデータLoading中… */
     isLoadingSessions,
-    /**Wordデータ */
-    words,
+    /**選択中のSessionデータ */
+    selectedSession,
     /**WordデータLoading中… */
-    isLoadingWords: isLoadingSessions || isLoadingWords,
+    isLoadingWords: isLoadingSessions,
     /**ドロップゾーンのオブジェクト */
     dropzone,
     /**ドロップダイアログの表示、非表示 */
@@ -154,7 +131,5 @@ export const useEnglishWordPracWordList = () => {
     handleWordsDelete,
     /**セッションの選択 */
     onSelectedSession,
-    /**選択中のセッションID */
-    selectedSessionId,
   };
 };
