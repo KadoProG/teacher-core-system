@@ -47,10 +47,9 @@ export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setUser(null);
         }
-
-        return unsubscribe;
       }
     );
+    return unsubscribe;
   }, []);
 
   return (
