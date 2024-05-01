@@ -6,6 +6,9 @@ import { dropExcelData } from '@/utils/dropExcelData';
 import { processWordExcelData } from '@/utils/excel/processWordExcelData';
 import { saveEnglishWordPracWordList } from '@/utils/fetch/fetchEnglishWordPrac';
 
+/**
+ * 単語ページでの印刷設定や、保存処理
+ */
 export const useEnglishWordPracWordUpload = (option: {
   sessions: IEnglishWordPracSession[];
 }) => {
