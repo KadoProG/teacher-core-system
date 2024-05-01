@@ -1,12 +1,12 @@
-import axios from 'axios';
 import exceljs from 'exceljs';
+import { fetchEnglishWordPracSession } from '@/utils/fetch/fetchEnglishWordPrac';
 
 /**
  * Excelファイルを構築してダウンロード
  */
 export const exportExcelData = async () => {
-  const result = await axios.get('/api/v2/sessions');
-  const sessions: IEnglishWordPracSession[] = await result.data.sessions;
+  const result = await fetchEnglishWordPracSession();
+  const sessions: IEnglishWordPracSession[] = result.sessions;
 
   // Workbookの作成
   const workbook = new exceljs.Workbook();
@@ -71,8 +71,10 @@ const makeExcelSheetWordMaster = async (
   const worksheet = workbook.getWorksheet('単語マスタ');
   if (!worksheet) throw new Error('作成失敗');
 
-  const result = await axios.get('/api/v2/words');
-  const words: IEnglishWordPracWord[] = await result.data.words;
+  // TODO あとでリファクタリング
+  const words: IEnglishWordPracWord[] = sessions
+    .map((session) => session.words || [])
+    .flat();
 
   // 列を定義
   worksheet.columns = [
@@ -87,7 +89,7 @@ const makeExcelSheetWordMaster = async (
   for (let i = 1; i < words.length + 2; i++) {
     const word = words[i - 1];
 
-    const session = sessions.find((v) => v.id === word?.session_id);
+    const session = sessions.find((session) => session.id === word?.session_id);
 
     const sessionText = session
       ? `${String(session.row).padStart(2, '0')}　${session.title}`

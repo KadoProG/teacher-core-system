@@ -7,13 +7,13 @@ import {
 import { useTableRowCheckbox } from '@/hooks/commons/useTableRowCheckbox';
 
 interface WordListTableProps {
-  words: IEnglishWordPracWord[];
+  session?: IEnglishWordPracSession;
 }
 export const WordListTable: React.FC<WordListTableProps> = (props) => {
   const { selectedIds, handleSingleClick, handleAllClick, isAllSelected } =
-    useTableRowCheckbox(props.words.map((v) => v.id));
+    useTableRowCheckbox(props.session?.words?.map((v) => v.id) ?? []);
 
-  if (props.words.length === 0) {
+  if (!props.session?.words || props.session?.words.length === 0) {
     return <Typography>単語はありません</Typography>;
   }
 
@@ -26,9 +26,9 @@ export const WordListTable: React.FC<WordListTableProps> = (props) => {
         />
       </TableHead>
       <TableBody>
-        {props.words.map((word) => (
+        {props.session?.words.map((word) => (
           <WordListTableBodyRow
-            key={word.id}
+            key={word.row + '__' + props.session?.id}
             word={word}
             isChecked={selectedIds.includes(word.id ?? '')}
             handleSingleClick={handleSingleClick}

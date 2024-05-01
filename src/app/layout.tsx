@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-import NextAuthProvider from '@/components/commons/auth/NextAuth';
 import { ConfirmDialogProvider } from '@/components/commons/feedback/ConfirmDialogContext';
 import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
+import { EnglishLayout } from '@/components/commons/layout/EnglishLayout';
+import { FirebaseAuthProvider } from '@/libs/firebase/FirebaseAuthContext';
 import { ColorModeChoice, ThemeRegistry } from '@/libs/theme/themeRegistry';
 import '@/app/globals.scss';
 
@@ -49,13 +50,15 @@ const Layout = ({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>
-        <NextAuthProvider>
+        <FirebaseAuthProvider>
           <ThemeRegistry initColorMode={initColorMode}>
             <SnackbarProvider>
-              <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
+              <ConfirmDialogProvider>
+                <EnglishLayout>{children}</EnglishLayout>
+              </ConfirmDialogProvider>
             </SnackbarProvider>
           </ThemeRegistry>
-        </NextAuthProvider>
+        </FirebaseAuthProvider>
       </body>
     </html>
   );

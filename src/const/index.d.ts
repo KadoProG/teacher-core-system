@@ -11,12 +11,13 @@ interface IEnglishWordPracWord {
 }
 
 interface IEnglishWordPracSession {
-  id: string;
+  id?: string;
   title: string;
   row: number;
   memo: string;
   created_at: Date;
   updated_at: Date;
+  words: IEnglishWordPracWord[];
 }
 
 interface IEnglishWordPracPrint {

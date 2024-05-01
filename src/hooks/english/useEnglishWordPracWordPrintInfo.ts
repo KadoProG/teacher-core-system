@@ -1,11 +1,12 @@
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { usePrinting } from '@/hooks/commons/usePrinting';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
+import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
+import { convertToRomanNumeral } from '@/utils/convertToRomanNumeral';
+import { saveEnglishWordPracPrint } from '@/utils/fetch/fetchEnglishWordPrac';
 
 /**
  * 単語ページでの印刷設定や、保存処理
@@ -13,6 +14,7 @@ import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWo
 export const useEnglishWordPracWordPrintInfo = (
   englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>
 ) => {
+  const user = useAuth();
   const componentRef = React.useRef<HTMLDivElement>(null);
   const [isShowAnswer, setIsShowAnswer] = React.useState<boolean>(false);
   const { handlePrint: handleHookPrint } = usePrinting({ componentRef });
@@ -30,21 +32,21 @@ export const useEnglishWordPracWordPrintInfo = (
   });
 
   // セッション情報→タイトルの設定
-  const session = englishWordPrac.sessions.find(
-    (session) => englishWordPrac.selectedSessionId === session.id
-  );
-  const sessionTitle = `アイプロⅢ　level${String(session?.row).padStart(2, '0')}「${session?.title}」`;
+  const session = englishWordPrac.selectedSession;
+  const sessionTitle = `アイプロ${convertToRomanNumeral(
+    Math.floor(((session?.row ?? 1) - 1) / 10) + 1
+  )}　level${String(session?.row).padStart(2, '0')}「${session?.title}」`;
 
   // 単語データの設定（form条件に準ずる）
   const wordPracListBefore: IEnglishWordPracPrint['words'] =
-    englishWordPrac.words.map((word) => {
+    session?.words.map((word) => {
       let type: IEnglishWordPracPrint['words'][number]['type'] = 'en';
       // 英語・日本語の出題をランダムにする を付与
       if (form.watch('is_randam_jp_en'))
         type = Math.round(Math.random()) ? 'en' : 'jp';
 
       return { ...word, type };
-    });
+    }) ?? [];
   if (form.watch('is_randam_word')) {
     // シャッフルするロジック（Fisher-Yatesアルゴリズム）
     for (let i = wordPracListBefore.length - 1; i > 0; i--) {
@@ -55,9 +57,8 @@ export const useEnglishWordPracWordPrintInfo = (
       ];
     }
   }
-  const wordPracList = wordPracListBefore.slice(0, form.watch('word_count'));
 
-  const { data } = useSession();
+  const wordPracList = wordPracListBefore.slice(0, form.watch('word_count'));
 
   // 現在生成中の印刷データ
   const print: IEnglishWordPracPrint = React.useMemo(
@@ -65,26 +66,20 @@ export const useEnglishWordPracWordPrintInfo = (
       title: sessionTitle,
       words: wordPracList,
       isShowAnswer,
-      email: data?.user.name ?? '',
+      email: user?.name ?? '',
+      created_at: new Date(),
+      updated_at: new Date(),
     }),
-    [sessionTitle, wordPracList, isShowAnswer, data?.user.name]
+    [sessionTitle, wordPracList, isShowAnswer, user?.name]
   );
 
   // 印刷データを保存する処理
   const handleSave = React.useCallback(async () => {
-    axios
-      .post('/api/v2/prints', {
-        print,
-      })
+    await saveEnglishWordPracPrint(print)
       .then(() => {
         addMessageObject('印刷アーカイブの保存が完了しました。', 'success');
-        mutate(
-          (key) => typeof key === 'string' && key.startsWith('/api/v2/prints'),
-          undefined,
-          { revalidate: true }
-        );
+        mutate('prints');
       })
-
       .catch((e) => addMessageObject(`保存に失敗しました。${e}`, 'error'));
   }, [addMessageObject, print]);
 

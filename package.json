@@ -1,16 +1,15 @@
 {
   "name": "teacher-core-system",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "private": true,
   "homepage": "https://kadoprog.github.io",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --no-cache . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "fix": "eslint --no-cache --fix . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint --no-cache . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 && tsc --noEmit",
+    "fix": "eslint --no-cache --fix . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 && tsc --noEmit",
     "prettier": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json,css}'",
-    "check-types": "tsc --noEmit",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -18,7 +17,6 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.11",
     "@mui/material": "^5.15.11",
-    "@prisma/client": "5.11.0",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "exceljs": "^4.4.0",
@@ -27,7 +25,6 @@
     "next": "14.1.0",
     "next-auth": "^4.24.7",
     "next-pwa": "^5.6.0",
-    "prisma": "^5.11.0",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
@@ -37,6 +34,7 @@
     "swr": "^2.2.5"
   },
   "devDependencies": {
+    "@types/firebase": "^3.2.1",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
