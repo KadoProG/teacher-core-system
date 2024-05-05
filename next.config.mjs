@@ -14,6 +14,15 @@ const withPWA = withPWAInit({
 
 const nextConfig = withPWA({
   // Next.jsの設定をここに追加する
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '**',
+      },
+    ],
+  },
   async rewrites() {
     return [
       {

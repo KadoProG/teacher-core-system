@@ -14,6 +14,7 @@ import { firebaseAuth, firestore } from '@/libs/firebase/firebase';
 interface User {
   id: string;
   name: string;
+  photoURL: string;
 }
 
 type UserContextType = User | null | undefined;
@@ -34,10 +35,18 @@ export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
           if (snap.exists()) {
             const appUser = (await getDoc(ref)).data() as User;
             setUser(appUser);
+
+            if (
+              appUser.name !== firebaseUser.displayName ||
+              appUser.photoURL !== firebaseUser.photoURL
+            ) {
+              setDoc(ref, { ...appUser, photoURL: firebaseUser.photoURL });
+            }
           } else {
             const appUser: User = {
               id: firebaseUser.uid,
               name: firebaseUser.displayName!,
+              photoURL: firebaseUser.photoURL!,
             };
 
             setDoc(ref, appUser).then(() => {
