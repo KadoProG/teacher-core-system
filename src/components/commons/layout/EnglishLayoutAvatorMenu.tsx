@@ -7,7 +7,9 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Typography,
 } from '@mui/material';
+import React from 'react';
 import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { login, logout } from '@/libs/firebase/firebaseAuth';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
@@ -43,6 +45,12 @@ export const EnglishLayoutAvatorMenu: React.FC<EnglishLayoutAvatorMenuProps> = (
         sx: { p: 1, width: 250 - 30 },
       }}
     >
+      {!props.isPC && (
+        <Typography variant="body2" color="gray">
+          {user?.name}
+        </Typography>
+      )}
+      {!props.isPC && <Divider />}
       <MenuItem onClick={props.onClose}>
         <ListItemIcon sx={{ color: 'text.primary' }}>
           <PeopleIcon />
