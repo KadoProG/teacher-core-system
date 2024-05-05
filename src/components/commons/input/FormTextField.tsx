@@ -11,6 +11,8 @@ type FormTextFieldProps<T extends FieldValues> = UseControllerProps<T> & {
   label: string;
   type: string;
   isRequired?: boolean;
+  isDense?: boolean;
+  placeholder?: string;
 };
 
 export const FormTextField = <T extends FieldValues>(
@@ -25,10 +27,12 @@ export const FormTextField = <T extends FieldValues>(
   });
   return (
     <Box display="flex" alignItems="center">
-      <Box width={180} position="relative">
-        <Typography variant="body2">{props.label}</Typography>
-        {props.isRequired && <RequiredLabel />}
-      </Box>
+      {!props.isDense && (
+        <Box width={180} position="relative">
+          <Typography variant="body2">{props.label}</Typography>
+          {props.isRequired && <RequiredLabel />}
+        </Box>
+      )}
       <Box>
         <TextField
           {...controller.field}
@@ -42,6 +46,7 @@ export const FormTextField = <T extends FieldValues>(
             },
           }}
           inputProps={{
+            placeholder: props.placeholder,
             sx: {
               '+ fieldset legend': {
                 display: 'none',

@@ -39,7 +39,7 @@ export const useEnglishWordPracWordPrintInfo = (
 
   // 単語データの設定（form条件に準ずる）
   const wordPracListBefore: IEnglishWordPracPrint['words'] =
-    session?.words.map((word) => {
+    session?.words?.map((word) => {
       let type: IEnglishWordPracPrint['words'][number]['type'] = 'en';
       // 英語・日本語の出題をランダムにする を付与
       if (form.watch('is_randam_jp_en'))
