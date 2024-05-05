@@ -1,37 +1,25 @@
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import PeopleIcon from '@mui/icons-material/People';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import {
   Avatar,
   Box,
-  Divider,
   List,
   ListItemAvatar,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem,
 } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
-import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
-import { SettingDialog } from '@/components/commons/settings/SettingDialog';
-import { login, logout } from '@/libs/firebase/firebaseAuth';
+import { EnglishLayoutAvatorMenu } from '@/components/commons/layout/EnglishLayoutAvatorMenu';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 
 interface EnglishLayoutDrawerBottomProps {
   drawerWidth: number;
+  onSettingDialogOpen: () => void;
 }
 
 export const EnglishLayoutDrawerBottom: React.FC<
   EnglishLayoutDrawerBottomProps
 > = (props) => {
-  const { confirmDialog } = useConfirmDialog();
-  const [settingDialogOpen, setSettingDialogOpen] =
-    React.useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -58,67 +46,12 @@ export const EnglishLayoutDrawerBottom: React.FC<
           borderRight: (theme) => `1px solid ${theme.palette.divider}`,
         }}
       >
-        <Menu
-          id="demo-positioned-menu"
-          aria-labelledby="demo-positioned-button"
+        <EnglishLayoutAvatorMenu
           anchorEl={anchorEl}
-          open={open}
           onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          MenuListProps={{
-            sx: { p: 1, width: props.drawerWidth - 30 },
-          }}
-        >
-          <MenuItem onClick={handleClose}>
-            <ListItemIcon sx={{ color: 'text.primary' }}>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText>チーム</ListItemText>
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              setSettingDialogOpen(true);
-            }}
-          >
-            <ListItemIcon sx={{ color: 'text.primary' }}>
-              <SettingsOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText>設定</ListItemText>
-          </MenuItem>
-          <Divider />
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              if (user) {
-                confirmDialog({
-                  title: 'ログアウトの確認',
-                  children: '本当にログアウトしますか？',
-                  negativeButtonText: 'キャンセル',
-                  positiveButtonText: 'ログアウト',
-                }).then((result) => {
-                  if (result.isAccepted) {
-                    logout();
-                  }
-                });
-              } else {
-                login();
-              }
-            }}
-          >
-            <ListItemIcon sx={{ color: 'text.primary' }}>
-              <LogoutOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText>{!user ? 'ログイン' : 'ログアウト'}</ListItemText>
-          </MenuItem>
-        </Menu>
+          isPC
+          onSettingDialogOpen={props.onSettingDialogOpen}
+        />
         <ListItemButton onClick={handleClick}>
           <ListItemAvatar>
             <Avatar>
@@ -132,10 +65,6 @@ export const EnglishLayoutDrawerBottom: React.FC<
           </ListItemText>
         </ListItemButton>
       </List>
-      <SettingDialog
-        onClose={() => setSettingDialogOpen(false)}
-        open={settingDialogOpen}
-      />
     </Box>
   );
 };
