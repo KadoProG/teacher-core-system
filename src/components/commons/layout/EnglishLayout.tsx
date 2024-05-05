@@ -4,9 +4,11 @@ import React from 'react';
 import { EnglishLayoutDrawer } from '@/components/commons/layout/EnglishLayoutDrawer';
 
 export const EnglishLayout = (props: { children: React.ReactNode }) => (
-  <Box pr={0} display="flex">
+  <Box pr={0} display="flex" maxWidth="100%">
     <CssBaseline />
     <EnglishLayoutDrawer />
-    <Box flexGrow={1}>{props.children}</Box>
+    <Box flexGrow={1} maxWidth="100%">
+      {props.children}
+    </Box>
   </Box>
 );
