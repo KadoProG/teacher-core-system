@@ -71,7 +71,7 @@ export const SideSessionList: React.FC<SideSessionListProps> = (props) => (
           <ListItemButton
             key={session.id}
             onClick={() => {
-              props.englishWordPrac.onSelectedSession(session.id);
+              props.englishWordPrac.onSelectSession(session.id);
               props.onClose();
             }}
             selected={props.englishWordPrac.selectedSession?.id === session.id}

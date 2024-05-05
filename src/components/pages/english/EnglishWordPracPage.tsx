@@ -10,6 +10,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import React from 'react';
+import { WordPracSessionSelectPaper } from '@/components/domains/english/word_prac/FormSessionSelect';
 import { SideSessionList } from '@/components/domains/english/word_prac/SideSessionList';
 import { WordList } from '@/components/domains/english/word_prac/WordList';
 import { WordPrintInfo } from '@/components/domains/english/word_prac/WordPrintInfo';
@@ -49,6 +50,11 @@ export const EnglishWordPracPage: React.FC = () => {
             <Typography>セッションを変更する</Typography>
           </Box>
         )}
+        <WordPracSessionSelectPaper
+          sessions={englishWordPrac.sessions}
+          selectedSession={englishWordPrac.selectedSession}
+          onSelectSession={englishWordPrac.onSelectSession}
+        />
         <WordPrintInfo englishWordPrac={englishWordPrac} />
         <WordList englishWordPrac={englishWordPrac} />
       </Box>

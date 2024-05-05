@@ -10,8 +10,9 @@ import {
 export const useEnglishWordPracWordList = () => {
   const { addMessageObject } = useSnackbar();
   const { confirmDialog } = useConfirmDialog();
-  const [selectedSession, setSelectedSession] =
-    React.useState<IEnglishWordPracSession>();
+  const [selectedSession, setSelectedSession] = React.useState<
+    IEnglishWordPracSession & { index: number }
+  >();
 
   const handleWordsDelete = async () => {
     const { isAccepted } = await confirmDialog({
@@ -48,18 +49,20 @@ export const useEnglishWordPracWordList = () => {
   );
 
   if (sessions.length !== 0 && !selectedSession) {
-    setSelectedSession(sessions[0]);
+    setSelectedSession({ ...sessions[0], index: 0 });
   }
 
   React.useEffect(() => {
-    setSelectedSession(
-      sessions.find((session) => session.id === selectedSession?.id)
+    const index = sessions.findIndex(
+      (session) => session.id === selectedSession?.id
     );
+    setSelectedSession({ ...sessions[index], index });
   }, [sessions, selectedSession?.id]);
 
   // セッションの切り替え
-  const onSelectedSession = (id: IEnglishWordPracSession['id']) => {
-    setSelectedSession(sessions.find((session) => session.id === id));
+  const onSelectSession = (id: IEnglishWordPracSession['id']) => {
+    const index = sessions.findIndex((session) => session.id === id);
+    setSelectedSession({ ...sessions[index], index });
   };
 
   if (error) {
@@ -79,6 +82,6 @@ export const useEnglishWordPracWordList = () => {
     /**単語の削除を実行 */
     handleWordsDelete,
     /**セッションの選択 */
-    onSelectedSession,
+    onSelectSession,
   };
 };
