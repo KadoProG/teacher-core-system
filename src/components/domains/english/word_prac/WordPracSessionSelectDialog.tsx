@@ -1,19 +1,19 @@
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import {
   Box,
+  Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   List,
   ListItemButton,
-  useMediaQuery,
 } from '@mui/material';
 import Link from 'next/link';
 import React from 'react';
-import { useForm } from 'react-hook-form';
 import { FormSearchField } from '@/components/commons/input/FormSearchField';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
+import { useEnglishWordPracWordSessionDialog } from '@/hooks/english/useEnglishWordPracWordSessionDialog';
 
 interface WordPracSessionSelectDialogProps {
   isOpen: boolean;
@@ -31,19 +31,9 @@ interface WordPracSessionSelectDialogProps {
 export const WordPracSessionSelectDialog: React.FC<
   WordPracSessionSelectDialogProps
 > = (props) => {
-  const { control } = useForm();
-
-  const isMin600 = useMediaQuery('(min-width:600px)');
-  const isMin800 = useMediaQuery('(min-width:800px)');
-
-  const chunkSize = isMin800 ? 10 : isMin600 ? 15 : 1000;
-
-  const slicedSessions = props.sessions.reduce((acc: any, _, index) => {
-    if (index % chunkSize === 0) {
-      acc.push(props.sessions.slice(index, index + chunkSize));
-    }
-    return acc;
-  }, []) as IEnglishWordPracSession[][];
+  const { control, slicedSessions } = useEnglishWordPracWordSessionDialog(
+    props.sessions
+  );
 
   return (
     <Dialog
@@ -54,19 +44,14 @@ export const WordPracSessionSelectDialog: React.FC<
       maxWidth="md"
     >
       <DialogTitle>
-        <Box display="flex" justifyContent="space-between">
-          <FormSearchField
-            name="search"
-            label="セッションを検索する"
-            control={control}
-            placeholder="セッション名または番号"
-            fullWidth
-            sx={{ minWidth: { xs: false, sm: 300 } }}
-          />
-          <IconButton component={Link} href="/english/word_prac/session">
-            <CreateOutlinedIcon />
-          </IconButton>
-        </Box>
+        <FormSearchField
+          name="search"
+          label="セッションを検索する"
+          control={control}
+          placeholder="セッション名または番号"
+          fullWidth
+          sx={{ minWidth: { xs: false, sm: 300 } }}
+        />
       </DialogTitle>
       <DialogContent>
         <Box display="flex">
@@ -104,6 +89,18 @@ export const WordPracSessionSelectDialog: React.FC<
           ))}
         </Box>
       </DialogContent>
+      <DialogActions>
+        <Button
+          component={Link}
+          href="/english/word_prac/session"
+          startIcon={<CreateOutlinedIcon />}
+          color="inherit"
+          variant="outlined"
+          size="small"
+        >
+          編集する
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
