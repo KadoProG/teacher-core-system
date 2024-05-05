@@ -17,6 +17,8 @@ type FormSelectProps<T extends FieldValues> = UseControllerProps<T> & {
   isRequired?: boolean;
   options?: { label: string; value: MenuItemProps['value'] }[];
   isDense?: boolean;
+  sx?: any;
+  align?: 'left' | 'center' | 'right';
 };
 
 export const FormSelect = <T extends FieldValues>(
@@ -38,13 +40,12 @@ export const FormSelect = <T extends FieldValues>(
           <Typography variant="body2">{props.label}</Typography>
         </Box>
       )}
-      <Box>
+      <Box flex={1} display="flex" justifyContent={props.align}>
         <Select
-          fullWidth
           {...controller.field}
           size="small"
           id={`filled_${controller.field.name}`}
-          label={props.label}
+          sx={props.sx}
         >
           {options.map((option) => (
             <MenuItem key={option.label + option.value} value={option.value}>
