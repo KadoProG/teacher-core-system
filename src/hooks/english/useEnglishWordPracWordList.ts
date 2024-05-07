@@ -48,16 +48,18 @@ export const useEnglishWordPracWordList = () => {
     [data?.sessions]
   );
 
-  if (sessions.length !== 0 && !selectedSession) {
-    setSelectedSession({ ...sessions[0], index: 0 });
-  }
+  React.useEffect(() => {
+    if (sessions.length !== 0 && !selectedSession) {
+      setSelectedSession({ ...sessions[0], index: 0 });
+      return;
+    }
+  }, [sessions, selectedSession]);
 
   React.useEffect(() => {
-    const index = sessions.findIndex(
-      (session) => session.id === selectedSession?.id
-    );
-    setSelectedSession({ ...sessions[index], index });
-  }, [sessions, selectedSession?.id]);
+    if (sessions.length === 0) return;
+
+    setSelectedSession({ ...sessions[0], index: 0 });
+  }, [sessions]);
 
   // セッションの切り替え
   const onSelectSession = (id: IEnglishWordPracSession['id']) => {
@@ -74,7 +76,7 @@ export const useEnglishWordPracWordList = () => {
     /**全てのSessionデータ */
     sessions,
     /**セッションデータLoading中… */
-    isLoadingSessions,
+    isLoadingSessions: isLoadingSessions || !data?.sessions,
     /**選択中のSessionデータ */
     selectedSession,
     /**WordデータLoading中… */

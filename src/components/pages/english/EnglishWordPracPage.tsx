@@ -27,6 +27,7 @@ export const EnglishWordPracPage: React.FC = () => {
         sessions={englishWordPrac.sessions}
         selectedSession={englishWordPrac.selectedSession}
         onSelectSession={englishWordPrac.onSelectSession}
+        isLoadingSessions={englishWordPrac.isLoadingSessions}
       />
       <WordPrintInfo englishWordPrac={englishWordPrac} />
       <WordList englishWordPrac={englishWordPrac} />

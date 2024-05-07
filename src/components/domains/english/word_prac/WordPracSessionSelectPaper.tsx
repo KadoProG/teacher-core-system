@@ -11,6 +11,7 @@ interface WordPracSessionSelectPaperProps {
   onSelectSession: ReturnType<
     typeof useEnglishWordPracWordList
   >['onSelectSession'];
+  isLoadingSessions: boolean;
 }
 
 export const WordPracSessionSelectPaper: React.FC<
@@ -50,19 +51,29 @@ export const WordPracSessionSelectPaper: React.FC<
           >
             <ChevronLeftIcon fontSize="small" />
           </IconButton>
-          <Button
-            color="inherit"
-            sx={{
-              width: 230,
-            }}
-            onClick={handleClick}
-          >
-            <Typography fontWeight="bold">
-              {String(props.selectedSession?.row).padStart(2, '0')}
-              {'　'}
-              {props.selectedSession?.title}
+          {props.isLoadingSessions ? (
+            <Typography
+              sx={{ width: 230 }}
+              display="inline-block"
+              align="center"
+            >
+              ロード中…
             </Typography>
-          </Button>
+          ) : (
+            <Button
+              color="inherit"
+              sx={{
+                width: 230,
+              }}
+              onClick={handleClick}
+            >
+              <Typography fontWeight="bold">
+                {String(props.selectedSession?.row).padStart(2, '0')}
+                {'　'}
+                {props.selectedSession?.title}
+              </Typography>
+            </Button>
+          )}
           <WordPracSessionSelectDialog
             isOpen={open}
             sessions={props.sessions}
