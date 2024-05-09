@@ -37,6 +37,7 @@ export const WordPracSessionSelectPaper: React.FC<
           <IconButton
             size="small"
             color="inherit"
+            aria-label="前のセッションに移動"
             sx={{
               borderRadius: 1,
               border: (theme) => `1px solid ${theme.palette.divider}`,
@@ -84,6 +85,7 @@ export const WordPracSessionSelectPaper: React.FC<
           <IconButton
             size="small"
             color="inherit"
+            aria-label="次のセッションに移動"
             sx={{
               borderRadius: 1,
               border: (theme) => `1px solid ${theme.palette.divider}`,

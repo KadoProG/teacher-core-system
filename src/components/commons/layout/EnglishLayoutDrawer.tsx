@@ -1,9 +1,9 @@
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import PrintIcon from '@mui/icons-material/Print';
 import {
-  Box,
   Drawer,
   List,
+  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -43,28 +43,27 @@ export const EnglishLayoutDrawer: React.FC<EnglishLayoutDrawerProps> = (
     >
       <List
         subheader={
-          <ListSubheader
-            component={Box}
-            display="flex"
-            alignItems="center"
-            p={1}
-          >
+          <ListSubheader sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
             <Image src="/icon-512x512.png" width={50} height={50} alt="塾" />
           </ListSubheader>
         }
       >
-        <ListItemButton href="/english/word_prac" component={Link}>
-          <ListItemIcon sx={{ minWidth: 40 }}>
-            <FormatListBulletedIcon />
-          </ListItemIcon>
-          <ListItemText primary="単語リスト" />
-        </ListItemButton>
-        <ListItemButton href="/english/word_prac/print" component={Link}>
-          <ListItemIcon sx={{ minWidth: 40 }}>
-            <PrintIcon />
-          </ListItemIcon>
-          <ListItemText primary="印刷アーカイブ" />
-        </ListItemButton>
+        <ListItem sx={{ p: 0 }}>
+          <ListItemButton href="/english/word_prac" component={Link}>
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <FormatListBulletedIcon />
+            </ListItemIcon>
+            <ListItemText primary="単語リスト" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem sx={{ p: 0 }}>
+          <ListItemButton href="/english/word_prac/print" component={Link}>
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <PrintIcon />
+            </ListItemIcon>
+            <ListItemText primary="印刷アーカイブ" />
+          </ListItemButton>
+        </ListItem>
       </List>
       <Toolbar />
       <EnglishLayoutDrawerBottom

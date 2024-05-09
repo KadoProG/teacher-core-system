@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   List,
+  ListItem,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
@@ -52,18 +53,20 @@ export const EnglishLayoutDrawerBottom: React.FC<
           isPC
           onSettingDialogOpen={props.onSettingDialogOpen}
         />
-        <ListItemButton onClick={handleClick}>
-          <ListItemAvatar>
-            <Avatar>
-              {user?.photoURL && (
-                <Image src={user.photoURL} width={36} height={36} alt="塾" />
-              )}
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText>
-            {!user ? 'ログインしてください' : user.name}
-          </ListItemText>
-        </ListItemButton>
+        <ListItem sx={{ p: 0 }}>
+          <ListItemButton onClick={handleClick}>
+            <ListItemAvatar>
+              <Avatar>
+                {user?.photoURL && (
+                  <Image src={user.photoURL} width={36} height={36} alt="塾" />
+                )}
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText>
+              {!user ? 'ログインしてください' : user.name}
+            </ListItemText>
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );

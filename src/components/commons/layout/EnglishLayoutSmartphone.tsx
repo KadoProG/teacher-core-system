@@ -53,14 +53,17 @@ export const EnglishLayoutSmartphone: React.FC<EnglishLayoutSmartphoneProps> = (
             <Toolbar variant="dense">
               <Image src="/icon-512x512.png" width={36} height={36} alt="塾" />
               <Box sx={{ flexGrow: 1 }} />
-              <Button onClick={handleClick}>
+              <Button
+                onClick={handleClick}
+                aria-label="アカウントメニューを開く"
+              >
                 <Avatar>
                   {user?.photoURL && (
                     <Image
                       src={user.photoURL}
                       width={36}
                       height={36}
-                      alt="塾"
+                      alt="アカウントアイコン"
                     />
                   )}
                 </Avatar>
