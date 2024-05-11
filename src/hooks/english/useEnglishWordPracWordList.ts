@@ -80,7 +80,7 @@ export const useEnglishWordPracWordList = () => {
     /**選択中のSessionデータ */
     selectedSession,
     /**WordデータLoading中… */
-    isLoadingWords: isLoadingSessions,
+    isLoadingWords: isLoadingSessions || !data?.sessions,
     /**単語の削除を実行 */
     handleWordsDelete,
     /**セッションの選択 */
