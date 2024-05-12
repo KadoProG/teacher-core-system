@@ -1,18 +1,7 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableHead,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import { ImportExcelDialog } from '@/components/commons/ImportExcelDialog';
-import {
-  SessionListTableBodyRow,
-  SessionListTableHeadRow,
-} from '@/components/domains/english/word_prac/session/SessionListTableRow';
+import { SessionListTable } from '@/components/domains/english/word_prac/session/SessionListTable';
 import { useEnglishWordPracSession } from '@/hooks/english/useEnglishWordPracSession';
 
 export const SessionList: React.FC = () => {
@@ -22,7 +11,7 @@ export const SessionList: React.FC = () => {
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h5" component="h2" fontWeight="bold">
-          セッションを編集します
+          セッション一覧
         </Typography>
         <Box>
           <Button
@@ -56,23 +45,10 @@ export const SessionList: React.FC = () => {
           />
         </Box>
       </Box>
-      <Paper component={Box} p={2}>
-        {!englishWordPracSession.sessions ||
-        englishWordPracSession.sessions.length === 0 ? (
-          <Typography>セッションはありません</Typography>
-        ) : (
-          <Table>
-            <TableHead>
-              <SessionListTableHeadRow />
-            </TableHead>
-            <TableBody>
-              {englishWordPracSession.sessions.map((session) => (
-                <SessionListTableBodyRow key={session.id} session={session} />
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </Paper>
+      <SessionListTable
+        sessions={englishWordPracSession.sessions}
+        isLoading={englishWordPracSession.isLoading}
+      />
     </>
   );
 };
