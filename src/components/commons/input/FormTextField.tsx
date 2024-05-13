@@ -13,6 +13,7 @@ type FormTextFieldProps<T extends FieldValues> = UseControllerProps<T> & {
   isRequired?: boolean;
   isDense?: boolean;
   placeholder?: string;
+  fullWidth?: boolean;
 };
 
 export const FormTextField = <T extends FieldValues>(
@@ -33,8 +34,9 @@ export const FormTextField = <T extends FieldValues>(
           {props.isRequired && <RequiredLabel />}
         </Box>
       )}
-      <Box>
+      <Box width={props.isDense ? '100%' : undefined}>
         <TextField
+          fullWidth={props.fullWidth}
           {...controller.field}
           size="small"
           type={props.type}

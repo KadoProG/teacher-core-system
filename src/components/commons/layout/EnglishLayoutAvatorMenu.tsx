@@ -12,6 +12,7 @@ import {
 import React from 'react';
 import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { SettingDialog } from '@/components/settings/SettingDialog';
+import { TeamSettingDialog } from '@/components/settings/TeamSettingDialog';
 import { login, logout } from '@/libs/firebase/firebaseAuth';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 
@@ -25,6 +26,8 @@ export const EnglishLayoutAvatorMenu: React.FC<EnglishLayoutAvatorMenuProps> = (
   props
 ) => {
   const [isSettingDialogOpen, setIsSettingDialogOpen] =
+    React.useState<boolean>(false);
+  const [isTeamDialogOpen, setIsTeamDialogOpen] =
     React.useState<boolean>(false);
   const { confirmDialog } = useConfirmDialog();
   const user = useAuth();
@@ -54,7 +57,12 @@ export const EnglishLayoutAvatorMenu: React.FC<EnglishLayoutAvatorMenuProps> = (
           </Typography>
         )}
         {!props.isPC && <Divider />}
-        <MenuItem onClick={props.onClose}>
+        <MenuItem
+          onClick={() => {
+            setIsTeamDialogOpen(true);
+            props.onClose();
+          }}
+        >
           <ListItemIcon sx={{ color: 'text.primary' }}>
             <PeopleIcon />
           </ListItemIcon>
@@ -97,6 +105,10 @@ export const EnglishLayoutAvatorMenu: React.FC<EnglishLayoutAvatorMenuProps> = (
           <ListItemText>{!user ? 'ログイン' : 'ログアウト'}</ListItemText>
         </MenuItem>
       </Menu>
+      <TeamSettingDialog
+        open={isTeamDialogOpen}
+        onClose={() => setIsTeamDialogOpen(false)}
+      />
       <SettingDialog
         onClose={() => setIsSettingDialogOpen(false)}
         open={isSettingDialogOpen}
