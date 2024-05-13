@@ -29,3 +29,18 @@ interface IEnglishWordPracPrint {
   updated_at?: Date;
   email: string;
 }
+
+interface ITeam {
+  id?: string;
+  name: string; // チーム名
+  members: string[]; // usersのUID配列
+  session?: IEnglishWordPracSession[];
+}
+
+interface IUser {
+  id?: string;
+  email: string;
+  name: string;
+  teams: string[];
+  photoURL: string;
+}
