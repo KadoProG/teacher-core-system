@@ -14,7 +14,6 @@ import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 
 interface EnglishLayoutDrawerBottomProps {
   drawerWidth: number;
-  onSettingDialogOpen: () => void;
 }
 
 export const EnglishLayoutDrawerBottom: React.FC<
@@ -51,7 +50,6 @@ export const EnglishLayoutDrawerBottom: React.FC<
           anchorEl={anchorEl}
           onClose={handleClose}
           isPC
-          onSettingDialogOpen={props.onSettingDialogOpen}
         />
         <ListItem sx={{ p: 0 }}>
           <ListItemButton onClick={handleClick}>

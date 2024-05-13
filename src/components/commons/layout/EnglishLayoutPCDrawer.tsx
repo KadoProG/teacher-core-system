@@ -14,17 +14,11 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { EnglishLayoutDrawerBottom } from '@/components/commons/layout/EnglishLayoutDrawerBottom';
+import { EnglishLayoutDrawerBottom } from '@/components/commons/layout/EnglishLayoutPCDrawerBottom';
 
 const drawerWidth = 250;
 
-interface EnglishLayoutDrawerProps {
-  onSettingDialogOpen: () => void;
-}
-
-export const EnglishLayoutDrawer: React.FC<EnglishLayoutDrawerProps> = (
-  props
-) => {
+export const EnglishLayoutPCDrawer: React.FC = () => {
   const isMin600 = useMediaQuery('(min-width:600px)');
   return (
     <Drawer
@@ -66,10 +60,7 @@ export const EnglishLayoutDrawer: React.FC<EnglishLayoutDrawerProps> = (
         </ListItem>
       </List>
       <Toolbar />
-      <EnglishLayoutDrawerBottom
-        drawerWidth={drawerWidth}
-        onSettingDialogOpen={props.onSettingDialogOpen}
-      />
+      <EnglishLayoutDrawerBottom drawerWidth={drawerWidth} />
     </Drawer>
   );
 };

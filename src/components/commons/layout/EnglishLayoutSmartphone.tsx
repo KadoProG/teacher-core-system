@@ -19,7 +19,6 @@ import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 
 interface EnglishLayoutSmartphoneProps {
   children: React.ReactNode;
-  onSettingDialogOpen: () => void;
 }
 
 /** スマホ時の表示 */
@@ -71,11 +70,7 @@ export const EnglishLayoutSmartphone: React.FC<EnglishLayoutSmartphoneProps> = (
             </Toolbar>
           </AppBar>
           <Toolbar variant="dense" />
-          <EnglishLayoutAvatorMenu
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            onSettingDialogOpen={props.onSettingDialogOpen}
-          />
+          <EnglishLayoutAvatorMenu anchorEl={anchorEl} onClose={handleClose} />
         </React.Fragment>
       )}
       {props.children}
