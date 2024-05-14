@@ -10,7 +10,7 @@ export const EnglishLayout = (props: { children: React.ReactNode }) => (
     <Box pr={0} display="flex" maxWidth="100%">
       <CssBaseline />
       <EnglishLayoutPCDrawer />
-      <Box flexGrow={1} maxWidth="100%">
+      <Box flexGrow={1} p={2} maxWidth="100%">
         <TopAlertCardConsumer />
         {props.children}
       </Box>

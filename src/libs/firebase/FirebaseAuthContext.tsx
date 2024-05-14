@@ -9,6 +9,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { useTopAlertCard } from '@/components/commons/feedback/TopAlertCardContext';
 import { firebaseAuth, firestore } from '@/libs/firebase/firebase';
 
 type UserContextType = IUser | null | undefined;
@@ -17,6 +18,7 @@ const FirebaseAuthContext = createContext<UserContextType>(undefined);
 
 export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserContextType>();
+  const { addTopAlertCard } = useTopAlertCard();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
@@ -60,8 +62,9 @@ export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
               });
             }
           } catch (error) {
+            addTopAlertCard('ユーザー情報の取得に失敗しました', 'error');
             // eslint-disable-next-line no-console
-            console.log(error);
+            console.error(error);
           }
         } else {
           setUser(null);
@@ -69,7 +72,7 @@ export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
       }
     );
     return unsubscribe;
-  }, []);
+  }, [addTopAlertCard]);
 
   return (
     <FirebaseAuthContext.Provider value={user}>

@@ -1,6 +1,7 @@
 'use client';
 
-import { Alert, AlertColor, Box, Stack } from '@mui/material';
+import { Alert, AlertColor, Stack, SxProps } from '@mui/material';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 
 interface TopAlertCardContextType {
@@ -13,52 +14,43 @@ interface TopAlertCardContextType {
  */
 const TopAlertCardContext = React.createContext<TopAlertCardContextType>({
   messageObjects: [],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addTopAlertCard: (message: string, color: AlertColor) => {}, // ダミー関数
+  addTopAlertCard: () => {}, // ダミー関数
 });
 
 interface TopAlertCardProviderProps {
   children: React.ReactNode;
 }
 
-// @keyframesアニメーションを定義
-const keyframes = {
-  animation: 'top-alert-card__message 0.3s forwards',
-  '@keyframes top-alert-card__message': {
-    '0%': {
-      transform: 'translateY(100%)',
-    },
-    '100%': {
-      transform: 'translateY(0)',
-    },
-  },
-};
-
 export const TopAlertCardProvider: React.FC<TopAlertCardProviderProps> = (
   props
 ) => {
-  const context = React.useContext(TopAlertCardContext);
-
   const [messageObjects, setMessageObjects] = React.useState<
     { message: string; color: AlertColor }[]
-  >(context.messageObjects);
+  >([]);
 
-  const newContext: TopAlertCardContextType = React.useMemo(
+  const pathname = usePathname();
+
+  const addTopAlertCard = React.useCallback(
+    (message: string, color: AlertColor) => {
+      setMessageObjects((prev) => [...prev, { message, color }]);
+    },
+    []
+  );
+
+  React.useEffect(() => {
+    setMessageObjects([]);
+  }, [pathname]);
+
+  const contextValue = React.useMemo(
     () => ({
       messageObjects,
-      addTopAlertCard: (message: string, color: AlertColor) => {
-        const newMessageObject: { message: string; color: AlertColor } = {
-          message,
-          color,
-        };
-        setMessageObjects([...messageObjects, newMessageObject]);
-      },
+      addTopAlertCard,
     }),
-    [messageObjects]
+    [messageObjects, addTopAlertCard]
   );
 
   return (
-    <TopAlertCardContext.Provider value={newContext}>
+    <TopAlertCardContext.Provider value={contextValue}>
       {props.children}
     </TopAlertCardContext.Provider>
   );
@@ -71,22 +63,33 @@ export const TopAlertCardProvider: React.FC<TopAlertCardProviderProps> = (
 export const useTopAlertCard = (): TopAlertCardContextType =>
   React.useContext(TopAlertCardContext);
 
+// Keyframes animation for alerts
+const alertAnimation: SxProps = {
+  animation: 'top-alert-card__message 0.3s forwards',
+  '@keyframes top-alert-card__message': {
+    '0%': {
+      transform: 'translateY(100%)',
+    },
+    '100%': {
+      transform: 'translateY(0)',
+    },
+  },
+};
+
 /**
  * TopAlertCardContextを使用するためのコンシューマーコンポーネント
  * - アラートを表示する
  */
-export const TopAlertCardConsumer = () => (
-  <TopAlertCardContext.Consumer>
-    {(context) => (
-      <Box p={2}>
-        <Stack spacing={1}>
-          {context.messageObjects.map((v, i) => (
-            <Alert key={i} color={v.color} sx={keyframes} severity={v.color}>
-              {v.message}
-            </Alert>
-          ))}
-        </Stack>
-      </Box>
-    )}
-  </TopAlertCardContext.Consumer>
-);
+export const TopAlertCardConsumer: React.FC = () => {
+  const { messageObjects } = React.useContext(TopAlertCardContext);
+
+  return (
+    <Stack spacing={1} pb={messageObjects.length !== 0 ? 2 : 0}>
+      {messageObjects.map((v, i) => (
+        <Alert key={i} color={v.color} sx={alertAnimation} severity={v.color}>
+          {v.message}
+        </Alert>
+      ))}
+    </Stack>
+  );
+};

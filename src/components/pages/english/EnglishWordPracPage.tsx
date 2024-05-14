@@ -9,20 +9,9 @@ import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWo
 
 export const EnglishWordPracPage: React.FC = () => {
   const englishWordPrac = useEnglishWordPracWordList();
-  // const isMin600 = useMediaQuery('(min-width:600px)');
-  // const [isOpen, setIsOpen] = React.useState<boolean>(isMin600);
-  // React.useEffect(() => {
-  //   setIsOpen(isMin600);
-  // }, [isMin600]);
-
-  // const handleClose = () => {
-  //   if (!isMin600) {
-  //     setIsOpen((prev) => !prev);
-  //   }
-  // };
 
   return (
-    <Box p={2} component={Stack} spacing={2} width="100%" maxWidth={700}>
+    <Box component={Stack} spacing={2} width="100%">
       <WordPracSessionSelectPaper
         sessions={englishWordPrac.sessions}
         selectedSession={englishWordPrac.selectedSession}
