@@ -51,17 +51,17 @@ const Layout = ({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>
-        <FirebaseAuthProvider>
-          <ThemeRegistry initColorMode={initColorMode}>
-            <SnackbarProvider>
-              <TopAlertCardProvider>
+        <TopAlertCardProvider>
+          <FirebaseAuthProvider>
+            <ThemeRegistry initColorMode={initColorMode}>
+              <SnackbarProvider>
                 <ConfirmDialogProvider>
                   <EnglishLayout>{children}</EnglishLayout>
                 </ConfirmDialogProvider>
-              </TopAlertCardProvider>
-            </SnackbarProvider>
-          </ThemeRegistry>
-        </FirebaseAuthProvider>
+              </SnackbarProvider>
+            </ThemeRegistry>
+          </FirebaseAuthProvider>
+        </TopAlertCardProvider>
       </body>
     </html>
   );
