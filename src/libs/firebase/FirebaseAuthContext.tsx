@@ -23,32 +23,45 @@ export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
       firebaseAuth,
       async (firebaseUser) => {
         if (firebaseUser) {
-          const ref = doc(firestore, `users/${firebaseUser.uid}`);
-          const snap = await getDoc(ref);
+          const ref = doc(firestore, 'users', firebaseUser.uid);
 
-          if (snap.exists()) {
-            const appUser = (await getDoc(ref)).data() as IUser;
-            setUser(appUser);
+          try {
+            const userDoc = await getDoc(ref);
 
-            if (
-              appUser.name !== firebaseUser.displayName ||
-              appUser.email !== firebaseUser.email ||
-              appUser.photoURL !== firebaseUser.photoURL
-            ) {
-              setDoc(ref, { ...appUser, photoURL: firebaseUser.photoURL });
-            }
-          } else {
-            const appUser: IUser = {
-              id: firebaseUser.uid,
-              name: firebaseUser.displayName!,
-              email: firebaseUser.email!,
-              photoURL: firebaseUser.photoURL!,
-              teams: [],
-            };
-
-            setDoc(ref, appUser).then(() => {
+            if (userDoc.exists()) {
+              const appUser = userDoc.data() as IUser;
               setUser(appUser);
-            });
+
+              // ユーザー情報が更新されている場合は更新
+              if (
+                appUser.name !== firebaseUser.displayName ||
+                appUser.email !== firebaseUser.email ||
+                appUser.photoURL !== firebaseUser.photoURL
+              ) {
+                await setDoc(ref, {
+                  ...appUser,
+                  name: firebaseUser.displayName,
+                  email: firebaseUser.email,
+                  photoURL: firebaseUser.photoURL,
+                });
+              }
+            } else {
+              // ユーザーが存在しない場合は新規作成
+              const appUser: IUser = {
+                id: firebaseUser.uid,
+                name: firebaseUser.displayName!,
+                email: firebaseUser.email!,
+                photoURL: firebaseUser.photoURL!,
+                teams: [],
+              };
+
+              await setDoc(ref, appUser).then(() => {
+                setUser(appUser);
+              });
+            }
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log(error);
           }
         } else {
           setUser(null);
