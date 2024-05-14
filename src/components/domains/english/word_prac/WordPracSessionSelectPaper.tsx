@@ -42,7 +42,9 @@ export const WordPracSessionSelectPaper: React.FC<
               borderRadius: 1,
               border: (theme) => `1px solid ${theme.palette.divider}`,
             }}
-            disabled={props.selectedSession?.index === 0}
+            disabled={
+              props.isLoadingSessions || props.selectedSession?.index === 0
+            }
             onClick={() => {
               props.selectedSession?.index &&
                 props.onSelectSession(
@@ -91,6 +93,7 @@ export const WordPracSessionSelectPaper: React.FC<
               border: (theme) => `1px solid ${theme.palette.divider}`,
             }}
             disabled={
+              props.isLoadingSessions ||
               props.selectedSession?.index === props.sessions.length - 1
             }
             onClick={() => {
