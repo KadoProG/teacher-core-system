@@ -62,6 +62,7 @@ export const EnglishLayoutAvatorMenu: React.FC<EnglishLayoutAvatorMenuProps> = (
             setIsTeamDialogOpen(true);
             props.onClose();
           }}
+          disabled={!user}
         >
           <ListItemIcon sx={{ color: 'text.primary' }}>
             <PeopleIcon />
