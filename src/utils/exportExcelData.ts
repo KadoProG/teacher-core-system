@@ -1,13 +1,9 @@
 import exceljs from 'exceljs';
-import { fetchEnglishWordPracSession } from '@/utils/fetch/fetchEnglishWordPrac';
 
 /**
  * Excelファイルを構築してダウンロード
  */
-export const exportExcelData = async () => {
-  const result = await fetchEnglishWordPracSession();
-  const sessions: IEnglishWordPracSession[] = result.sessions;
-
+export const exportExcelData = async (sessions: IEnglishWordPracSession[]) => {
   // Workbookの作成
   const workbook = new exceljs.Workbook();
 

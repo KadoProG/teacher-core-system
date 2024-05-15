@@ -5,7 +5,14 @@ import { SessionListTable } from '@/components/domains/english/word_prac/session
 import { useEnglishWordPracSession } from '@/hooks/english/useEnglishWordPracSession';
 
 export const SessionList: React.FC = () => {
-  const englishWordPracSession = useEnglishWordPracSession();
+  const {
+    handleExportExcelData,
+    handleSessionsDelete,
+    dropDialog,
+    dropzone,
+    sessions,
+    isLoading,
+  } = useEnglishWordPracSession();
 
   return (
     <>
@@ -18,7 +25,7 @@ export const SessionList: React.FC = () => {
             variant="contained"
             color="error"
             size="small"
-            onClick={englishWordPracSession.handleSessionsDelete}
+            onClick={handleSessionsDelete}
           >
             削除する
           </Button>
@@ -26,7 +33,7 @@ export const SessionList: React.FC = () => {
             variant="outlined"
             color="inherit"
             size="small"
-            onClick={englishWordPracSession.dropDialog.handleOpenDialog}
+            onClick={dropDialog.handleOpenDialog}
           >
             インポートする
           </Button>
@@ -34,21 +41,18 @@ export const SessionList: React.FC = () => {
             variant="outlined"
             color="inherit"
             size="small"
-            onClick={englishWordPracSession.handleExportExcelData}
+            onClick={handleExportExcelData}
           >
             エクスポートする
           </Button>
           <ImportExcelDialog
-            isOpen={englishWordPracSession.dropDialog.isOpen}
-            onClose={englishWordPracSession.dropDialog.handleCloseDialog}
-            dropzone={englishWordPracSession.dropzone}
+            isOpen={dropDialog.isOpen}
+            onClose={dropDialog.handleCloseDialog}
+            dropzone={dropzone}
           />
         </Box>
       </Box>
-      <SessionListTable
-        sessions={englishWordPracSession.sessions}
-        isLoading={englishWordPracSession.isLoading}
-      />
+      <SessionListTable sessions={sessions} isLoading={isLoading} />
     </>
   );
 };

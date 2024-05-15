@@ -67,18 +67,6 @@ export const useEnglishWordPracSession = () => {
     onDrop: onDropFile,
   });
 
-  const handleExportExcelData = async () => {
-    try {
-      await exportExcelData();
-      addMessageObject('Excelのエクスポートが完了しました。', 'success');
-    } catch (e: any) {
-      addMessageObject(
-        'Excelのエクスポートに失敗しました。' + e.message,
-        'error'
-      );
-    }
-  };
-
   const { data, error, isLoading } = useSWR(
     'sessions',
     fetchEnglishWordPracSession,
@@ -90,11 +78,26 @@ export const useEnglishWordPracSession = () => {
     }
   );
 
+  const sessions: IEnglishWordPracSession[] = React.useMemo(
+    () => data?.sessions ?? [],
+    [data?.sessions]
+  );
+
+  const handleExportExcelData = React.useCallback(async () => {
+    try {
+      await exportExcelData(sessions);
+      addMessageObject('Excelのエクスポートが完了しました。', 'success');
+    } catch (e: any) {
+      addMessageObject(
+        'Excelのエクスポートに失敗しました。' + e.message,
+        'error'
+      );
+    }
+  }, [addMessageObject, sessions]);
+
   if (error) {
     console.error(error.message); // eslint-disable-line
   }
-
-  const sessions: IEnglishWordPracSession[] = data?.sessions ?? [];
 
   return {
     /**セッションデータ */
