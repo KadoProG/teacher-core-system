@@ -14,14 +14,11 @@ import {
 
 export const useEnglishWordPracSession = () => {
   const { confirmDialog } = useConfirmDialog();
-  const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
+  const { addMessageObject } = useSnackbar();
 
-  const handleClose = () => {
-    setIsOpenDialog(false);
-  };
-  const handleOpen = () => {
-    setIsOpenDialog(true);
-  };
+  const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
+  const handleCloseDialog = () => setIsOpenDialog(false);
+  const handleOpenDialog = () => setIsOpenDialog(true);
 
   /**
    * セッションの削除を実行
@@ -43,41 +40,32 @@ export const useEnglishWordPracSession = () => {
     }
   };
 
-  const { addMessageObject } = useSnackbar();
+  const onDropFile = async (acceptedFiles: File[]) => {
+    try {
+      // ファイル→Sheetを取得
+      const worksheets = await getWorksheetsFromExcelFile(acceptedFiles, [
+        'セッションマスタ',
+        '単語マスタ',
+      ]);
+      //  Sheet→Sessionsを取得
+      const sessions = await processSessionExcelData(
+        worksheets[0], // セッションマスタ
+        worksheets[1] // 単語マスタ
+      );
+      // firestoreにデータを上書き
+      await saveEnglishWordPracSession(sessions).catch((e) => {
+        throw new Error(`セッションデータのアップロードに失敗しました：${e}`);
+      });
+      handleCloseDialog();
+      mutate('sessions');
+    } catch (error: any) {
+      addMessageObject(error.message, 'error');
+    }
+  };
 
+  // Excelファイルアップロード時の処理
   const dropzone = useDropzone({
-    onDrop: async (acceptedFiles) => {
-      try {
-        // ファイル→Sheetを取得
-        const worksheets = await getWorksheetsFromExcelFile(acceptedFiles, [
-          'セッションマスタ',
-          '単語マスタ',
-        ]);
-        //  Sheet→Sessionsを取得
-        const sessions = await processSessionExcelData(
-          worksheets[0], // セッションマスタ
-          worksheets[1] // 単語マスタ
-        );
-
-        await saveEnglishWordPracSession(sessions)
-          .then(() => {
-            setIsOpenDialog(false);
-            addMessageObject(
-              'セッションデータのアップロードが完了しました。',
-              'success'
-            );
-            mutate('sessions');
-          })
-          .catch((e) => {
-            addMessageObject(
-              `セッションデータのアップロードに失敗しました：${e}`,
-              'error'
-            );
-          });
-      } catch (e: any) {
-        addMessageObject(e.message, 'error');
-      }
-    },
+    onDrop: onDropFile,
   });
 
   const handleExportExcelData = async () => {
@@ -104,8 +92,7 @@ export const useEnglishWordPracSession = () => {
   );
 
   if (error) {
-    // eslint-disable-next-line
-    console.error(error.message);
+    console.error(error.message); // eslint-disable-line
   }
 
   const sessions: IEnglishWordPracSession[] = data?.sessions ?? [];
@@ -124,8 +111,8 @@ export const useEnglishWordPracSession = () => {
     /**ドロップダイアログの表示、非表示 */
     dropDialog: {
       isOpen: isOpenDialog,
-      handleClose,
-      handleOpen,
+      handleCloseDialog,
+      handleOpenDialog,
     },
   };
 };
