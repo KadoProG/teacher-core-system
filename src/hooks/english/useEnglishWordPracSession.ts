@@ -20,10 +20,7 @@ export const useEnglishWordPracSession = () => {
   const handleCloseDialog = () => setIsOpenDialog(false);
   const handleOpenDialog = () => setIsOpenDialog(true);
 
-  /**
-   * セッションの削除を実行
-   */
-  const handleSessionsDelete = async () => {
+  const handleSessionsDelete = React.useCallback(async () => {
     const { isAccepted } = await confirmDialog({
       title: '削除の確認',
       children: 'セッションを削除します。よろしいですか？',
@@ -38,32 +35,34 @@ export const useEnglishWordPracSession = () => {
     } catch (e) {
       addMessageObject(`単語の削除に失敗しました：${e}`, 'error');
     }
-  };
+  }, [addMessageObject, confirmDialog]);
 
-  const onDropFile = async (acceptedFiles: File[]) => {
-    try {
-      // ファイル→Sheetを取得
-      const worksheets = await getWorksheetsFromExcelFile(acceptedFiles, [
-        'セッションマスタ',
-        '単語マスタ',
-      ]);
-      //  Sheet→Sessionsを取得
-      const sessions = await processSessionExcelData(
-        worksheets[0], // セッションマスタ
-        worksheets[1] // 単語マスタ
-      );
-      // firestoreにデータを上書き
-      await saveEnglishWordPracSession(sessions).catch((e) => {
-        throw new Error(`セッションデータのアップロードに失敗しました：${e}`);
-      });
-      handleCloseDialog();
-      mutate('sessions');
-    } catch (error: any) {
-      addMessageObject(error.message, 'error');
-    }
-  };
+  const onDropFile = React.useCallback(
+    async (acceptedFiles: File[]) => {
+      try {
+        // ファイル→Sheetを取得
+        const worksheets = await getWorksheetsFromExcelFile(acceptedFiles, [
+          'セッションマスタ',
+          '単語マスタ',
+        ]);
+        //  Sheet→Sessionsを取得
+        const sessions = await processSessionExcelData(
+          worksheets[0], // セッションマスタ
+          worksheets[1] // 単語マスタ
+        );
+        // firestoreにデータを上書き
+        await saveEnglishWordPracSession(sessions).catch((e) => {
+          throw new Error(`セッションデータのアップロードに失敗しました：${e}`);
+        });
+        handleCloseDialog();
+        mutate('sessions');
+      } catch (error: any) {
+        addMessageObject(error.message, 'error');
+      }
+    },
+    [addMessageObject]
+  );
 
-  // Excelファイルアップロード時の処理
   const dropzone = useDropzone({
     onDrop: onDropFile,
   });

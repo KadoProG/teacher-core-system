@@ -10,17 +10,15 @@ import {
 export const useEnglishWordPracPrintList = ({
   handlePrintProp,
 }: {
-  /**
-   * 印刷する関数（本hookがhandlePrintを使用するため、呼び出し用）
-   */
+  /** 印刷する関数（本hookがhandlePrintを使用するため、呼び出し用） */
   handlePrintProp: () => void;
 }) => {
-  const form = useForm<{ is_show_answer: boolean }>({
+  const { addMessageObject } = useSnackbar();
+  const { control, watch } = useForm<{ is_show_answer: boolean }>({
     defaultValues: { is_show_answer: false },
   });
-  const { addMessageObject } = useSnackbar();
 
-  const isShowAnswer = form.watch('is_show_answer');
+  const isShowAnswer = watch('is_show_answer');
 
   const { data, error, isLoading } = useSWR(
     'prints',
@@ -35,9 +33,9 @@ export const useEnglishWordPracPrintList = ({
 
   const prints: IEnglishWordPracPrint[] = React.useMemo(
     () =>
-      data?.prints.map((print: IEnglishWordPracPrint) => ({
+      data?.prints.map((print) => ({
         ...print,
-        isShowAnswer: isShowAnswer,
+        isShowAnswer,
       })) ?? [],
     [data?.prints, isShowAnswer]
   );
@@ -45,9 +43,6 @@ export const useEnglishWordPracPrintList = ({
   const [selectedPrint, setSelectedPrint] =
     React.useState<IEnglishWordPracPrint>();
 
-  /**
-   * 印刷を実行
-   */
   const handlePrint = React.useCallback(
     (id: string) => {
       const newSelectedPrint = prints.find((print) => print.id === id);
@@ -62,9 +57,6 @@ export const useEnglishWordPracPrintList = ({
     [handlePrintProp, prints, isShowAnswer]
   );
 
-  /**
-   * 印刷アーカイブ（単体）削除
-   */
   const handleDelete = React.useCallback(
     async (id: string) => {
       try {
@@ -79,9 +71,20 @@ export const useEnglishWordPracPrintList = ({
   );
 
   if (error) {
-    // eslint-disable-next-line
-    console.error(error.message);
+    console.error(error.message); // eslint-disable-line
   }
 
-  return { prints, isLoading, selectedPrint, handlePrint, handleDelete, form };
+  return {
+    /**プリントデータ */
+    prints,
+    /**ローディング中か */
+    isLoading,
+    /**選択中のプリントデータ */
+    selectedPrint,
+    /**プリント処理 */
+    handlePrint,
+    /**プリント削除 */
+    handleDelete,
+    control,
+  };
 };

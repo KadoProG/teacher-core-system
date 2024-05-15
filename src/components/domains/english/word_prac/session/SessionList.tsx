@@ -26,7 +26,7 @@ export const SessionList: React.FC = () => {
             variant="outlined"
             color="inherit"
             size="small"
-            onClick={englishWordPracSession.dropDialog.handleOpen}
+            onClick={englishWordPracSession.dropDialog.handleOpenDialog}
           >
             インポートする
           </Button>
@@ -40,7 +40,7 @@ export const SessionList: React.FC = () => {
           </Button>
           <ImportExcelDialog
             isOpen={englishWordPracSession.dropDialog.isOpen}
-            onClose={englishWordPracSession.dropDialog.handleClose}
+            onClose={englishWordPracSession.dropDialog.handleCloseDialog}
             dropzone={englishWordPracSession.dropzone}
           />
         </Box>
