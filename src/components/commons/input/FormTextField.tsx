@@ -22,6 +22,7 @@ export const FormTextField = <T extends FieldValues>(
   const controller = useController<T>({
     name: props.name,
     control: props.control,
+    disabled: props.disabled,
     rules: {
       required: props.isRequired,
     },

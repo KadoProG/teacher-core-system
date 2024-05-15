@@ -30,7 +30,7 @@ export const EnglishLayoutAvatorMenu: React.FC<EnglishLayoutAvatorMenuProps> = (
   const [isTeamDialogOpen, setIsTeamDialogOpen] =
     React.useState<boolean>(false);
   const { confirmDialog } = useConfirmDialog();
-  const user = useAuth();
+  const { user } = useAuth();
   return (
     <>
       <Menu
@@ -62,7 +62,6 @@ export const EnglishLayoutAvatorMenu: React.FC<EnglishLayoutAvatorMenuProps> = (
             setIsTeamDialogOpen(true);
             props.onClose();
           }}
-          disabled
         >
           <ListItemIcon sx={{ color: 'text.primary' }}>
             <PeopleIcon />

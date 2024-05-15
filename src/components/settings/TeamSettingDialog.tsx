@@ -1,5 +1,7 @@
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import {
+  Alert,
   Box,
   Button,
   Chip,
@@ -21,8 +23,16 @@ interface TeamSettingDialogProps {
   onClose: () => void;
 }
 export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
-  const { control, teamOptions, memberOptions, onMemberDelete } =
-    useTeamSettingDialog();
+  const {
+    control,
+    teamOptions,
+    memberOptions,
+    onMemberDelete,
+    isNewTeam,
+    handleSetNewTeam,
+    selectedTeamId,
+  } = useTeamSettingDialog();
+
   return (
     <Dialog open={props.open} fullWidth maxWidth="xs" onClose={props.onClose}>
       <DialogTitle id="team-setting-dialog-title">
@@ -44,10 +54,34 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
           control={control}
           label="選択中のチーム"
           options={teamOptions}
+          onNewOptionClick={handleSetNewTeam}
         />
         <Divider sx={{ my: 2 }} />
+        {isNewTeam && (
+          <Alert color="warning" icon={<AddCircleOutlineIcon />}>
+            <Typography>新しいチームの作成</Typography>
+          </Alert>
+        )}
+        {!isNewTeam && !selectedTeamId && (
+          <Alert color="warning" severity="warning">
+            <Typography>チームが選択されていません</Typography>
+          </Alert>
+        )}
+
         <Typography variant="body2" my={1} color="GrayText">
-          メンバー
+          チーム名
+        </Typography>
+        <FormTextField
+          isDense
+          fullWidth
+          label="チーム名"
+          control={control}
+          name="teamName"
+          type="string"
+          disabled={!isNewTeam && !selectedTeamId}
+        />
+        <Typography variant="body2" my={1} color="GrayText">
+          メンバーの追加
         </Typography>
         <FormTextField
           isDense
@@ -56,6 +90,7 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
           control={control}
           name="addEmail"
           type="email"
+          disabled={!isNewTeam && !selectedTeamId}
         />
         <Stack spacing={1}>
           {memberOptions.map((member) => (
@@ -68,21 +103,17 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
             </Box>
           ))}
         </Stack>
-        <Typography variant="body2" my={1} color="GrayText">
-          チーム設定
-        </Typography>
-        <FormTextField
-          isDense
-          fullWidth
-          label="チーム名"
-          control={control}
-          name="teamName"
-          type="string"
-        />
         <Box py={2}>
-          <Button color="error" variant="contained">
-            チームを削除する
-          </Button>
+          {!isNewTeam && !!selectedTeamId && (
+            <Button color="error" variant="contained">
+              チームを削除する
+            </Button>
+          )}
+          {isNewTeam && (
+            <Button color="warning" variant="outlined" fullWidth size="large">
+              チームを作成する
+            </Button>
+          )}
         </Box>
       </DialogContent>
     </Dialog>

@@ -29,7 +29,7 @@ export const EnglishLayoutDrawerBottom: React.FC<
     setAnchorEl(null);
   };
 
-  const user = useAuth();
+  const { user } = useAuth();
   return (
     <Box
       position="fixed"

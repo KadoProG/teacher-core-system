@@ -3,6 +3,7 @@ import {
   MenuItem,
   MenuItemProps,
   Select,
+  SelectChangeEvent,
   Typography,
 } from '@mui/material';
 import React from 'react';
@@ -19,6 +20,7 @@ type FormSelectProps<T extends FieldValues> = UseControllerProps<T> & {
   isDense?: boolean;
   sx?: any;
   align?: 'left' | 'center' | 'right';
+  onNewOptionClick?: () => void;
 };
 
 export const FormSelect = <T extends FieldValues>(
@@ -31,6 +33,15 @@ export const FormSelect = <T extends FieldValues>(
       required: props.isRequired,
     },
   });
+
+  const handleChange = (event: SelectChangeEvent) => {
+    const value = event.target.value as string;
+    if (value === 'new_option' && props.onNewOptionClick) {
+      props.onNewOptionClick();
+    } else {
+      controller.field.onChange(event);
+    }
+  };
 
   const options = props.options || [];
   return (
@@ -46,12 +57,18 @@ export const FormSelect = <T extends FieldValues>(
           size="small"
           id={`filled_${controller.field.name}`}
           sx={props.sx}
+          onChange={handleChange}
         >
           {options.map((option) => (
             <MenuItem key={option.label + option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
+          {!!props.onNewOptionClick && (
+            <MenuItem key="new_option" value="new_option">
+              新規追加
+            </MenuItem>
+          )}
         </Select>
       </Box>
     </Box>

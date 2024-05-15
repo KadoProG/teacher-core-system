@@ -12,7 +12,7 @@ import { saveEnglishWordPracPrint } from '@/utils/fetch/fetchEnglishWordPrac';
 export const useEnglishWordPracWordPrintInfo = (
   englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>
 ) => {
-  const user = useAuth();
+  const { user } = useAuth();
   const componentRef = React.useRef<HTMLDivElement>(null);
   const [isShowAnswer, setIsShowAnswer] = React.useState<boolean>(false);
   const { handlePrint: handleHookPrint } = usePrinting({ componentRef });

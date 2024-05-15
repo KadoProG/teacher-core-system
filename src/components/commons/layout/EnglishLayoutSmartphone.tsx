@@ -26,7 +26,7 @@ export const EnglishLayoutSmartphone: React.FC<EnglishLayoutSmartphoneProps> = (
   props
 ) => {
   const isMin600 = useMediaQuery('(min-width:600px)');
-  const user = useAuth();
+  const { user } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

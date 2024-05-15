@@ -1,11 +1,15 @@
+import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 
 export const useTeamSettingDialog = () => {
-  const teams = [
-    { teamId: '1', teamName: 'Team 1' },
-    { teamId: '2', teamName: 'Team 2' },
-    { teamId: '3', teamName: 'Team 3' },
-  ];
+  const { teams, selectedTeamId } = useAuth();
+
+  const [isNewTeam, setIsNewTeam] = React.useState<boolean>(false);
+
+  const handleSetNewTeam = () => {
+    setIsNewTeam(true);
+  };
 
   const members = [
     {
@@ -28,8 +32,8 @@ export const useTeamSettingDialog = () => {
   });
 
   const teamOptions = teams.map((team) => ({
-    label: team.teamName,
-    value: team.teamId,
+    label: team.name,
+    value: team.id,
   }));
 
   const memberOptions = members.map((member) => ({
@@ -38,9 +42,16 @@ export const useTeamSettingDialog = () => {
   }));
 
   const onMemberDelete = (value: string) => {
-    // eslint-disable-next-line no-console
-    console.log('delete member', value);
+    console.log('delete member', value); // eslint-disable-line no-console
   };
 
-  return { control, teamOptions, memberOptions, onMemberDelete };
+  return {
+    control,
+    teamOptions,
+    memberOptions,
+    onMemberDelete,
+    isNewTeam,
+    handleSetNewTeam,
+    selectedTeamId,
+  };
 };

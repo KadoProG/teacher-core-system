@@ -2,25 +2,37 @@
 
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React from 'react';
 import { useTopAlertCard } from '@/components/commons/feedback/TopAlertCardContext';
 import { firebaseAuth, firestore } from '@/libs/firebase/firebase';
 
 type UserContextType = IUser | null | undefined;
 
-const FirebaseAuthContext = createContext<UserContextType>(undefined);
+const FirebaseAuthContext = React.createContext<{
+  user: UserContextType;
+  teams: ITeam[];
+  selectedTeamId: string | undefined;
+  setSelectedTeamId: (teamId: string | undefined) => void;
+}>({
+  user: undefined,
+  teams: [],
+  selectedTeamId: undefined,
+  setSelectedTeamId: () => {},
+});
 
-export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<UserContextType>();
+export const FirebaseAuthProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [user, setUser] = React.useState<UserContextType>();
+  const [teams, setTeams] = React.useState<ITeam[]>([]);
+  const [selectedTeamId, setSelectedTeamId] = React.useState<
+    string | undefined
+  >();
   const { addTopAlertCard } = useTopAlertCard();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       firebaseAuth,
       async (firebaseUser) => {
@@ -47,6 +59,25 @@ export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
                   photoURL: firebaseUser.photoURL,
                 });
               }
+
+              const teamIds = appUser.teams;
+
+              const preNewTeams = await Promise.all(
+                teamIds.map(async (teamID) => {
+                  const teamDoc = await getDoc(doc(firestore, 'teams', teamID));
+                  if (teamDoc.exists()) {
+                    return teamDoc.data() as ITeam;
+                  }
+                  console.log(`No such team with ID ${teamID}`); // eslint-disable-line no-console
+                  return;
+                })
+              );
+
+              const newTeams = preNewTeams.filter(
+                (team) => team !== undefined
+              ) as ITeam[];
+
+              setTeams(newTeams);
             } else {
               // ユーザーが存在しない場合は新規作成
               const appUser: IUser = {
@@ -63,8 +94,7 @@ export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
             }
           } catch (error) {
             addTopAlertCard('ユーザー情報の取得に失敗しました', 'error');
-            // eslint-disable-next-line no-console
-            console.error(error);
+            console.error(error); // eslint-disable-line no-console
           }
         } else {
           setUser(null);
@@ -75,10 +105,12 @@ export const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
   }, [addTopAlertCard]);
 
   return (
-    <FirebaseAuthContext.Provider value={user}>
+    <FirebaseAuthContext.Provider
+      value={{ user, teams, selectedTeamId, setSelectedTeamId }}
+    >
       {children}
     </FirebaseAuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(FirebaseAuthContext);
+export const useAuth = () => React.useContext(FirebaseAuthContext);
