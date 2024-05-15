@@ -1,11 +1,10 @@
-import exceljs from 'exceljs';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import useSWR, { mutate } from 'swr';
 import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
-import { dropExcelData } from '@/utils/dropExcelData';
-import { convertCellToString } from '@/utils/excelUtils';
+import { getWorksheetsFromExcelFile } from '@/utils/dropExcelData';
+import { processSessionExcelData } from '@/utils/excel/processSessionExcelData';
 import { exportExcelData } from '@/utils/exportExcelData';
 import {
   deleteAllEnglishWordPracSession,
@@ -49,11 +48,32 @@ export const useEnglishWordPracSession = () => {
   const dropzone = useDropzone({
     onDrop: async (acceptedFiles) => {
       try {
-        await dropExcelData(
-          acceptedFiles,
+        // ファイル→Sheetを取得
+        const worksheets = await getWorksheetsFromExcelFile(acceptedFiles, [
           'セッションマスタ',
-          processSessionExcelData
+          '単語マスタ',
+        ]);
+        //  Sheet→Sessionsを取得
+        const sessions = await processSessionExcelData(
+          worksheets[0], // セッションマスタ
+          worksheets[1] // 単語マスタ
         );
+
+        await saveEnglishWordPracSession(sessions)
+          .then(() => {
+            setIsOpenDialog(false);
+            addMessageObject(
+              'セッションデータのアップロードが完了しました。',
+              'success'
+            );
+            mutate('sessions');
+          })
+          .catch((e) => {
+            addMessageObject(
+              `セッションデータのアップロードに失敗しました：${e}`,
+              'error'
+            );
+          });
       } catch (e: any) {
         addMessageObject(e.message, 'error');
       }
@@ -89,45 +109,6 @@ export const useEnglishWordPracSession = () => {
   }
 
   const sessions: IEnglishWordPracSession[] = data?.sessions ?? [];
-
-  // セッションExcelファイルを処理する関数
-  const processSessionExcelData = async (worksheet: exceljs.Worksheet) => {
-    const sessions: IEnglishWordPracSession[] = [];
-
-    for (let i = 2; i < 101; i++) {
-      const row: exceljs.Row = worksheet.getRow(i);
-      const idValue = row.getCell(1).value as string;
-      const titleValue = row.getCell(2).value;
-
-      if (idValue && titleValue) {
-        const title = convertCellToString(titleValue);
-        sessions.push({
-          row: parseInt(idValue),
-          title,
-          memo: '',
-          created_at: new Date(),
-          updated_at: new Date(),
-          words: [],
-        });
-      }
-    }
-
-    saveEnglishWordPracSession(sessions)
-      .then(() => {
-        setIsOpenDialog(false);
-        addMessageObject(
-          'セッションデータのアップロードが完了しました。',
-          'success'
-        );
-        mutate('sessions');
-      })
-      .catch((e) => {
-        addMessageObject(
-          `セッションデータのアップロードに失敗しました：${e}`,
-          'error'
-        );
-      });
-  };
 
   return {
     /**セッションデータ */

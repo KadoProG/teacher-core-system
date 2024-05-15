@@ -1,27 +1,28 @@
 import exceljs from 'exceljs';
 
 /**
- * ドロップされたExcelファイルを処理する関数
+ * ドロップされたExcelファイルを処理し、指定されたワークシートを取得する関数
  * @param acceptedFiles ファイルオブジェクト（一応配列のFile[]）
- * @param workbookName ワークシートの名前
- * @param processExcelData ワークシート解析成功後の処理
+ * @param worksheetNames 取得するワークシートの名前
+ * @returns 取得したワークシートの配列
  */
-export const dropExcelData = async (
+export const getWorksheetsFromExcelFile = async (
   acceptedFiles: File[],
-  workbookName: string,
-  processExcelData: (worksheet: exceljs.Worksheet) => Promise<void>
-) => {
+  worksheetNames: string[]
+): Promise<exceljs.Worksheet[]> => {
   try {
-    const workbook = await fetchWorkbookFromFile(acceptedFiles[0]);
-    const worksheet = workbook.getWorksheet(workbookName);
-    if (worksheet) await processExcelData(worksheet);
+    const workbook = await loadWorkbookFromFile(acceptedFiles[0]);
+
+    return worksheetNames
+      .map((worksheetName) => workbook.getWorksheet(worksheetName))
+      .filter((worksheet) => !!worksheet) as exceljs.Worksheet[];
   } catch (error) {
     throw new Error(`Excelデータの処理中にエラーが発生しました：${error}`);
   }
 };
 
-// ファイルからWorkbookを取得する関数
-const fetchWorkbookFromFile = async (file: File): Promise<exceljs.Workbook> => {
+// ファイルからWorkbookを読み込む関数
+const loadWorkbookFromFile = async (file: File): Promise<exceljs.Workbook> => {
   const blobURL = window.URL.createObjectURL(file);
   const response = await fetch(blobURL);
   const arrayBuffer = await response.arrayBuffer();

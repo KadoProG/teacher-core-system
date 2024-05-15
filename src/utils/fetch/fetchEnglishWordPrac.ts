@@ -157,11 +157,12 @@ export const saveEnglishWordPracSession = async (
     await Promise.all(
       sessions.map(async (session) => {
         const newSession = {
-          row: session.row,
           title: session.title,
+          row: session.row,
           memo: session.memo ?? '',
           created_at: new Date(),
           updated_at: new Date(),
+          words: session.words,
         };
 
         await addDoc(sessionDocRef, newSession);
