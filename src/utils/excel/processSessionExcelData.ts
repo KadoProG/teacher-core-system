@@ -1,5 +1,5 @@
 import exceljs from 'exceljs';
-import { convertCellToString } from '@/utils/excelUtils';
+import { convertCellToString } from '@/utils/excel/excelUtils';
 
 /**
  * Excelの単語リストをWordデータに変換する処理
