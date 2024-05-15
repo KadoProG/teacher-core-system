@@ -10,7 +10,6 @@ import {
   orderBy,
   query,
   runTransaction,
-  updateDoc,
 } from 'firebase/firestore';
 import { firestore } from '@/libs/firebase/firebase';
 
@@ -51,70 +50,6 @@ export const fetchEnglishWordPracPrint = async (): Promise<{
   })) as IEnglishWordPracPrint[];
 
   return { prints };
-};
-
-/**
- * Wordデータを上書き保存するプログラム
- * 現状はSession.wordsという配列要素として保存されている
- * 上書き保存のため、過去のデータは完全に削除され、最新のWordデータのみ反映される
- * @param words
- */
-export const saveEnglishWordPracWordList = async (
-  words: IEnglishWordPracWord[]
-) => {
-  const sessionDocRef = collection(firestore, 'sessions');
-  const q = query(sessionDocRef, orderBy('row'));
-
-  const querySnapshot = await getDocs(q);
-
-  const sessionRefs: DocumentReference<DocumentData, DocumentData>[] = [];
-  querySnapshot.forEach((snapShot) => sessionRefs.push(snapShot.ref));
-
-  await runTransaction(firestore, async () => {
-    await Promise.all(
-      sessionRefs.map(async (ref) => {
-        const currentWords = words.filter((word) => word.session_id === ref.id);
-        if (currentWords.length !== 0)
-          await updateDoc(ref, { words: currentWords });
-      })
-    );
-  });
-};
-
-/**
- * Wordデータを更新するプログラム
- * @param sessionId
- * @param words
- */
-export const updateEnglishWordPracWordList = async (
-  sessionId: string,
-  words: IEnglishWordPracWord[]
-): Promise<void> => {
-  await runTransaction(firestore, async () => {
-    const docRef = doc(firestore, 'sessions', sessionId);
-    await updateDoc(docRef, { words });
-  });
-};
-
-/**
- * Wordデータを削除するプログラム
- */
-export const deleteAllEnglishWordPracWordList = async (): Promise<void> => {
-  const sessionDocRef = collection(firestore, 'sessions');
-  const q = query(sessionDocRef, orderBy('row'));
-
-  const querySnapshot = await getDocs(q);
-
-  const sessionRefs: DocumentReference<DocumentData, DocumentData>[] = [];
-  querySnapshot.forEach((snapShot) => sessionRefs.push(snapShot.ref));
-
-  await runTransaction(firestore, async () => {
-    await Promise.all(
-      sessionRefs.map(async (ref) => {
-        await updateDoc(ref, { words: [] });
-      })
-    );
-  });
 };
 
 /**
