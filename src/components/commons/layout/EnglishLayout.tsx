@@ -1,5 +1,5 @@
 'use client';
-import { Box, CssBaseline } from '@mui/material';
+import { Box, Container, CssBaseline } from '@mui/material';
 import React from 'react';
 import { TopAlertCardConsumer } from '@/components/commons/feedback/TopAlertCardContext';
 import { EnglishLayoutPCDrawer } from '@/components/commons/layout/EnglishLayoutPCDrawer';
@@ -7,13 +7,13 @@ import { EnglishLayoutSmartphone } from '@/components/commons/layout/EnglishLayo
 
 export const EnglishLayout = (props: { children: React.ReactNode }) => (
   <EnglishLayoutSmartphone>
-    <Box pr={0} display="flex" maxWidth="100%">
+    <Box pr={0} display="flex">
       <CssBaseline />
       <EnglishLayoutPCDrawer />
-      <Box flexGrow={1} p={2} maxWidth="100%">
+      <Container component={Box} flexGrow={1} p={2}>
         <TopAlertCardConsumer />
         {props.children}
-      </Box>
+      </Container>
     </Box>
   </EnglishLayoutSmartphone>
 );
