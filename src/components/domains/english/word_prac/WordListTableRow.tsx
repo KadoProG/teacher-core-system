@@ -11,12 +11,15 @@ export const WordListTableHeadRow: React.FC<WordListTableHeadRowProps> = () => (
   <TableRow
     sx={{
       th: {
-        p: 1,
+        py: 1,
+        px: 0,
       },
     }}
   >
-    <TableCell width={80}>
-      <Typography fontWeight="bold">番号</Typography>
+    <TableCell align="center">
+      <Typography fontWeight="bold" width={40}>
+        番号
+      </Typography>
     </TableCell>
     <TableCell>
       <Typography fontWeight="bold">英単語</Typography>
@@ -27,7 +30,7 @@ export const WordListTableHeadRow: React.FC<WordListTableHeadRowProps> = () => (
       </Typography>
     </TableCell>
     <TableCell>
-      <Typography fontWeight="bold" minWidth={40}>
+      <Typography fontWeight="bold" minWidth={70}>
         履修学年
       </Typography>
     </TableCell>

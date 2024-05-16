@@ -2,11 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { LoadingContainer } from '@/components/commons/layout/LoadingContainer';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 
 const AuthenticatedLayout = (props: { children: React.ReactNode }) => {
-  const user = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   React.useEffect(() => {
@@ -15,9 +14,7 @@ const AuthenticatedLayout = (props: { children: React.ReactNode }) => {
     }
   }, [router, user]);
 
-  return (
-    <LoadingContainer isLoading={!user}>{props.children}</LoadingContainer>
-  );
+  return props.children;
 };
 
 export default AuthenticatedLayout;

@@ -28,7 +28,7 @@ export const PrintList: React.FC = () => {
           <Typography px={1}>答えを印刷</Typography>
           <FormSwitch
             name="is_show_answer"
-            control={printHook.form.control}
+            control={printHook.control}
             label=""
             activeLabel="はい　"
             negativeLabel="いいえ"

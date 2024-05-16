@@ -1,4 +1,5 @@
 'use client';
+
 import { Alert, AlertColor, Box, Stack } from '@mui/material';
 import React from 'react';
 
@@ -71,6 +72,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = (props) => {
               color={v.color}
               sx={keyframes}
               className="dialog__message_p"
+              severity={v.color}
             >
               {v.message}
             </Alert>

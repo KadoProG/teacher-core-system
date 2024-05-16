@@ -11,6 +11,9 @@ type FormTextFieldProps<T extends FieldValues> = UseControllerProps<T> & {
   label: string;
   type: string;
   isRequired?: boolean;
+  isDense?: boolean;
+  placeholder?: string;
+  fullWidth?: boolean;
 };
 
 export const FormTextField = <T extends FieldValues>(
@@ -19,18 +22,22 @@ export const FormTextField = <T extends FieldValues>(
   const controller = useController<T>({
     name: props.name,
     control: props.control,
+    disabled: props.disabled,
     rules: {
       required: props.isRequired,
     },
   });
   return (
     <Box display="flex" alignItems="center">
-      <Box width={180} position="relative">
-        <Typography variant="body2">{props.label}</Typography>
-        {props.isRequired && <RequiredLabel />}
-      </Box>
-      <Box>
+      {!props.isDense && (
+        <Box width={180} position="relative">
+          <Typography variant="body2">{props.label}</Typography>
+          {props.isRequired && <RequiredLabel />}
+        </Box>
+      )}
+      <Box width={props.isDense ? '100%' : undefined}>
         <TextField
+          fullWidth={props.fullWidth}
           {...controller.field}
           size="small"
           type={props.type}
@@ -42,6 +49,7 @@ export const FormTextField = <T extends FieldValues>(
             },
           }}
           inputProps={{
+            placeholder: props.placeholder,
             sx: {
               '+ fieldset legend': {
                 display: 'none',

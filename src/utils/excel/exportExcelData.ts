@@ -1,13 +1,9 @@
 import exceljs from 'exceljs';
-import { fetchEnglishWordPracSession } from '@/utils/fetch/fetchEnglishWordPrac';
 
 /**
  * Excelファイルを構築してダウンロード
  */
-export const exportExcelData = async () => {
-  const result = await fetchEnglishWordPracSession();
-  const sessions: IEnglishWordPracSession[] = result.sessions;
-
+export const exportExcelData = async (sessions: IEnglishWordPracSession[]) => {
   // Workbookの作成
   const workbook = new exceljs.Workbook();
 
@@ -71,11 +67,6 @@ const makeExcelSheetWordMaster = async (
   const worksheet = workbook.getWorksheet('単語マスタ');
   if (!worksheet) throw new Error('作成失敗');
 
-  // TODO あとでリファクタリング
-  const words: IEnglishWordPracWord[] = sessions
-    .map((session) => session.words || [])
-    .flat();
-
   // 列を定義
   worksheet.columns = [
     { header: 'id', key: 'id' },
@@ -85,28 +76,30 @@ const makeExcelSheetWordMaster = async (
     { header: '履修学年', key: 'study_year' },
   ];
 
-  // 2行目以降の各行に対して式を適用
-  for (let i = 1; i < words.length + 2; i++) {
-    const word = words[i - 1];
+  let i = 1; // 行数
 
-    const session = sessions.find((session) => session.id === word?.session_id);
-
+  sessions.forEach((session) => {
     const sessionText = session
       ? `${String(session.row).padStart(2, '0')}　${session.title}`
       : '';
+    session.words?.forEach((word) => {
+      // Wordの行を追加
+      worksheet.addRow({
+        id: word?.row,
+        session: sessionText,
+        en_title: word?.en_title,
+        jp_title: word?.jp_title,
+        study_year: word?.study_year,
+      });
 
-    worksheet.addRow({
-      id: word?.row,
-      session: sessionText,
-      en_title: word?.en_title,
-      jp_title: word?.jp_title,
-      study_year: word?.study_year,
+      // セッションのセルにデータバリデーションを設定
+      worksheet.getCell(`B${i + 1}`).dataValidation = {
+        type: 'list',
+        formulae: [`セッションマスタ!$C$2:$C$${sessions.length + 1}`],
+        allowBlank: true, // 空白の入力を許可
+      };
+
+      i++;
     });
-
-    worksheet.getCell(`B${i + 1}`).dataValidation = {
-      type: 'list',
-      formulae: [`セッションマスタ!$C$2:$C$${sessions.length + 1}`],
-      allowBlank: true, // 空白の入力を許可
-    };
-  }
+  });
 };

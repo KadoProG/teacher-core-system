@@ -118,7 +118,12 @@ export const ConfirmDialogProvider: React.FC<{ children: React.ReactNode }> = (
   );
 };
 
-/** SnackbarContext を簡単に使うためのユーティリティ関数 */
+/**
+ * SnackbarContext を簡単に使うためのユーティリティ関数
+ * @returns confirmDialog関数を返す
+ *
+ * confirmDialog関数は引数にConfirmDialogContextPropsを取り、Promise<{ isAccepted: boolean }>を返す
+ */
 export function useConfirmDialog() {
   return React.useContext(ConfirmDialogContext);
 }

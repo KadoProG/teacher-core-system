@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { ConfirmDialogProvider } from '@/components/commons/feedback/ConfirmDialogContext';
 import { SnackbarProvider } from '@/components/commons/feedback/SnackbarContext';
+import { TopAlertCardProvider } from '@/components/commons/feedback/TopAlertCardContext';
 import { EnglishLayout } from '@/components/commons/layout/EnglishLayout';
 import { FirebaseAuthProvider } from '@/libs/firebase/FirebaseAuthContext';
 import { ColorModeChoice, ThemeRegistry } from '@/libs/theme/themeRegistry';
@@ -50,15 +51,17 @@ const Layout = ({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>
-        <FirebaseAuthProvider>
-          <ThemeRegistry initColorMode={initColorMode}>
-            <SnackbarProvider>
-              <ConfirmDialogProvider>
-                <EnglishLayout>{children}</EnglishLayout>
-              </ConfirmDialogProvider>
-            </SnackbarProvider>
-          </ThemeRegistry>
-        </FirebaseAuthProvider>
+        <TopAlertCardProvider>
+          <FirebaseAuthProvider>
+            <ThemeRegistry initColorMode={initColorMode}>
+              <SnackbarProvider>
+                <ConfirmDialogProvider>
+                  <EnglishLayout>{children}</EnglishLayout>
+                </ConfirmDialogProvider>
+              </SnackbarProvider>
+            </ThemeRegistry>
+          </FirebaseAuthProvider>
+        </TopAlertCardProvider>
       </body>
     </html>
   );

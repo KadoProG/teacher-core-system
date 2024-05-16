@@ -3,6 +3,7 @@ import {
   MenuItem,
   MenuItemProps,
   Select,
+  SelectChangeEvent,
   Typography,
 } from '@mui/material';
 import React from 'react';
@@ -17,6 +18,9 @@ type FormSelectProps<T extends FieldValues> = UseControllerProps<T> & {
   isRequired?: boolean;
   options?: { label: string; value: MenuItemProps['value'] }[];
   isDense?: boolean;
+  sx?: any;
+  align?: 'left' | 'center' | 'right';
+  onNewOptionClick?: () => void;
 };
 
 export const FormSelect = <T extends FieldValues>(
@@ -30,6 +34,18 @@ export const FormSelect = <T extends FieldValues>(
     },
   });
 
+  const handleChange = React.useCallback(
+    (event: SelectChangeEvent, children: React.ReactNode) => {
+      const value = event.target.value as string;
+      if (value === 'new_option' && !!props.onNewOptionClick) {
+        props.onNewOptionClick();
+      } else {
+        controller.field.onChange(event, children);
+      }
+    },
+    [controller.field, props]
+  );
+
   const options = props.options || [];
   return (
     <Box display="flex" alignItems="center">
@@ -38,19 +54,24 @@ export const FormSelect = <T extends FieldValues>(
           <Typography variant="body2">{props.label}</Typography>
         </Box>
       )}
-      <Box>
+      <Box flex={1} display="flex" justifyContent={props.align}>
         <Select
-          fullWidth
           {...controller.field}
           size="small"
           id={`filled_${controller.field.name}`}
-          label={props.label}
+          sx={props.sx}
+          onChange={handleChange}
         >
           {options.map((option) => (
             <MenuItem key={option.label + option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
+          {!!props.onNewOptionClick && (
+            <MenuItem key="new_option" value="new_option">
+              新規追加
+            </MenuItem>
+          )}
         </Select>
       </Box>
     </Box>

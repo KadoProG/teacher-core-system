@@ -1,35 +1,31 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableHead,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import { ImportExcelDialog } from '@/components/commons/ImportExcelDialog';
-import {
-  SessionListTableBodyRow,
-  SessionListTableHeadRow,
-} from '@/components/domains/english/word_prac/session/SessionListTableRow';
+import { SessionListTable } from '@/components/domains/english/word_prac/session/SessionListTable';
 import { useEnglishWordPracSession } from '@/hooks/english/useEnglishWordPracSession';
 
 export const SessionList: React.FC = () => {
-  const englishWordPracSession = useEnglishWordPracSession();
+  const {
+    handleExportExcelData,
+    handleSessionsDelete,
+    dropDialog,
+    dropzone,
+    sessions,
+    isLoading,
+  } = useEnglishWordPracSession();
 
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h5" component="h2" fontWeight="bold">
-          セッションを編集します
+          セッション一覧
         </Typography>
         <Box>
           <Button
             variant="contained"
             color="error"
             size="small"
-            onClick={englishWordPracSession.handleSessionsDelete}
+            onClick={handleSessionsDelete}
           >
             削除する
           </Button>
@@ -37,7 +33,7 @@ export const SessionList: React.FC = () => {
             variant="outlined"
             color="inherit"
             size="small"
-            onClick={englishWordPracSession.dropDialog.handleOpen}
+            onClick={dropDialog.handleOpenDialog}
           >
             インポートする
           </Button>
@@ -45,34 +41,18 @@ export const SessionList: React.FC = () => {
             variant="outlined"
             color="inherit"
             size="small"
-            onClick={englishWordPracSession.handleExportExcelData}
+            onClick={handleExportExcelData}
           >
             エクスポートする
           </Button>
           <ImportExcelDialog
-            isOpen={englishWordPracSession.dropDialog.isOpen}
-            onClose={englishWordPracSession.dropDialog.handleClose}
-            dropzone={englishWordPracSession.dropzone}
+            isOpen={dropDialog.isOpen}
+            onClose={dropDialog.handleCloseDialog}
+            dropzone={dropzone}
           />
         </Box>
       </Box>
-      <Paper component={Box} p={2}>
-        {!englishWordPracSession.sessions ||
-        englishWordPracSession.sessions.length === 0 ? (
-          <Typography>セッションはありません</Typography>
-        ) : (
-          <Table>
-            <TableHead>
-              <SessionListTableHeadRow />
-            </TableHead>
-            <TableBody>
-              {englishWordPracSession.sessions.map((session) => (
-                <SessionListTableBodyRow key={session.id} session={session} />
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </Paper>
+      <SessionListTable sessions={sessions} isLoading={isLoading} />
     </>
   );
 };
