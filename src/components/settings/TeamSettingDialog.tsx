@@ -31,6 +31,7 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
     isNewTeam,
     handleSetNewTeam,
     selectedTeamId,
+    onSubmit,
   } = useTeamSettingDialog();
 
   return (
@@ -110,7 +111,13 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
             </Button>
           )}
           {isNewTeam && (
-            <Button color="warning" variant="outlined" fullWidth size="large">
+            <Button
+              color="warning"
+              variant="outlined"
+              fullWidth
+              size="large"
+              onClick={onSubmit}
+            >
               チームを作成する
             </Button>
           )}

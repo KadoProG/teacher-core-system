@@ -34,13 +34,15 @@ interface ITeam {
   id?: string;
   name: string; // チーム名
   members: string[]; // usersのUID配列
-  session?: IEnglishWordPracSession[];
+  sessions?: IEnglishWordPracSession[];
+  created_at: Date;
+  updated_at: Date;
 }
 
 interface IUser {
   id?: string;
   email: string;
   name: string;
-  teams: string[];
+  teamIds: string[];
   photoURL: string;
 }

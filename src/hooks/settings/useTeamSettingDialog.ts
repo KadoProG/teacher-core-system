@@ -1,9 +1,12 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
+import { addTeam } from '@/utils/fetch/fetchTeam';
 
 export const useTeamSettingDialog = () => {
-  const { teams, selectedTeamId } = useAuth();
+  const { addMessageObject } = useSnackbar();
+  const { user, teams, selectedTeamId } = useAuth();
 
   const [isNewTeam, setIsNewTeam] = React.useState<boolean>(false);
 
@@ -23,7 +26,7 @@ export const useTeamSettingDialog = () => {
       name: 'サンプル太郎',
     },
   ];
-  const { control } = useForm<{
+  const { control, handleSubmit } = useForm<{
     teamId: string;
     addEmail: string;
     teamName: string;
@@ -45,6 +48,29 @@ export const useTeamSettingDialog = () => {
     console.log('delete member', value); // eslint-disable-line no-console
   };
 
+  const onSubmit = React.useCallback(async () => {
+    handleSubmit(async (formData) => {
+      if (!user?.id) return;
+      if (!formData.teamName) {
+        addMessageObject('チーム名を入力してください', 'error');
+        return;
+      }
+      const newTeam: ITeam = {
+        name: formData.teamName,
+        members: [user.id],
+        sessions: [],
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      try {
+        await addTeam(newTeam, user.id);
+        addMessageObject('チームを作成しました', 'success');
+      } catch (error) {
+        console.error(error); // eslint-disable-line no-console
+      }
+    })();
+  }, [handleSubmit, addMessageObject, user?.id]);
+
   return {
     control,
     teamOptions,
@@ -53,5 +79,6 @@ export const useTeamSettingDialog = () => {
     isNewTeam,
     handleSetNewTeam,
     selectedTeamId,
+    onSubmit,
   };
 };

@@ -60,15 +60,14 @@ export const FirebaseAuthProvider = ({
                 });
               }
 
-              const teamIds = appUser.teams;
+              const teamIds = appUser.teamIds;
 
               const preNewTeams = await Promise.all(
-                teamIds.map(async (teamID) => {
-                  const teamDoc = await getDoc(doc(firestore, 'teams', teamID));
+                teamIds.map(async (teamId) => {
+                  const teamDoc = await getDoc(doc(firestore, 'teams', teamId));
                   if (teamDoc.exists()) {
-                    return teamDoc.data() as ITeam;
+                    return { id: teamId, ...teamDoc.data() } as ITeam;
                   }
-                  console.log(`No such team with ID ${teamID}`); // eslint-disable-line no-console
                   return;
                 })
               );
@@ -85,7 +84,7 @@ export const FirebaseAuthProvider = ({
                 name: firebaseUser.displayName!,
                 email: firebaseUser.email!,
                 photoURL: firebaseUser.photoURL!,
-                teams: [],
+                teamIds: [],
               };
 
               await setDoc(ref, appUser).then(() => {

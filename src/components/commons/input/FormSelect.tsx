@@ -34,14 +34,17 @@ export const FormSelect = <T extends FieldValues>(
     },
   });
 
-  const handleChange = (event: SelectChangeEvent) => {
-    const value = event.target.value as string;
-    if (value === 'new_option' && props.onNewOptionClick) {
-      props.onNewOptionClick();
-    } else {
-      controller.field.onChange(event);
-    }
-  };
+  const handleChange = React.useCallback(
+    (event: SelectChangeEvent, children: React.ReactNode) => {
+      const value = event.target.value as string;
+      if (value === 'new_option' && !!props.onNewOptionClick) {
+        props.onNewOptionClick();
+      } else {
+        controller.field.onChange(event, children);
+      }
+    },
+    [controller.field, props]
+  );
 
   const options = props.options || [];
   return (
