@@ -52,15 +52,15 @@ const Layout = ({
       </head>
       <body className={inter.className}>
         <TopAlertCardProvider>
-          <FirebaseAuthProvider>
-            <ThemeRegistry initColorMode={initColorMode}>
-              <SnackbarProvider>
+          <SnackbarProvider>
+            <FirebaseAuthProvider>
+              <ThemeRegistry initColorMode={initColorMode}>
                 <ConfirmDialogProvider>
                   <EnglishLayout>{children}</EnglishLayout>
                 </ConfirmDialogProvider>
-              </SnackbarProvider>
-            </ThemeRegistry>
-          </FirebaseAuthProvider>
+              </ThemeRegistry>
+            </FirebaseAuthProvider>
+          </SnackbarProvider>
         </TopAlertCardProvider>
       </body>
     </html>

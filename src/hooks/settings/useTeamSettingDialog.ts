@@ -11,10 +11,6 @@ export const useTeamSettingDialog = () => {
 
   const [isNewTeam, setIsNewTeam] = React.useState<boolean>(false);
 
-  const handleSetNewTeam = () => {
-    setIsNewTeam(true);
-  };
-
   const members = [
     {
       email: 'string@gmail.com',
@@ -35,24 +31,32 @@ export const useTeamSettingDialog = () => {
     defaultValues: { teamId: '', addEmail: '', teamName: '' },
   });
 
-  React.useEffect(() => {
-    // ロジックによってTeamIdが変更されたときの動作（初期化など）
-    if (!selectedTeamId) return;
-    const currentTeam = teams.find((team) => selectedTeamId === team.id);
-    if (currentTeam) {
-      setValue('teamId', selectedTeamId);
-      setValue('teamName', currentTeam.name);
-    }
-  }, [selectedTeamId, setValue, teams]);
-
   const teamId = watch('teamId');
 
-  // ユーザによってTeamIdが変更されたときの動作（新規モードを解除）
   React.useEffect(() => {
-    if (teamId === SELECT_NEW_OPTION_NAME) return;
+    // ユーザによってTeamIdが変更されたときの動作（新規モードを解除）
+    if (teamId === SELECT_NEW_OPTION_NAME) {
+      setIsNewTeam(true);
+      setValue('teamName', '');
+      return;
+    }
+
     setIsNewTeam(false);
-    saveRecentTeamId(teamId);
-  }, [teamId, setValue, saveRecentTeamId]);
+    // ロジックによってTeamIdが変更されたときの動作（初期化など）
+    const currentTeam = teams.find((team) => teamId === team.id);
+    if (currentTeam) {
+      setValue('teamId', teamId);
+      setValue('teamName', currentTeam.name);
+      if (selectedTeamId !== teamId) {
+        saveRecentTeamId(teamId);
+      }
+    }
+  }, [setValue, teams, teamId, saveRecentTeamId, selectedTeamId]);
+
+  React.useEffect(() => {
+    if (!selectedTeamId) return;
+    setValue('teamId', selectedTeamId);
+  }, [selectedTeamId, setValue]);
 
   const teamOptions = teams.map((team) => ({
     label: team.name,
@@ -97,7 +101,6 @@ export const useTeamSettingDialog = () => {
     memberOptions,
     onMemberDelete,
     isNewTeam,
-    handleSetNewTeam,
     selectedTeamId,
     onSubmit,
   };

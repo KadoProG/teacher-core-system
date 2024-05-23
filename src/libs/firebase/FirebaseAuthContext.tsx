@@ -3,6 +3,7 @@
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import React from 'react';
+import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useTopAlertCard } from '@/components/commons/feedback/TopAlertCardContext';
 import { firebaseAuth, firestore } from '@/libs/firebase/firebase';
 
@@ -31,6 +32,7 @@ export const FirebaseAuthProvider = ({
     string | undefined
   >();
   const { addTopAlertCard } = useTopAlertCard();
+  const { addMessageObject } = useSnackbar();
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(
@@ -109,11 +111,22 @@ export const FirebaseAuthProvider = ({
     return unsubscribe;
   }, [addTopAlertCard]);
 
-  const saveRecentTeamId = React.useCallback((teamId: ITeam['id']) => {
-    if (teamId) {
-      setSelectedTeamId(teamId);
-    }
-  }, []);
+  const saveRecentTeamId = React.useCallback(
+    async (teamId: ITeam['id']) => {
+      if (teamId && user?.id) {
+        const ref = doc(firestore, 'users', user.id);
+        try {
+          await setDoc(ref, { recentTeamId: teamId }, { merge: true });
+          setSelectedTeamId(teamId);
+          addMessageObject('チームを変更しました', 'success');
+        } catch (error) {
+          addMessageObject('チームの変更に失敗しました', 'error');
+          console.error(error); // eslint-disable-line no-console
+        }
+      }
+    },
+    [addMessageObject, user?.id]
+  );
 
   return (
     <FirebaseAuthContext.Provider

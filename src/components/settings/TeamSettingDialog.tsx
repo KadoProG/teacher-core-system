@@ -29,7 +29,6 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
     memberOptions,
     onMemberDelete,
     isNewTeam,
-    handleSetNewTeam,
     selectedTeamId,
     onSubmit,
   } = useTeamSettingDialog();
@@ -54,7 +53,7 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
           control={control}
           label="選択中のチーム"
           options={teamOptions}
-          onNewOptionClick={handleSetNewTeam}
+          isNewOption
         />
         <Divider sx={{ my: 2 }} />
         {isNewTeam && (
