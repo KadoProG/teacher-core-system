@@ -1,12 +1,13 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
+import { SELECT_NEW_OPTION_NAME } from '@/components/commons/input/FormSelect';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import { addTeam } from '@/utils/fetch/fetchTeam';
 
 export const useTeamSettingDialog = () => {
   const { addMessageObject } = useSnackbar();
-  const { user, teams, selectedTeamId } = useAuth();
+  const { user, teams, selectedTeamId, saveRecentTeamId } = useAuth();
 
   const [isNewTeam, setIsNewTeam] = React.useState<boolean>(false);
 
@@ -26,13 +27,32 @@ export const useTeamSettingDialog = () => {
       name: 'サンプル太郎',
     },
   ];
-  const { control, handleSubmit } = useForm<{
+  const { control, handleSubmit, setValue, watch } = useForm<{
     teamId: string;
     addEmail: string;
     teamName: string;
   }>({
     defaultValues: { teamId: '', addEmail: '', teamName: '' },
   });
+
+  React.useEffect(() => {
+    // ロジックによってTeamIdが変更されたときの動作（初期化など）
+    if (!selectedTeamId) return;
+    const currentTeam = teams.find((team) => selectedTeamId === team.id);
+    if (currentTeam) {
+      setValue('teamId', selectedTeamId);
+      setValue('teamName', currentTeam.name);
+    }
+  }, [selectedTeamId, setValue, teams]);
+
+  const teamId = watch('teamId');
+
+  // ユーザによってTeamIdが変更されたときの動作（新規モードを解除）
+  React.useEffect(() => {
+    if (teamId === SELECT_NEW_OPTION_NAME) return;
+    setIsNewTeam(false);
+    saveRecentTeamId(teamId);
+  }, [teamId, setValue, saveRecentTeamId]);
 
   const teamOptions = teams.map((team) => ({
     label: team.name,

@@ -13,6 +13,8 @@ import {
   useController,
 } from 'react-hook-form';
 
+export const SELECT_NEW_OPTION_NAME = 'new_option' as const;
+
 type FormSelectProps<T extends FieldValues> = UseControllerProps<T> & {
   label: string;
   isRequired?: boolean;
@@ -37,8 +39,9 @@ export const FormSelect = <T extends FieldValues>(
   const handleChange = React.useCallback(
     (event: SelectChangeEvent, children: React.ReactNode) => {
       const value = event.target.value as string;
-      if (value === 'new_option' && !!props.onNewOptionClick) {
+      if (value === SELECT_NEW_OPTION_NAME && !!props.onNewOptionClick) {
         props.onNewOptionClick();
+        controller.field.onChange(event, children);
       } else {
         controller.field.onChange(event, children);
       }
@@ -68,7 +71,10 @@ export const FormSelect = <T extends FieldValues>(
             </MenuItem>
           ))}
           {!!props.onNewOptionClick && (
-            <MenuItem key="new_option" value="new_option">
+            <MenuItem
+              key={SELECT_NEW_OPTION_NAME}
+              value={SELECT_NEW_OPTION_NAME}
+            >
               新規追加
             </MenuItem>
           )}

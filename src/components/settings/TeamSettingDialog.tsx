@@ -51,7 +51,6 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
         <FormSelect
           name="teamId"
           align="right"
-          sx={{ width: 120 }}
           control={control}
           label="選択中のチーム"
           options={teamOptions}

@@ -45,4 +45,5 @@ interface IUser {
   name: string;
   teamIds: string[];
   photoURL: string;
+  recentTeamId: IUser['teamIds'][number] | null;
 }

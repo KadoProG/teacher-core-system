@@ -12,12 +12,12 @@ const FirebaseAuthContext = React.createContext<{
   user: UserContextType;
   teams: ITeam[];
   selectedTeamId: string | undefined;
-  setSelectedTeamId: (teamId: string | undefined) => void;
+  saveRecentTeamId: (teamId: string | undefined) => void;
 }>({
   user: undefined,
   teams: [],
   selectedTeamId: undefined,
-  setSelectedTeamId: () => {},
+  saveRecentTeamId: () => {},
 });
 
 export const FirebaseAuthProvider = ({
@@ -44,7 +44,12 @@ export const FirebaseAuthProvider = ({
 
             if (userDoc.exists()) {
               const appUser = userDoc.data() as IUser;
+              if (!appUser.recentTeamId) {
+                appUser.recentTeamId = appUser.teamIds[0] ?? null;
+              }
+
               setUser(appUser);
+              setSelectedTeamId(appUser.recentTeamId);
 
               // ユーザー情報が更新されている場合は更新
               if (
@@ -85,6 +90,7 @@ export const FirebaseAuthProvider = ({
                 email: firebaseUser.email!,
                 photoURL: firebaseUser.photoURL!,
                 teamIds: [],
+                recentTeamId: null,
               };
 
               await setDoc(ref, appUser).then(() => {
@@ -103,9 +109,15 @@ export const FirebaseAuthProvider = ({
     return unsubscribe;
   }, [addTopAlertCard]);
 
+  const saveRecentTeamId = React.useCallback((teamId: ITeam['id']) => {
+    if (teamId) {
+      setSelectedTeamId(teamId);
+    }
+  }, []);
+
   return (
     <FirebaseAuthContext.Provider
-      value={{ user, teams, selectedTeamId, setSelectedTeamId }}
+      value={{ user, teams, selectedTeamId, saveRecentTeamId }}
     >
       {children}
     </FirebaseAuthContext.Provider>
