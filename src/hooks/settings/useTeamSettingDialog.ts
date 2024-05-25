@@ -82,7 +82,6 @@ export const useTeamSettingDialog = () => {
       const newTeam: ITeam = {
         name: formData.teamName,
         members: [user.id],
-        sessions: [],
         created_at: new Date(),
         updated_at: new Date(),
       };

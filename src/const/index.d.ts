@@ -34,7 +34,6 @@ interface ITeam {
   id?: string;
   name: string; // チーム名
   members: string[]; // usersのUID配列
-  sessions?: IEnglishWordPracSession[];
   created_at: Date;
   updated_at: Date;
 }
