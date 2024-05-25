@@ -11,7 +11,8 @@ export const SessionList: React.FC = () => {
     dropDialog,
     dropzone,
     sessions,
-    isLoading,
+    isLoadingSessions,
+    isDisabledDeleteButton,
   } = useEnglishWordPracSession();
 
   return (
@@ -26,6 +27,7 @@ export const SessionList: React.FC = () => {
             color="error"
             size="small"
             onClick={handleSessionsDelete}
+            disabled={isDisabledDeleteButton}
           >
             削除する
           </Button>
@@ -34,6 +36,7 @@ export const SessionList: React.FC = () => {
             color="inherit"
             size="small"
             onClick={dropDialog.handleOpenDialog}
+            disabled={isLoadingSessions}
           >
             インポートする
           </Button>
@@ -52,7 +55,7 @@ export const SessionList: React.FC = () => {
           />
         </Box>
       </Box>
-      <SessionListTable sessions={sessions} isLoading={isLoading} />
+      <SessionListTable sessions={sessions} isLoading={isLoadingSessions} />
     </>
   );
 };

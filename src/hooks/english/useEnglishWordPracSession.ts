@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
@@ -22,6 +22,19 @@ export const useEnglishWordPracSession = () => {
   const handleCloseDialog = () => setIsOpenDialog(false);
   const handleOpenDialog = () => setIsOpenDialog(true);
 
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
+    'sessions',
+    async () => fetchEnglishWordPracSession(selectedTeamId),
+    {
+      // 自動fetchの無効化
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
+
+  const isLoadingSessions = isLoading || isValidating;
+
   const handleSessionsDelete = React.useCallback(async () => {
     const { isAccepted } = await confirmDialog({
       title: '削除の確認',
@@ -31,13 +44,13 @@ export const useEnglishWordPracSession = () => {
     });
     if (!isAccepted) return;
     try {
-      await deleteAllEnglishWordPracSession();
+      await deleteAllEnglishWordPracSession(selectedTeamId);
       addMessageObject('セッションの削除が完了しました', 'success');
-      mutate('sessions');
+      mutate();
     } catch (e) {
       addMessageObject(`単語の削除に失敗しました：${e}`, 'error');
     }
-  }, [addMessageObject, confirmDialog]);
+  }, [mutate, addMessageObject, confirmDialog, selectedTeamId]);
 
   const onDropFile = React.useCallback(
     async (acceptedFiles: File[]) => {
@@ -60,29 +73,26 @@ export const useEnglishWordPracSession = () => {
             );
           }
         );
+        addMessageObject(
+          'セッションデータのアップロードが完了しました',
+          'success'
+        );
         handleCloseDialog();
-        mutate('sessions');
+        mutate();
       } catch (error: any) {
         addMessageObject(error.message, 'error');
       }
     },
-    [addMessageObject, selectedTeamId]
+    [mutate, addMessageObject, selectedTeamId]
   );
 
   const dropzone = useDropzone({
     onDrop: onDropFile,
   });
 
-  const { data, error, isLoading } = useSWR(
-    'sessions',
-    fetchEnglishWordPracSession,
-    {
-      // 自動fetchの無効化
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  React.useEffect(() => {
+    mutate();
+  }, [mutate, selectedTeamId]);
 
   const sessions: IEnglishWordPracSession[] = React.useMemo(
     () => data?.sessions ?? [],
@@ -105,6 +115,8 @@ export const useEnglishWordPracSession = () => {
     console.error(error.message); // eslint-disable-line
   }
 
+  const isDisabledDeleteButton = sessions.length === 0 || isLoadingSessions;
+
   return {
     /**セッションデータ */
     sessions,
@@ -115,7 +127,9 @@ export const useEnglishWordPracSession = () => {
     /**Excelのエクスポート */
     handleExportExcelData,
     /**ローディング中か */
-    isLoading,
+    isLoadingSessions,
+    /**削除ボタンの無効化 */
+    isDisabledDeleteButton,
     /**ドロップダイアログの表示、非表示 */
     dropDialog: {
       isOpen: isOpenDialog,

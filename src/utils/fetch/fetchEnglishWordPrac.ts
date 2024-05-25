@@ -17,15 +17,10 @@ import { firestore } from '@/libs/firebase/firebase';
  * Sessionデータを取得する関数
  */
 export const fetchEnglishWordPracSession = async (
-  selectedTeamId: ITeam['id']
+  teamId: ITeam['id']
 ): Promise<{ sessions: IEnglishWordPracSession[] }> => {
-  if (!selectedTeamId) return { sessions: [] };
-  const collectionRef = collection(
-    firestore,
-    'teams',
-    selectedTeamId,
-    'sessions'
-  );
+  if (!teamId) return { sessions: [] };
+  const collectionRef = collection(firestore, 'teams', teamId, 'sessions');
   const q = query(collectionRef, orderBy('row'));
   const querySnapshot = await getDocs(q);
 
@@ -117,8 +112,14 @@ export const saveEnglishWordPracSession = async (
 /**
  * セッションを削除するプログラム
  */
-export const deleteAllEnglishWordPracSession = async (): Promise<void> => {
-  const sessionDocRef = collection(firestore, 'sessions');
+export const deleteAllEnglishWordPracSession = async (
+  teamId: ITeam['id']
+): Promise<void> => {
+  if (!teamId) throw new Error('teamId is required');
+  // コネクションを定義
+  const sessionDocRef = collection(firestore, 'teams', teamId, 'sessions');
+
+  // セッションデータを削除
   const snapShot = await getDocs(sessionDocRef);
   const snapShotRefs: DocumentReference<DocumentData, DocumentData>[] = [];
   snapShot.forEach((doc) => snapShotRefs.push(doc.ref));
