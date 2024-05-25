@@ -16,13 +16,19 @@ import { firestore } from '@/libs/firebase/firebase';
 /**
  * Sessionデータを取得する関数
  */
-export const fetchEnglishWordPracSession = async (): Promise<{
-  sessions: IEnglishWordPracSession[];
-}> => {
-  const sessionDocRef = collection(firestore, 'sessions');
-  const q = query(sessionDocRef, orderBy('row'));
-
+export const fetchEnglishWordPracSession = async (
+  selectedTeamId: ITeam['id']
+): Promise<{ sessions: IEnglishWordPracSession[] }> => {
+  if (!selectedTeamId) return { sessions: [] };
+  const collectionRef = collection(
+    firestore,
+    'teams',
+    selectedTeamId,
+    'sessions'
+  );
+  const q = query(collectionRef, orderBy('row'));
   const querySnapshot = await getDocs(q);
+
   const sessions = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     words: doc.data().words ?? [],
@@ -77,11 +83,13 @@ export const saveEnglishWordPracPrint = async (
  * Sessionを上書き保存するプログラム
  */
 export const saveEnglishWordPracSession = async (
-  sessions: IEnglishWordPracSession[]
+  sessions: IEnglishWordPracSession[],
+  teamId: ITeam['id']
 ): Promise<void> => {
+  if (!teamId) throw new Error('teamId is required');
   await runTransaction(firestore, async () => {
     // コネクションを定義
-    const sessionDocRef = collection(firestore, 'sessions');
+    const sessionDocRef = collection(firestore, 'teams', teamId, 'sessions');
 
     // セッションデータを削除
     const snapShot = await getDocs(sessionDocRef);

@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import useSWR, { mutate } from 'swr';
 import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
+import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import { getWorksheetsFromExcelFile } from '@/utils/excel/dropExcelData';
 import { exportExcelData } from '@/utils/excel/exportExcelData';
 import { processSessionExcelData } from '@/utils/excel/processSessionExcelData';
@@ -13,6 +14,7 @@ import {
 } from '@/utils/fetch/fetchEnglishWordPrac';
 
 export const useEnglishWordPracSession = () => {
+  const { selectedTeamId } = useAuth();
   const { confirmDialog } = useConfirmDialog();
   const { addMessageObject } = useSnackbar();
 
@@ -51,16 +53,20 @@ export const useEnglishWordPracSession = () => {
           worksheets[1] // 単語マスタ
         );
         // firestoreにデータを上書き
-        await saveEnglishWordPracSession(sessions).catch((e) => {
-          throw new Error(`セッションデータのアップロードに失敗しました：${e}`);
-        });
+        await saveEnglishWordPracSession(sessions, selectedTeamId).catch(
+          (e) => {
+            throw new Error(
+              `セッションデータのアップロードに失敗しました：${e}`
+            );
+          }
+        );
         handleCloseDialog();
         mutate('sessions');
       } catch (error: any) {
         addMessageObject(error.message, 'error');
       }
     },
-    [addMessageObject]
+    [addMessageObject, selectedTeamId]
   );
 
   const dropzone = useDropzone({

@@ -9,7 +9,6 @@ const withPWA = withPWAInit({
   // 現状この設定を追加しないとエラーになってしまうので追加
   // 参考: https://github.com/shadowwalker/next-pwa/issues/288
   buildExcludes: [/middleware-manifest.json$/],
-  disable: process.env.NODE_ENV === 'development',
 });
 
 const nextConfig = withPWA({
