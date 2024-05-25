@@ -19,11 +19,10 @@ export const useEnglishWordPracWordList = () => {
       revalidateOnReconnect: false,
     }
   );
-
   const isLoadingSessions = isLoading || isValidating;
 
+  // チームIDが変更されたら再fetch
   React.useEffect(() => {
-    setSelectedSession(undefined);
     mutate();
   }, [mutate, selectedTeamId]);
 
@@ -35,6 +34,8 @@ export const useEnglishWordPracWordList = () => {
   React.useEffect(() => {
     if (sessions.length > 0 && !selectedSession) {
       setSelectedSession({ ...sessions[0], index: 0 });
+    } else if (sessions.length === 0) {
+      setSelectedSession(undefined);
     }
   }, [sessions, selectedSession]);
 
