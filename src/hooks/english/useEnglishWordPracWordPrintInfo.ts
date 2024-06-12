@@ -37,18 +37,22 @@ export const useEnglishWordPracWordPrintInfo = (
     return `アイプロ${convertToRomanNumeral(level)} level${String(session?.row).padStart(2, '0')}「${session?.title}」`;
   }, [session]);
 
+  const watchWordCount = form.watch('word_count');
+  const watchIsRandamWord = form.watch('is_randam_word');
+  const watchIsRandamJpEn = form.watch('is_randam_jp_en');
+
   // 単語データの設定（form条件に準ずる）
   const wordPracList = React.useMemo(() => {
     let words =
       session?.words?.map((word) => {
         let type: IEnglishWordPracPrint['words'][number]['type'] = 'en';
-        if (form.watch('is_randam_jp_en')) {
+        if (watchIsRandamJpEn) {
           type = Math.round(Math.random()) ? 'en' : 'jp';
         }
         return { ...word, type };
       }) ?? [];
 
-    if (form.watch('is_randam_word')) {
+    if (watchIsRandamWord) {
       // シャッフルするロジック（Fisher-Yatesアルゴリズム）
       for (let i = words.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -56,8 +60,8 @@ export const useEnglishWordPracWordPrintInfo = (
       }
     }
 
-    return words.slice(0, form.watch('word_count'));
-  }, [session?.words, form]);
+    return words.slice(0, watchWordCount);
+  }, [session?.words, watchWordCount, watchIsRandamWord, watchIsRandamJpEn]);
 
   // 現在生成中の印刷データ
   const print: IEnglishWordPracPrint = React.useMemo(
