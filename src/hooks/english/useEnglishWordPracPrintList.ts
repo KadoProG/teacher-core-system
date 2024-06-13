@@ -20,16 +20,15 @@ export const useEnglishWordPracPrintList = ({
 
   const isShowAnswer = watch('is_show_answer');
 
-  const { data, error, isLoading } = useSWR(
-    'prints',
-    fetchEnglishWordPracPrint,
-    {
-      // 自動fetchの無効化
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const { data, isLoading } = useSWR('prints', fetchEnglishWordPracPrint, {
+    // 自動fetchの無効化
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    onError: (e) => {
+      addMessageObject(`データの取得に失敗しました：${e}`, 'error');
+    },
+  });
 
   const prints: IEnglishWordPracPrint[] = React.useMemo(
     () =>
@@ -69,10 +68,6 @@ export const useEnglishWordPracPrintList = ({
     },
     [addMessageObject]
   );
-
-  if (error) {
-    console.error(error.message); // eslint-disable-line
-  }
 
   return {
     /**プリントデータ */
