@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import useSWR, { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { exportPrintArchiveToExcel } from '@/utils/excel/exportPrintArchiveToExcel';
-import { importPrintArchiveFromExcel } from '@/utils/excel/importPrintArchiveFromExcel';
+import { importPrintArchiveFromExcel } from '@/utils/excel/importPrintArchivesFromExcel';
 import {
   deleteEnglishWordPracPrint,
   fetchEnglishWordPracPrintArchives,

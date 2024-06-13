@@ -1,6 +1,6 @@
 import exceljs from 'exceljs';
-import { convertCellToString } from '@/utils/excel/excelUtils';
-import { importExcelFromFile } from '@/utils/excel/importExcelFromFile';
+import { convertCellToString } from '@/utils/excel/common/excelUtils';
+import { importExcelFromFile } from '@/utils/excel/common/importExcelFromFile';
 
 /**
  * 印刷アーカイブのデータをExcelからインポートする関数

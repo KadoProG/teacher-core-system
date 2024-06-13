@@ -4,9 +4,8 @@ import useSWR from 'swr';
 import { useConfirmDialog } from '@/components/commons/feedback/ConfirmDialogContext';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
-import { getWorksheetsFromExcelFile } from '@/utils/excel/dropExcelData';
-import { exportExcelData } from '@/utils/excel/exportExcelData';
-import { processSessionExcelData } from '@/utils/excel/processSessionExcelData';
+import { exportSessionToExcel } from '@/utils/excel/exportSessionToExcel';
+import { importSessionFromExcel } from '@/utils/excel/importSessionFromExcel';
 import {
   deleteAllEnglishWordPracSession,
   fetchEnglishWordPracSession,
@@ -55,16 +54,8 @@ export const useEnglishWordPracSession = () => {
   const onDropFile = React.useCallback(
     async (acceptedFiles: File[]) => {
       try {
-        // ファイル→Sheetを取得
-        const worksheets = await getWorksheetsFromExcelFile(acceptedFiles, [
-          'セッションマスタ',
-          '単語マスタ',
-        ]);
-        //  Sheet→Sessionsを取得
-        const sessions = await processSessionExcelData(
-          worksheets[0], // セッションマスタ
-          worksheets[1] // 単語マスタ
-        );
+        const sessions = await importSessionFromExcel(acceptedFiles[0]);
+
         // firestoreにデータを上書き
         await saveEnglishWordPracSession(sessions, selectedTeamId).catch(
           (e) => {
@@ -101,7 +92,7 @@ export const useEnglishWordPracSession = () => {
 
   const handleExportExcelData = React.useCallback(async () => {
     try {
-      await exportExcelData(sessions);
+      await exportSessionToExcel(sessions);
       addMessageObject('Excelのエクスポートが完了しました。', 'success');
     } catch (e: any) {
       addMessageObject(

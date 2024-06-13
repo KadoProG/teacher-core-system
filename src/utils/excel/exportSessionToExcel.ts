@@ -1,66 +1,68 @@
 import exceljs from 'exceljs';
+import { exportExcelToFile } from '@/utils/excel/common/exportExcelToFile';
+
+const MAX_ROW = 100 as const;
 
 /**
- * Excelファイルを構築してダウンロード
+ * セッションデータをExcelにエクスポートする関数
+ * @param sessions セッションデータ
  */
-export const exportExcelData = async (sessions: IEnglishWordPracSession[]) => {
-  // Workbookの作成
+export const exportSessionToExcel = async (
+  sessions: IEnglishWordPracSession[]
+): Promise<void> => {
   const workbook = new exceljs.Workbook();
+  await makeExcelSheetSession__summary(workbook, sessions);
+  await makeExcelSheetSession__detail(workbook, sessions);
 
-  // セッションマスタのシートを作成
-  await makeExcelSheetSessionMaster(workbook, sessions);
-
-  await makeExcelSheetWordMaster(workbook, sessions);
-
-  // UInt8Arrayを生成
-  const uint8Array = await workbook.xlsx.writeBuffer();
-  // Blob
-  const blob = new Blob([uint8Array], { type: 'application/octet-binary' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'sample.xlsx';
-  a.click(); // ダウンロードを実行
-  URL.revokeObjectURL(url);
-  a.remove();
+  await exportExcelToFile(workbook, 'sessions.xlsx');
 };
 
-/**
- * Excelのシートにセッションマスタのシートを作成する処理
- */
-const makeExcelSheetSessionMaster = async (
+const makeExcelSheetSession__summary = async (
   workbook: exceljs.Workbook,
   sessions: IEnglishWordPracSession[]
 ) => {
-  const worksheet = workbook.addWorksheet('セッションマスタ');
+  // Sheetを追加
+  const worksheet = workbook.addWorksheet('セッション');
   if (!worksheet) throw new Error('作成失敗');
-  // 列を定義
+
   worksheet.columns = [
     { header: 'id', key: 'id' },
     { header: 'title', key: 'title' },
     { header: 'オート', key: 'automation' },
   ];
 
-  // 2行目以降の各行に対して式を適用
-  for (let i = 1; i < 100; i++) {
-    const session = sessions.find((v) => v.row === i);
+  let maxRow = 2;
+  sessions.forEach((session) => {
+    if (session.row > maxRow) {
+      maxRow = session.row;
+    }
     worksheet.addRow({
-      id: String(i).padStart(2, '0'),
-      title: session?.title,
+      id: session.row,
+      title: session.title,
+      automation: {
+        formula: `=REPT("0",2-LEN(A${session.row + 1}))&A${session.row + 1}&"　"&B${session.row + 1}`,
+      },
+    });
+  });
+
+  // 100行まで埋める
+  for (let i = maxRow + 1; i < MAX_ROW; i++) {
+    worksheet.addRow({
+      id: i,
+      title: '',
       automation: {
         formula: `=REPT("0",2-LEN(A${i + 1}))&A${i + 1}&"　"&B${i + 1}`,
       },
     });
   }
 };
-/**
- * Excelのシートに単語マスタのシートを作成する処理
- */
-const makeExcelSheetWordMaster = async (
+
+export const makeExcelSheetSession__detail = async (
   workbook: exceljs.Workbook,
   sessions: IEnglishWordPracSession[]
 ) => {
-  const worksheet = workbook.addWorksheet('単語マスタ');
+  // Sheetを追加
+  const worksheet = workbook.addWorksheet('セッション詳細');
   if (!worksheet) throw new Error('作成失敗');
 
   // 列を定義
@@ -91,7 +93,7 @@ const makeExcelSheetWordMaster = async (
       // セッションのセルにデータバリデーションを設定
       worksheet.getCell(`B${i + 1}`).dataValidation = {
         type: 'list',
-        formulae: [`セッションマスタ!$C$2:$C$${sessions.length + 1}`],
+        formulae: [`セッション!$C$2:$C$${MAX_ROW + 1}`],
         allowBlank: true, // 空白の入力を許可
       };
 

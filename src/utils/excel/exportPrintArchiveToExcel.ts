@@ -1,4 +1,5 @@
 import exceljs from 'exceljs';
+import { exportExcelToFile } from '@/utils/excel/common/exportExcelToFile';
 
 export const exportPrintArchiveToExcel = async (
   printArchives: IEnglishWordPracPrint[]
@@ -7,17 +8,7 @@ export const exportPrintArchiveToExcel = async (
   await makeExcelSheetPrintArchive__summary(workbook, printArchives);
   await makeExcelSheetPrintArchive__detail(workbook, printArchives);
 
-  // UInt8Arrayを生成
-  const uint8Array = await workbook.xlsx.writeBuffer();
-  // Blob
-  const blob = new Blob([uint8Array], { type: 'application/octet-binary' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'sample.xlsx';
-  a.click(); // ダウンロードを実行
-  URL.revokeObjectURL(url);
-  a.remove();
+  await exportExcelToFile(workbook, 'printArchives.xlsx');
 };
 
 const makeExcelSheetPrintArchive__summary = async (
