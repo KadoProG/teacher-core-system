@@ -32,10 +32,7 @@ const makeExcelSheetSessionMaster = async (
   workbook: exceljs.Workbook,
   sessions: IEnglishWordPracSession[]
 ) => {
-  // Workbookに新しいWorksheetを追加
-  workbook.addWorksheet('セッションマスタ');
-  // ↑で追加したWorksheetを参照し変数に代入
-  const worksheet = workbook.getWorksheet('セッションマスタ');
+  const worksheet = workbook.addWorksheet('セッションマスタ');
   if (!worksheet) throw new Error('作成失敗');
   // 列を定義
   worksheet.columns = [
@@ -63,8 +60,7 @@ const makeExcelSheetWordMaster = async (
   workbook: exceljs.Workbook,
   sessions: IEnglishWordPracSession[]
 ) => {
-  workbook.addWorksheet('単語マスタ'); // Sheetを追加
-  const worksheet = workbook.getWorksheet('単語マスタ');
+  const worksheet = workbook.addWorksheet('単語マスタ');
   if (!worksheet) throw new Error('作成失敗');
 
   // 列を定義
