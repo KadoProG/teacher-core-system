@@ -2,6 +2,7 @@
 
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { collection } from 'firebase/firestore';
 import React from 'react';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useTopAlertCard } from '@/components/commons/feedback/TopAlertCardContext';
@@ -39,9 +40,10 @@ export const FirebaseAuthProvider = ({
       firebaseAuth,
       async (firebaseUser) => {
         if (firebaseUser) {
-          const ref = doc(firestore, 'users', firebaseUser.uid);
-
           try {
+            const collectionRef = collection(firestore, 'users');
+            const ref = doc(collectionRef, firebaseUser.uid);
+
             const userDoc = await getDoc(ref);
 
             if (userDoc.exists()) {
