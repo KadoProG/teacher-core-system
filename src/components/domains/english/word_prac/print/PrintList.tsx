@@ -1,7 +1,8 @@
 'use client';
 
-import { Box, Paper, Skeleton, Typography } from '@mui/material';
+import { Box, Button, Paper, Skeleton, Typography } from '@mui/material';
 import React from 'react';
+import { ImportExcelDialog } from '@/components/commons/ImportExcelDialog';
 import { FormSwitch } from '@/components/commons/input/FormSwitch';
 import { PrintLayoutContainer } from '@/components/commons/PrintLayoutContainer';
 import { PrintListTable } from '@/components/domains/english/word_prac/print/PrintListTable';
@@ -36,6 +37,17 @@ export const PrintList: React.FC = () => {
           />
         </Box>
       </Box>
+      <Box>
+        <Button
+          variant="contained"
+          onClick={printHook.dropDialog.handleOpenDialog}
+        >
+          インポート
+        </Button>
+        <Button variant="contained" onClick={printHook.handleExport}>
+          エクスポート
+        </Button>
+      </Box>
       <Paper component={Box} p={2}>
         {printHook.isLoading ? (
           <>
@@ -47,6 +59,11 @@ export const PrintList: React.FC = () => {
           <PrintListTable printHook={printHook} />
         )}
       </Paper>
+      <ImportExcelDialog
+        isOpen={printHook.dropDialog.isOpen}
+        onClose={printHook.dropDialog.handleCloseDialog}
+        dropzone={printHook.dropzone}
+      />
     </>
   );
 };

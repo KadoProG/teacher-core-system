@@ -6,7 +6,7 @@ import { usePrinting } from '@/hooks/commons/usePrinting';
 import { useEnglishWordPracWordList } from '@/hooks/english/useEnglishWordPracWordList';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import { convertToRomanNumeral } from '@/utils/convertToRomanNumeral';
-import { saveEnglishWordPracPrint } from '@/utils/fetch/fetchEnglishWordPrac';
+import { saveEnglishWordPracPrintArchives } from '@/utils/fetch/fetchPrintArchive';
 
 /** 単語ページでの印刷設定や、保存処理 */
 export const useEnglishWordPracWordPrintInfo = (
@@ -79,7 +79,7 @@ export const useEnglishWordPracWordPrintInfo = (
   // 印刷データを保存する処理
   const handleSave = React.useCallback(async () => {
     try {
-      await saveEnglishWordPracPrint(print);
+      await saveEnglishWordPracPrintArchives([print]);
       addMessageObject('印刷アーカイブの保存が完了しました。', 'success');
       mutate('prints');
     } catch (error) {

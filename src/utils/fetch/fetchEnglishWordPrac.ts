@@ -4,8 +4,6 @@ import {
   addDoc,
   collection,
   deleteDoc,
-  doc,
-  getDoc,
   getDocs,
   orderBy,
   query,
@@ -31,47 +29,6 @@ export const fetchEnglishWordPracSession = async (
   })) as IEnglishWordPracSession[];
 
   return { sessions };
-};
-
-/**
- * 印刷アーカイブデータを取得する関数
- */
-export const fetchEnglishWordPracPrint = async (): Promise<{
-  prints: IEnglishWordPracPrint[];
-}> => {
-  const collectionRef = collection(firestore, 'prints');
-  const q = query(collectionRef, orderBy('updated_at'));
-
-  const querySnapshot = await getDocs(q);
-  const prints = querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-    created_at: doc.data().created_at.toDate(),
-    updated_at: doc.data().updated_at.toDate(),
-  })) as IEnglishWordPracPrint[];
-
-  return { prints };
-};
-
-/**
- * 印刷アーカイブを保存するプログラム
- * @param print
- */
-export const saveEnglishWordPracPrint = async (
-  print: IEnglishWordPracPrint
-): Promise<void> => {
-  // コネクションを定義
-  const collectionRef = collection(firestore, 'prints');
-
-  const newPrint: IEnglishWordPracPrint = {
-    title: print.title,
-    created_at: print.created_at,
-    updated_at: print.updated_at,
-    words: print.words,
-    email: print.email,
-  };
-  // 新しいセッションデータを追加
-  await addDoc(collectionRef, newPrint);
 };
 
 /**
@@ -128,21 +85,4 @@ export const deleteAllEnglishWordPracSession = async (
       await deleteDoc(ref);
     })
   );
-};
-
-/**
- * 印刷アーカイブの単体削除
- * @param printId
- */
-export const deleteEnglishWordPracPrint = async (
-  printId: string
-): Promise<void> => {
-  // 単体取得
-  const docRef = doc(firestore, 'prints', printId);
-  const snapshot = await getDoc(docRef);
-
-  if (!snapshot.exists()) {
-    throw new Error('not found');
-  }
-  await deleteDoc(docRef);
 };
