@@ -15,13 +15,16 @@ import { firestore } from '@/libs/firebase/firebase';
  * 印刷アーカイブデータを取得する関数
  * @returns {prints: IEnglishWordPracPrint[]} 印刷アーカイブデータ
  */
-export const fetchEnglishWordPracPrintArchives = async (): Promise<{
+export const fetchEnglishWordPracPrintArchives = async (
+  teamId: ITeam['id']
+): Promise<{
   prints: IEnglishWordPracPrint[];
 }> => {
-  const collectionRef = collection(firestore, 'prints');
+  if (!teamId) return { prints: [] };
+  const collectionRef = collection(firestore, 'teams', teamId, 'prints');
   const q = query(collectionRef, orderBy('updated_at'));
-
   const querySnapshot = await getDocs(q);
+
   const prints = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -39,11 +42,13 @@ export const fetchEnglishWordPracPrintArchives = async (): Promise<{
  */
 export const saveEnglishWordPracPrintArchives = async (
   printArchives: IEnglishWordPracPrint[],
+  teamId: ITeam['id'],
   isOverWrite?: boolean
 ): Promise<void> => {
+  if (!teamId) throw new Error('teamId is required');
   await runTransaction(firestore, async () => {
     // コネクションを定義
-    const collectionRef = collection(firestore, 'prints');
+    const collectionRef = collection(firestore, 'teams', teamId, 'prints');
 
     if (isOverWrite) {
       // プリントデータを削除
@@ -74,10 +79,12 @@ export const saveEnglishWordPracPrintArchives = async (
  * @param printArchiveId 印刷アーカイブID
  */
 export const deleteEnglishWordPracPrint = async (
-  printId: string
+  printId: string,
+  teamId: ITeam['id']
 ): Promise<void> => {
+  if (!teamId) throw new Error('teamId is required');
   // 単体取得
-  const docRef = doc(firestore, 'prints', printId);
+  const docRef = doc(firestore, 'teams', teamId, 'prints', printId);
   const snapshot = await getDoc(docRef);
 
   if (!snapshot.exists()) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import { fetchEnglishWordPracSession } from '@/utils/fetch/fetchEnglishWordPrac';
 
@@ -9,8 +9,8 @@ export const useEnglishWordPracWordList = () => {
     IEnglishWordPracSession & { index: number }
   >();
 
-  const { data, error, isLoading, isValidating, mutate } = useSWR(
-    'sessions',
+  const { data, error, isLoading, isValidating } = useSWR(
+    selectedTeamId,
     async () => fetchEnglishWordPracSession(selectedTeamId),
     {
       // 自動fetchの無効化
@@ -23,8 +23,8 @@ export const useEnglishWordPracWordList = () => {
 
   // チームIDが変更されたら再fetch
   React.useEffect(() => {
-    mutate();
-  }, [mutate, selectedTeamId]);
+    mutate(selectedTeamId);
+  }, [selectedTeamId]);
 
   const sessions: IEnglishWordPracSession[] = React.useMemo(
     () => data?.sessions ?? [],
