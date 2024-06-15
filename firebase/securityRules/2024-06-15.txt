@@ -31,10 +31,5 @@ service cloud.firestore {
         get(/databases/$(database)/documents/teams/$(teamId)).data.members.hasAny([request.auth.uid]);
       }
     }
-
-    // 臨時で追加(後に/printsは削除する)
-    match /prints/{printId} {
-    	allow read, write: if true;
-    }
   }
 }

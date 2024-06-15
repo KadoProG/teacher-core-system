@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
-import useSWR, { mutate } from 'swr';
+import { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import { exportPrintArchiveToExcel } from '@/utils/excel/exportPrintArchiveToExcel';
@@ -23,6 +23,23 @@ export const useEnglishWordPracPrintList = ({
   const { control, watch } = useForm<{ is_show_answer: boolean }>({
     defaultValues: { is_show_answer: false },
   });
+
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+
+  const [printArchives, setPrintArchives] = React.useState<
+    IEnglishWordPracPrint[]
+  >([]);
+
+  React.useEffect(() => {
+    if (!selectedTeamId) return;
+    const fetchPrintArchives = async () => {
+      setIsLoading(true);
+      const data = await fetchEnglishWordPracPrintArchives(selectedTeamId);
+      setPrintArchives(data.prints);
+      setIsLoading(false);
+    };
+    fetchPrintArchives();
+  }, [selectedTeamId]);
 
   const [isOpenDialog, setIsOpenDialog] = React.useState<boolean>(false);
   const handleCloseDialog = () => setIsOpenDialog(false);
@@ -49,35 +66,12 @@ export const useEnglishWordPracPrintList = ({
 
   const isShowAnswer = watch('is_show_answer');
 
-  const { data, isLoading } = useSWR(
-    selectedTeamId,
-    fetchEnglishWordPracPrintArchives,
-    {
-      // 自動fetchの無効化
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      onError: (e) => {
-        addMessageObject(`データの取得に失敗しました：${e}`, 'error');
-      },
-    }
-  );
-
-  const prints: IEnglishWordPracPrint[] = React.useMemo(
-    () =>
-      data?.prints.map((print) => ({
-        ...print,
-        isShowAnswer,
-      })) ?? [],
-    [data?.prints, isShowAnswer]
-  );
-
   const [selectedPrint, setSelectedPrint] =
     React.useState<IEnglishWordPracPrint>();
 
   const handlePrint = React.useCallback(
     (id: string) => {
-      const newSelectedPrint = prints.find((print) => print.id === id);
+      const newSelectedPrint = printArchives.find((print) => print.id === id);
       if (!newSelectedPrint) return;
       newSelectedPrint.isShowAnswer = isShowAnswer;
       setSelectedPrint(newSelectedPrint);
@@ -86,17 +80,17 @@ export const useEnglishWordPracPrintList = ({
         handlePrintProp(); // 本来の印刷関数を呼び出す（setTimeoutにすることで印刷レイアウト完了を待つ）
       });
     },
-    [handlePrintProp, prints, isShowAnswer]
+    [handlePrintProp, printArchives, isShowAnswer]
   );
 
   const handleExport = React.useCallback(async () => {
     try {
-      await exportPrintArchiveToExcel(prints);
+      await exportPrintArchiveToExcel(printArchives);
       addMessageObject('エクスポートが完了しました。', 'success');
     } catch (e) {
       addMessageObject(`エクスポート時にエラーが発生しました：${e}`, 'error');
     }
-  }, [prints, addMessageObject]);
+  }, [printArchives, addMessageObject]);
 
   const handleDelete = React.useCallback(
     async (id: string) => {
@@ -113,7 +107,7 @@ export const useEnglishWordPracPrintList = ({
 
   return {
     /**プリントデータ */
-    prints,
+    prints: printArchives,
     /**ドロップゾーンの設定 */
     dropzone,
     /**ローディング中か */
