@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import useSWR, { mutate } from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
+import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import { exportPrintArchiveToExcel } from '@/utils/excel/exportPrintArchiveToExcel';
 import { importPrintArchiveFromExcel } from '@/utils/excel/importPrintArchivesFromExcel';
 import {
@@ -17,6 +18,7 @@ export const useEnglishWordPracPrintList = ({
   /** 印刷する関数（本hookがhandlePrintを使用するため、呼び出し用） */
   handlePrintProp: () => void;
 }) => {
+  const { selectedTeamId } = useAuth();
   const { addMessageObject } = useSnackbar();
   const { control, watch } = useForm<{ is_show_answer: boolean }>({
     defaultValues: { is_show_answer: false },
@@ -30,12 +32,15 @@ export const useEnglishWordPracPrintList = ({
     async (acceptedFiles: File[]) => {
       try {
         const prints = await importPrintArchiveFromExcel(acceptedFiles[0]);
-        await saveEnglishWordPracPrintArchives(prints, true);
+        await saveEnglishWordPracPrintArchives(prints, selectedTeamId, true);
+        addMessageObject('インポートが完了しました。', 'success');
+        mutate(selectedTeamId);
+        handleCloseDialog();
       } catch (e) {
         addMessageObject(`インポート時にエラーが発生しました：${e}`, 'error');
       }
     },
-    [addMessageObject]
+    [addMessageObject, selectedTeamId]
   );
 
   const dropzone = useDropzone({
@@ -45,7 +50,7 @@ export const useEnglishWordPracPrintList = ({
   const isShowAnswer = watch('is_show_answer');
 
   const { data, isLoading } = useSWR(
-    'prints',
+    selectedTeamId,
     fetchEnglishWordPracPrintArchives,
     {
       // 自動fetchの無効化
@@ -96,14 +101,14 @@ export const useEnglishWordPracPrintList = ({
   const handleDelete = React.useCallback(
     async (id: string) => {
       try {
-        await deleteEnglishWordPracPrint(id);
+        await deleteEnglishWordPracPrint(id, selectedTeamId);
         addMessageObject('削除が完了しました。', 'success');
-        mutate('prints');
+        mutate(selectedTeamId);
       } catch (e) {
         addMessageObject(`削除時にエラーが発生しました${e}`, 'error');
       }
     },
-    [addMessageObject]
+    [addMessageObject, selectedTeamId]
   );
 
   return {

@@ -22,7 +22,7 @@ export const useEnglishWordPracSession = () => {
   const handleOpenDialog = () => setIsOpenDialog(true);
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
-    'sessions',
+    selectedTeamId,
     async () => fetchEnglishWordPracSession(selectedTeamId),
     {
       // 自動fetchの無効化
