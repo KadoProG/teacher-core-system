@@ -1,12 +1,43 @@
 import exceljs from 'exceljs';
-import { convertCellToString } from '@/utils/excel/excelUtils';
+
+import { convertCellToString } from '@/utils/excel/common/excelUtils';
+import { importExcelFromFile } from '@/utils/excel/common/importExcelFromFile';
+
+const MAX_ROW = 100 as const;
+const MAX_WORD_ROW = 1000 as const;
 
 /**
- * Excelの単語リストをWordデータに変換する処理
- * @param worksheet exceljsを用いてワークシートに変換されたデータ
- * @returns sessions 最終的に得たsessionsデータ
+ * Excelのセッションデータをインポートする関数
+ * @param file インポートするファイル
+ * @returns セッションデータ (IEnglishWordPracSession[])
  */
-export const processSessionExcelData = async (
+export const importSessionFromExcel = async (
+  file: File
+): Promise<IEnglishWordPracSession[]> => {
+  const workbook = await importExcelFromFile(file);
+
+  const sessionSheet = workbook.getWorksheet('セッション');
+  const sessionDetailSheet = workbook.getWorksheet('セッション詳細');
+
+  if (!sessionSheet || !sessionDetailSheet) {
+    throw new Error('指定されたワークシートが見つかりませんでした');
+  }
+
+  const sessionData = await processSessionSheet(
+    sessionSheet,
+    sessionDetailSheet
+  );
+
+  return sessionData;
+};
+
+/**
+ * セッションのデータを処理する関数
+ * @param sessionWorksheet
+ * @param wordWorksheet
+ * @returns セッションデータ
+ */
+const processSessionSheet = async (
   sessionWorksheet: exceljs.Worksheet,
   wordWorksheet: exceljs.Worksheet
 ) => {
@@ -14,7 +45,7 @@ export const processSessionExcelData = async (
   const sessions: IEnglishWordPracSession[] = [];
 
   // sessionのデータを取得
-  for (let i = 2; i < 101; i++) {
+  for (let i = 2; i < MAX_ROW + 1; i++) {
     const row: exceljs.Row = sessionWorksheet.getRow(i); // セッションの行
     const idValue = row.getCell(1).value as string; // Rowの値
     const titleValue = row.getCell(2).value; // セッションのタイトル
@@ -32,7 +63,7 @@ export const processSessionExcelData = async (
     }
   }
 
-  for (let i = 2; i < 1000; i++) {
+  for (let i = 2; i < MAX_WORD_ROW + 1; i++) {
     const row: exceljs.Row = wordWorksheet.getRow(i);
     const id = row.getCell(1).value as number;
     const sessionStringValue = row.getCell(2).value; // セッション

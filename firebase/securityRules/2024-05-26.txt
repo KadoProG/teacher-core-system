@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // users コレクションへのアクセス
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+    
+    // teams コレクションへのアクセス
+    match /teams/{teamId} {
+      allow read, write: if request.auth != null && resource.data.members.hasAny([request.auth.uid]);
+      
+      // チーム専用データへのアクセス
+      match /{document=**} {
+        allow read, write: if request.auth != null && get(/databases/$(database)/documents/teams/$(teamId)).data.members.hasAny([request.auth.uid]);
+      }
+    }
+  }
+}

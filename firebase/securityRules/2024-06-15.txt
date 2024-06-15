@@ -1,0 +1,38 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // users コレクションへのアクセス
+    match /users/{userId} {
+      // 認証されたユーザーは自身のドキュメントに対する読み書きが可能
+      allow read, write: if request.auth.uid == userId;
+      
+      // ログインされていれば他人の情報も閲覧可能（というかカラムごとの制御ができないっぽい）
+      allow read : if request.auth != null;
+      
+      // チームにメンバーを追加時、既存ユーザの場合はteamIdsだけ更新・削除の権限を付与
+      allow update, delete: if request.auth != null &&
+      request.resource.data.keys().hasOnly(["teamIds"]) &&
+      request.resource.data.keys().size() == 1;
+      
+      allow update, delete: if request.auth != null;
+    }
+    
+    // teams コレクションへのアクセス
+    match /teams/{teamId} {
+      allow read, write: if request.auth != null &&
+      	resource.data.members.hasAny([request.auth.uid]);
+
+      // チーム専用データへのアクセス
+      match /{document=**} {
+        allow read, write: if request.auth != null &&
+        get(/databases/$(database)/documents/teams/$(teamId)).data.members.hasAny([request.auth.uid]);
+      }
+    }
+    
+    // 臨時で追加(後に/printsは削除する)
+    match /prints/{printId} {
+    	allow read, write: if true;
+    }
+  }
+}

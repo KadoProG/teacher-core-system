@@ -62,9 +62,7 @@ export const EnglishLayoutAvatorMenu: React.FC<EnglishLayoutAvatorMenuProps> = (
             setIsTeamDialogOpen(true);
             props.onClose();
           }}
-          disabled
-          // TODO チーム機能を実装したらdisabledを外す
-          // disabled={!user}
+          disabled={!user}
         >
           <ListItemIcon sx={{ color: 'text.primary' }}>
             <PeopleIcon />

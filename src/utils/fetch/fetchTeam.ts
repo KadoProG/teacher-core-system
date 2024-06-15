@@ -1,11 +1,14 @@
 import {
+  arrayRemove,
   arrayUnion,
   collection,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
   runTransaction,
+  where,
 } from 'firebase/firestore';
 import { firestore } from '@/libs/firebase/firebase';
 
@@ -60,6 +63,92 @@ export const updateTeam = async (team: ITeam): Promise<void> => {
       name: team.name,
       members: team.members,
       updated_at: team.updated_at,
+    });
+  });
+};
+
+/**
+ * チームにメンバーを追加する関数
+ * @param teamId チームID
+ * @param email 追加するメンバーのメールアドレス
+ */
+export const addMemberToTeam = async (
+  teamId: string,
+  email: string
+): Promise<void> => {
+  // 1. メールアドレスに対応するユーザーが存在するかどうかを確認
+  let userSnapshot;
+  const teamRef = doc(collection(firestore, 'teams'), teamId);
+  const usersRef = collection(firestore, 'users');
+  try {
+    const userQuery = query(usersRef, where('email', '==', email));
+    userSnapshot = await getDocs(userQuery);
+  } catch (e) {
+    throw new Error(`ユーザーの取得に失敗しました: ${e}`);
+  }
+
+  await runTransaction(firestore, async (transaction) => {
+    let userId: string;
+    if (userSnapshot.empty) {
+      throw new Error('ユーザーが未登録です！');
+    } else {
+      // ユーザーが存在する場合、既存のユーザーのデータを更新
+      try {
+        const userDoc = userSnapshot.docs[0];
+        const userRef = userDoc.ref;
+        userId = userDoc.id; // 既存のユーザーIDを取得
+        transaction.update(userRef, {
+          teamIds: arrayUnion(teamId),
+        });
+      } catch (e) {
+        throw new Error(`ユーザーの更新に失敗しました: ${e}`);
+      }
+    }
+
+    try {
+      // チームのメンバーリストを更新
+      transaction.update(teamRef, {
+        members: arrayUnion(userId),
+      });
+    } catch (e) {
+      throw new Error(`チームの更新に失敗しました: ${e}`);
+    }
+  });
+};
+
+/**
+ * メンバー情報を取得する関数
+ * @param userIds ユーザーIDの配列
+ * @returns メンバー情報の配列
+ */
+export const fetchMembers = async (
+  userIds: string[]
+): Promise<{ members: IUser[] }> => {
+  const members = await Promise.all(
+    userIds.map(async (userId) => {
+      const userRef = doc(collection(firestore, 'users'), userId);
+      const userDoc = await getDoc(userRef);
+      return userDoc.data() as IUser;
+    })
+  );
+
+  return { members };
+};
+
+export const deleteMemberFromTeam = async (
+  teamId: ITeam['id'],
+  userId: string
+): Promise<void> => {
+  await runTransaction(firestore, async (transaction) => {
+    const teamRef = doc(collection(firestore, 'teams'), teamId);
+    const userRef = doc(collection(firestore, 'users'), userId);
+
+    transaction.update(teamRef, {
+      members: arrayRemove(userId),
+    });
+
+    transaction.update(userRef, {
+      teamIds: arrayRemove(teamId),
     });
   });
 };

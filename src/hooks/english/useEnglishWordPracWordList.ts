@@ -1,22 +1,30 @@
 import React from 'react';
 import useSWR from 'swr';
+import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import { fetchEnglishWordPracSession } from '@/utils/fetch/fetchEnglishWordPrac';
 
 export const useEnglishWordPracWordList = () => {
+  const { selectedTeamId } = useAuth();
   const [selectedSession, setSelectedSession] = React.useState<
     IEnglishWordPracSession & { index: number }
   >();
 
-  const {
-    data,
-    error,
-    isLoading: isLoadingSessions,
-  } = useSWR('sessions', fetchEnglishWordPracSession, {
-    // 自動fetchの無効化
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
+    'sessions',
+    async () => fetchEnglishWordPracSession(selectedTeamId),
+    {
+      // 自動fetchの無効化
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
+  const isLoadingSessions = isLoading || isValidating;
+
+  // チームIDが変更されたら再fetch
+  React.useEffect(() => {
+    mutate();
+  }, [mutate, selectedTeamId]);
 
   const sessions: IEnglishWordPracSession[] = React.useMemo(
     () => data?.sessions ?? [],
@@ -26,6 +34,8 @@ export const useEnglishWordPracWordList = () => {
   React.useEffect(() => {
     if (sessions.length > 0 && !selectedSession) {
       setSelectedSession({ ...sessions[0], index: 0 });
+    } else if (sessions.length === 0) {
+      setSelectedSession(undefined);
     }
   }, [sessions, selectedSession]);
 

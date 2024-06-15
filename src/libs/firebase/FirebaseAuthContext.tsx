@@ -2,7 +2,9 @@
 
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { collection } from 'firebase/firestore';
 import React from 'react';
+import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { useTopAlertCard } from '@/components/commons/feedback/TopAlertCardContext';
 import { firebaseAuth, firestore } from '@/libs/firebase/firebase';
 
@@ -12,12 +14,12 @@ const FirebaseAuthContext = React.createContext<{
   user: UserContextType;
   teams: ITeam[];
   selectedTeamId: string | undefined;
-  setSelectedTeamId: (teamId: string | undefined) => void;
+  saveRecentTeamId: (teamId: string | undefined) => void;
 }>({
   user: undefined,
   teams: [],
   selectedTeamId: undefined,
-  setSelectedTeamId: () => {},
+  saveRecentTeamId: () => {},
 });
 
 export const FirebaseAuthProvider = ({
@@ -31,20 +33,28 @@ export const FirebaseAuthProvider = ({
     string | undefined
   >();
   const { addTopAlertCard } = useTopAlertCard();
+  const { addMessageObject } = useSnackbar();
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       firebaseAuth,
       async (firebaseUser) => {
         if (firebaseUser) {
-          const ref = doc(firestore, 'users', firebaseUser.uid);
-
+          let teamIds: string[] = [];
           try {
-            const userDoc = await getDoc(ref);
+            const collectionRef = collection(firestore, 'users');
+            const userRef = doc(collectionRef, firebaseUser.uid);
+
+            const userDoc = await getDoc(userRef);
 
             if (userDoc.exists()) {
               const appUser = userDoc.data() as IUser;
+              if (!appUser.recentTeamId) {
+                appUser.recentTeamId = appUser.teamIds[0] ?? null;
+              }
+
               setUser(appUser);
+              setSelectedTeamId(appUser.recentTeamId);
 
               // ユーザー情報が更新されている場合は更新
               if (
@@ -52,7 +62,7 @@ export const FirebaseAuthProvider = ({
                 appUser.email !== firebaseUser.email ||
                 appUser.photoURL !== firebaseUser.photoURL
               ) {
-                await setDoc(ref, {
+                await setDoc(userRef, {
                   ...appUser,
                   name: firebaseUser.displayName,
                   email: firebaseUser.email,
@@ -60,23 +70,8 @@ export const FirebaseAuthProvider = ({
                 });
               }
 
-              const teamIds = appUser.teamIds;
-
-              const preNewTeams = await Promise.all(
-                teamIds.map(async (teamId) => {
-                  const teamDoc = await getDoc(doc(firestore, 'teams', teamId));
-                  if (teamDoc.exists()) {
-                    return { id: teamId, ...teamDoc.data() } as ITeam;
-                  }
-                  return;
-                })
-              );
-
-              const newTeams = preNewTeams.filter(
-                (team) => team !== undefined
-              ) as ITeam[];
-
-              setTeams(newTeams);
+              // チームIDのリストを取得
+              teamIds = appUser.teamIds;
             } else {
               // ユーザーが存在しない場合は新規作成
               const appUser: IUser = {
@@ -85,12 +80,29 @@ export const FirebaseAuthProvider = ({
                 email: firebaseUser.email!,
                 photoURL: firebaseUser.photoURL!,
                 teamIds: [],
+                recentTeamId: null,
               };
 
-              await setDoc(ref, appUser).then(() => {
+              await setDoc(userRef, appUser).then(() => {
                 setUser(appUser);
               });
             }
+
+            const preNewTeams = await Promise.all(
+              teamIds.map(async (teamId) => {
+                const teamDoc = await getDoc(doc(firestore, 'teams', teamId));
+                if (teamDoc.exists()) {
+                  return { id: teamId, ...teamDoc.data() } as ITeam;
+                }
+                return;
+              })
+            );
+
+            const newTeams = preNewTeams.filter(
+              (team) => team !== undefined
+            ) as ITeam[];
+
+            setTeams(newTeams);
           } catch (error) {
             addTopAlertCard('ユーザー情報の取得に失敗しました', 'error');
             console.error(error); // eslint-disable-line no-console
@@ -103,9 +115,26 @@ export const FirebaseAuthProvider = ({
     return unsubscribe;
   }, [addTopAlertCard]);
 
+  const saveRecentTeamId = React.useCallback(
+    async (teamId: ITeam['id']) => {
+      if (teamId && user?.id) {
+        const userRef = doc(firestore, 'users', user.id);
+        try {
+          await setDoc(userRef, { recentTeamId: teamId }, { merge: true });
+          setSelectedTeamId(teamId);
+          addMessageObject('チームを変更しました', 'success');
+        } catch (error) {
+          addMessageObject('チームの変更に失敗しました', 'error');
+          console.error(error); // eslint-disable-line no-console
+        }
+      }
+    },
+    [addMessageObject, user?.id]
+  );
+
   return (
     <FirebaseAuthContext.Provider
-      value={{ user, teams, selectedTeamId, setSelectedTeamId }}
+      value={{ user, teams, selectedTeamId, saveRecentTeamId }}
     >
       {children}
     </FirebaseAuthContext.Provider>

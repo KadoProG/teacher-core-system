@@ -3,7 +3,6 @@ import {
   MenuItem,
   MenuItemProps,
   Select,
-  SelectChangeEvent,
   Typography,
 } from '@mui/material';
 import React from 'react';
@@ -13,6 +12,8 @@ import {
   useController,
 } from 'react-hook-form';
 
+export const SELECT_NEW_OPTION_NAME = 'new_option' as const;
+
 type FormSelectProps<T extends FieldValues> = UseControllerProps<T> & {
   label: string;
   isRequired?: boolean;
@@ -20,7 +21,7 @@ type FormSelectProps<T extends FieldValues> = UseControllerProps<T> & {
   isDense?: boolean;
   sx?: any;
   align?: 'left' | 'center' | 'right';
-  onNewOptionClick?: () => void;
+  isNewOption?: boolean;
 };
 
 export const FormSelect = <T extends FieldValues>(
@@ -33,18 +34,6 @@ export const FormSelect = <T extends FieldValues>(
       required: props.isRequired,
     },
   });
-
-  const handleChange = React.useCallback(
-    (event: SelectChangeEvent, children: React.ReactNode) => {
-      const value = event.target.value as string;
-      if (value === 'new_option' && !!props.onNewOptionClick) {
-        props.onNewOptionClick();
-      } else {
-        controller.field.onChange(event, children);
-      }
-    },
-    [controller.field, props]
-  );
 
   const options = props.options || [];
   return (
@@ -60,15 +49,17 @@ export const FormSelect = <T extends FieldValues>(
           size="small"
           id={`filled_${controller.field.name}`}
           sx={props.sx}
-          onChange={handleChange}
         >
           {options.map((option) => (
             <MenuItem key={option.label + option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
-          {!!props.onNewOptionClick && (
-            <MenuItem key="new_option" value="new_option">
+          {props.isNewOption && (
+            <MenuItem
+              key={SELECT_NEW_OPTION_NAME}
+              value={SELECT_NEW_OPTION_NAME}
+            >
               新規追加
             </MenuItem>
           )}

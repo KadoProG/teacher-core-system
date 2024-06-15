@@ -1,10 +1,21 @@
-const path = require('path');
+// https://github.com/lint-staged/lint-staged#how-can-i-ignore-files-from-eslintignore
 
-const buildEslintCommand = (filenames) =>
-  `eslint --no-cache --ignore-pattern '!./.eslintignore' --no-ignore --ext ts,tsx ${filenames
-    .map((f) => path.relative(process.cwd(), f))
-    .join(' ')} --max-warnings 0`;
+const { ESLint } = require('eslint');
+
+const removeIgnoredFiles = async (files) => {
+  const eslint = new ESLint();
+  const isIgnored = await Promise.all(
+    files.map((file) => {
+      return eslint.isPathIgnored(file);
+    })
+  );
+  const filteredFiles = files.filter((_, i) => !isIgnored[i]);
+  return filteredFiles.join(' ');
+};
 
 module.exports = {
-  '*.{js,jsx,ts,tsx}': [buildEslintCommand],
+  '**/*.{ts,tsx,js,jsx}': async (files) => {
+    const filesToLint = await removeIgnoredFiles(files);
+    return [`eslint --max-warnings=0 ${filesToLint}`];
+  },
 };

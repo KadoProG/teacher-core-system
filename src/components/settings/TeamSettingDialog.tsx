@@ -1,5 +1,6 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
+import SendIcon from '@mui/icons-material/Send';
 import {
   Alert,
   Box,
@@ -29,9 +30,9 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
     memberOptions,
     onMemberDelete,
     isNewTeam,
-    handleSetNewTeam,
     selectedTeamId,
     onSubmit,
+    onMemberAdd,
   } = useTeamSettingDialog();
 
   return (
@@ -51,11 +52,10 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
         <FormSelect
           name="teamId"
           align="right"
-          sx={{ width: 120 }}
           control={control}
           label="選択中のチーム"
           options={teamOptions}
-          onNewOptionClick={handleSetNewTeam}
+          isNewOption
         />
         <Divider sx={{ my: 2 }} />
         {isNewTeam && (
@@ -84,22 +84,28 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
         <Typography variant="body2" my={1} color="GrayText">
           メンバーの追加
         </Typography>
-        <FormTextField
-          isDense
-          fullWidth
-          label="メールアドレスを追加"
-          control={control}
-          name="addEmail"
-          type="email"
-          disabled={!isNewTeam && !selectedTeamId}
-        />
+        <Box display="flex">
+          <FormTextField
+            isDense
+            fullWidth
+            label="メールアドレスを追加"
+            control={control}
+            name="addEmail"
+            type="email"
+            disabled={!isNewTeam && !selectedTeamId}
+            sx={{ flex: 1 }}
+          />
+          <IconButton onClick={onMemberAdd}>
+            <SendIcon />
+          </IconButton>
+        </Box>
         <Stack spacing={1}>
           {memberOptions.map((member) => (
             <Box key={member.value}>
               <Chip
                 label={member.label}
                 size="small"
-                onDelete={() => onMemberDelete(member.value)}
+                onDelete={() => member.value && onMemberDelete(member.value)}
               />
             </Box>
           ))}
