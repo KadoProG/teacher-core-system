@@ -105,7 +105,7 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
               <Chip
                 label={member.label}
                 size="small"
-                onDelete={() => onMemberDelete(member.value)}
+                onDelete={() => member.value && onMemberDelete(member.value)}
               />
             </Box>
           ))}
