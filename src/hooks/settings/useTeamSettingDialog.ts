@@ -1,9 +1,14 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import useSWR from 'swr';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { SELECT_NEW_OPTION_NAME } from '@/components/commons/input/FormSelect';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
-import { addMemberToTeam, addTeam } from '@/utils/fetch/fetchTeam';
+import {
+  addMemberToTeam,
+  addTeam,
+  fetchMembers,
+} from '@/utils/fetch/fetchTeam';
 import { isValidEmail } from '@/utils/isValidEmail';
 
 export const useTeamSettingDialog = () => {
@@ -12,18 +17,16 @@ export const useTeamSettingDialog = () => {
 
   const [isNewTeam, setIsNewTeam] = React.useState<boolean>(false);
 
-  const members = [
-    {
-      email: 'string@gmail.com',
-      id: '1',
-      name: 'サンプル太郎',
+  const currentTeam = teams.find((team) => selectedTeamId === team.id);
+
+  const { data } = useSWR(currentTeam?.members ?? [], fetchMembers, {
+    onError: (error) => {
+      console.error(error); // eslint-disable-line no-console
     },
-    {
-      email: 'string@gmail.com',
-      id: '2',
-      name: 'サンプル太郎',
-    },
-  ];
+  });
+
+  const teamMembers = data?.members ?? [];
+
   const { control, handleSubmit, setValue, watch } = useForm<{
     teamId: string;
     addEmail: string;
@@ -64,7 +67,7 @@ export const useTeamSettingDialog = () => {
     value: team.id,
   }));
 
-  const memberOptions = members.map((member) => ({
+  const memberOptions = teamMembers.map((member) => ({
     label: member.name,
     value: member.id,
   }));

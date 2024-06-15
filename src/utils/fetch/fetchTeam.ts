@@ -2,6 +2,7 @@ import {
   arrayUnion,
   collection,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -112,4 +113,23 @@ export const addMemberToTeam = async (
       throw new Error(`チームの更新に失敗しました: ${e}`);
     }
   });
+};
+
+/**
+ * メンバー情報を取得する関数
+ * @param userIds ユーザーIDの配列
+ * @returns メンバー情報の配列
+ */
+export const fetchMembers = async (
+  userIds: string[]
+): Promise<{ members: IUser[] }> => {
+  const members = await Promise.all(
+    userIds.map(async (userId) => {
+      const userRef = doc(collection(firestore, 'users'), userId);
+      const userDoc = await getDoc(userRef);
+      return userDoc.data() as IUser;
+    })
+  );
+
+  return { members };
 };
