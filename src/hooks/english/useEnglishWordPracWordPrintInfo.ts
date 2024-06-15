@@ -12,7 +12,7 @@ import { saveEnglishWordPracPrintArchives } from '@/utils/fetch/fetchPrintArchiv
 export const useEnglishWordPracWordPrintInfo = (
   englishWordPrac: ReturnType<typeof useEnglishWordPracWordList>
 ) => {
-  const { user } = useAuth();
+  const { user, selectedTeamId } = useAuth();
   const componentRef = React.useRef<HTMLDivElement>(null);
   const [isShowAnswer, setIsShowAnswer] = React.useState<boolean>(false);
   const { handlePrint: handleHookPrint } = usePrinting({ componentRef });
@@ -79,13 +79,13 @@ export const useEnglishWordPracWordPrintInfo = (
   // 印刷データを保存する処理
   const handleSave = React.useCallback(async () => {
     try {
-      await saveEnglishWordPracPrintArchives([print]);
+      await saveEnglishWordPracPrintArchives([print], selectedTeamId);
       addMessageObject('印刷アーカイブの保存が完了しました。', 'success');
-      mutate('prints');
+      mutate(selectedTeamId);
     } catch (error) {
       addMessageObject(`保存に失敗しました。${error}`, 'error');
     }
-  }, [addMessageObject, print]);
+  }, [addMessageObject, print, selectedTeamId]);
 
   const handlePrint = React.useCallback(
     async (currentIsShowAnswer?: boolean) => {
