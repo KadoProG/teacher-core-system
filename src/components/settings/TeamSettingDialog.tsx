@@ -1,5 +1,6 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
+import SendIcon from '@mui/icons-material/Send';
 import {
   Alert,
   Box,
@@ -31,6 +32,7 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
     isNewTeam,
     selectedTeamId,
     onSubmit,
+    onMemberAdd,
   } = useTeamSettingDialog();
 
   return (
@@ -82,15 +84,21 @@ export const TeamSettingDialog: React.FC<TeamSettingDialogProps> = (props) => {
         <Typography variant="body2" my={1} color="GrayText">
           メンバーの追加
         </Typography>
-        <FormTextField
-          isDense
-          fullWidth
-          label="メールアドレスを追加"
-          control={control}
-          name="addEmail"
-          type="email"
-          disabled={!isNewTeam && !selectedTeamId}
-        />
+        <Box display="flex">
+          <FormTextField
+            isDense
+            fullWidth
+            label="メールアドレスを追加"
+            control={control}
+            name="addEmail"
+            type="email"
+            disabled={!isNewTeam && !selectedTeamId}
+            sx={{ flex: 1 }}
+          />
+          <IconButton onClick={onMemberAdd}>
+            <SendIcon />
+          </IconButton>
+        </Box>
         <Stack spacing={1}>
           {memberOptions.map((member) => (
             <Box key={member.value}>

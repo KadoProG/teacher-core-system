@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useSnackbar } from '@/components/commons/feedback/SnackbarContext';
 import { SELECT_NEW_OPTION_NAME } from '@/components/commons/input/FormSelect';
 import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
-import { addTeam } from '@/utils/fetch/fetchTeam';
+import { addMemberToTeam, addTeam } from '@/utils/fetch/fetchTeam';
+import { isValidEmail } from '@/utils/isValidEmail';
 
 export const useTeamSettingDialog = () => {
   const { addMessageObject } = useSnackbar();
@@ -94,6 +95,27 @@ export const useTeamSettingDialog = () => {
     })();
   }, [handleSubmit, addMessageObject, user?.id]);
 
+  const onMemberAdd = React.useCallback(async () => {
+    const email = watch('addEmail');
+    if (!email) {
+      addMessageObject('メールアドレスを入力してください', 'warning');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      addMessageObject('メールアドレスが不正です', 'warning');
+      return;
+    }
+
+    try {
+      await addMemberToTeam(teamId, watch('addEmail'));
+      addMessageObject('メンバーを追加しました', 'success');
+      setValue('addEmail', '');
+    } catch (error) {
+      console.error(error); // eslint-disable-line no-console
+      addMessageObject('メンバーの追加に失敗しました', 'error');
+    }
+  }, [teamId, watch, addMessageObject, setValue]);
+
   return {
     control,
     teamOptions,
@@ -102,5 +124,6 @@ export const useTeamSettingDialog = () => {
     isNewTeam,
     selectedTeamId,
     onSubmit,
+    onMemberAdd,
   };
 };
