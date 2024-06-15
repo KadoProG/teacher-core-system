@@ -7,6 +7,7 @@ import { useAuth } from '@/libs/firebase/FirebaseAuthContext';
 import {
   addMemberToTeam,
   addTeam,
+  deleteMemberFromTeam,
   fetchMembers,
 } from '@/utils/fetch/fetchTeam';
 import { isValidEmail } from '@/utils/isValidEmail';
@@ -17,9 +18,16 @@ export const useTeamSettingDialog = () => {
 
   const [isNewTeam, setIsNewTeam] = React.useState<boolean>(false);
 
-  const currentTeam = teams.find((team) => selectedTeamId === team.id);
+  const currentTeam = React.useMemo(
+    () => teams.find((team) => selectedTeamId === team.id),
+    [teams, selectedTeamId]
+  );
 
-  const { data } = useSWR(currentTeam?.members ?? [], fetchMembers, {
+  const { data, mutate } = useSWR(currentTeam?.members ?? [], fetchMembers, {
+    // 自動fetchの無効化
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
     onError: (error) => {
       console.error(error); // eslint-disable-line no-console
     },
@@ -72,9 +80,19 @@ export const useTeamSettingDialog = () => {
     value: member.id,
   }));
 
-  const onMemberDelete = (value: string) => {
-    console.log('delete member', value); // eslint-disable-line no-console
-  };
+  const onMemberDelete = React.useCallback(
+    async (value: string) => {
+      try {
+        await deleteMemberFromTeam(selectedTeamId, value);
+        addMessageObject('メンバーを削除しました', 'success');
+        mutate();
+      } catch (error) {
+        console.error(error); // eslint-disable-line no-console
+        addMessageObject('メンバーの削除に失敗しました', 'error');
+      }
+    },
+    [addMessageObject, selectedTeamId, mutate]
+  );
 
   const onSubmit = React.useCallback(async () => {
     handleSubmit(async (formData) => {

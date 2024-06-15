@@ -1,4 +1,5 @@
 import {
+  arrayRemove,
   arrayUnion,
   collection,
   doc,
@@ -132,4 +133,22 @@ export const fetchMembers = async (
   );
 
   return { members };
+};
+
+export const deleteMemberFromTeam = async (
+  teamId: ITeam['id'],
+  userId: string
+): Promise<void> => {
+  await runTransaction(firestore, async (transaction) => {
+    const teamRef = doc(collection(firestore, 'teams'), teamId);
+    const userRef = doc(collection(firestore, 'users'), userId);
+
+    transaction.update(teamRef, {
+      members: arrayRemove(userId),
+    });
+
+    transaction.update(userRef, {
+      teamIds: arrayRemove(teamId),
+    });
+  });
 };
