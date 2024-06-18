@@ -30,9 +30,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
-    "react-hook-form": "^7.51.5",
+    "react-hook-form": "^7.52.0",
     "react-to-print": "^2.15.1",
-    "sass": "^1.77.5",
     "swr": "^2.2.5"
   },
   "devDependencies": {
@@ -46,9 +45,9 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
     "eslint": "^8",
-    "eslint-config-next": "14.1.0",
+    "eslint-config-next": "^14.2.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-etc": "^2.0.3",
     "eslint-plugin-material-ui": "^1.0.1",
@@ -59,7 +58,8 @@
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.2",
-    "ts-jest": "^29.1.4",
+    "sass": "^1.77.6",
+    "ts-jest": "^29.1.5",
     "typescript": "^5"
   }
 }
