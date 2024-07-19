@@ -27,7 +27,7 @@ export const WordListTable: React.FC<WordListTableProps> = (props) => {
     return (
       <Paper component={Box} p={2}>
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v) => (
-          <Skeleton key={v} height={50} />
+          <Skeleton key={v} height={50} role="progressbar" />
         ))}
       </Paper>
     );

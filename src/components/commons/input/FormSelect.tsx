@@ -40,7 +40,13 @@ export const FormSelect = <T extends FieldValues>(
     <Box display="flex" alignItems="center">
       {!props.isDense && (
         <Box width={180}>
-          <Typography variant="body2">{props.label}</Typography>
+          <Typography
+            variant="body2"
+            component="label"
+            htmlFor={`filled_${controller.field.name}`}
+          >
+            {props.label}
+          </Typography>
         </Box>
       )}
       <Box flex={1} display="flex" justifyContent={props.align}>

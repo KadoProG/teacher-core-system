@@ -12,7 +12,7 @@ import { darkTheme, lightTheme } from '@/libs/theme/theme';
 /**カラーモードの選択オプション */
 export type ColorModeChoice = 'light' | 'dark' | 'device';
 
-interface ColorModeContextType {
+export interface ColorModeContextType {
   /**選択中のカラーモード */
   selectedMode: ColorModeChoice;
   /**カラーモードを設定する関数 */
